@@ -1,0 +1,43 @@
+{
+  "name": "jsgraph",
+  "version": "0.1.0",
+  "description": "Generic directed graph container, and visitor algorithms based on a port of the Boost C++ Graph Library API.",
+  "main": "library.js",
+  "scripts": {
+    "test": "mocha -R spec ./test/tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Encapsule/jsgraph.git"
+  },
+  "keywords": [
+    "graph",
+    "directed",
+    "graph",
+    "generic",
+    "container",
+    "dependency",
+    "topological",
+    "BFS",
+    "DFS",
+    "transpose",
+    "visit",
+    "visitor",
+    "traverse",
+    "algorithm",
+    "container"
+  ],
+  "author": "ChrisRus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Encapsule/jsgraph/issues"
+  },
+  "homepage": "https://github.com/Encapsule/jsgraph",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-mocha-test": "^0.11.0",
+    "chai": "^1.9.1",
+    "node-uuid": "^1.4.1"
+  }
+}
