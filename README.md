@@ -33,30 +33,30 @@ The current release of jsgraph contains support only for directed graph datasets
         var jsgraph = require('jsgraph');
         var digraph = new jsgraph.directed.DirectedGraph();
 
-* addVertex - add a vertex to the digraph w/optional property object
-* removeVertex - remove a vertex, and adjacent in-edges from the digraph
-* addEdge - add an edge w/optional property object to the digraph
-* removeEdge - remove an edge from the digraph
-* getRootVertices - retrieve the set of vertices with in-degree zero
-* getLeafVertices - retrieve the set of vertices with out-degree zero
-* verticesCount - retrieve the count of vertices in the digraph
-* edgesCount - retrieve the count of edges in the digraph
-* inEdges - retrieve the set of adjacent in-edges of a specific vertex
-* outEdges - retrieve the set of adjacent out-edges of a specific vertex
-* inDegree - retrieve the count of adjacent in-edges of a specific vertex
-* outDegree - retrieve the count of adjacent out-edges of a specific vertex
-* vertexPropertyObject - get a property object reference for a specific vertex
-* edgePropertyObject - get a property object reference for a specific edge
+* **addVertex** - add a vertex to the digraph w/optional property object
+* **removeVertex** - remove a vertex, and adjacent in-edges from the digraph
+* **addEdge** - add an edge w/optional property object to the digraph
+* **removeEdge** - remove an edge from the digraph
+* **getRootVertices** - retrieve the set of vertices with in-degree zero
+* **getLeafVertices** - retrieve the set of vertices with out-degree zero
+* **verticesCount** - retrieve the count of vertices in the digraph
+* **edgesCount** - retrieve the count of edges in the digraph
+* **inEdges** - retrieve the set of adjacent in-edges of a specific vertex
+* **outEdges** - retrieve the set of adjacent out-edges of a specific vertex
+* **inDegree** - retrieve the count of adjacent in-edges of a specific vertex
+* **outDegree** - retrieve the count of adjacent out-edges of a specific vertex
+* **vertexPropertyObject** - get a property object reference for a specific vertex
+* **edgePropertyObject** - get a property object reference for a specific edge
 
 ## Algorithms
 
 jsgraph currently provides the following algorithms for working with DirectedGraph container object datasets:
 
-* transpose - create a copy of a DirectedGraph container object with direction of all the edges reversed
-* generic breadth-first-visit and breadth-first-search
-** callbacks: initializeVertex, discoverVertex, startVertex, examineVertex, examineEdge, treeEdge, nonTreeEdge, grayTarget, blackTarget, finishVertex
-* generic depth-first-visit and depth-first-search
-** callbacks: initializeVertex, startVertex, discoverVertex, examineEdge, treeEdge, backEdge, forwardOrCrossEdge, finishVertex
+* **transpose** - create a copy of a DirectedGraph container object with direction of all the edges reversed
+* **breadth-first-visit** and **breadth-first-search** - (non-recursive, generic visitor pattern implementations)
+  * callbacks: initializeVertex, discoverVertex, startVertex, examineVertex, examineEdge, treeEdge, nonTreeEdge, grayTarget, blackTarget, finishVertex
+* ** generic depth-first-visit** and **depth-first-search**  - (non-recursive, generic visitor pattern implementations)
+  * callbacks: initializeVertex, startVertex, discoverVertex, examineEdge, treeEdge, backEdge, forwardOrCrossEdge, finishVertex
 
 # Example
 
