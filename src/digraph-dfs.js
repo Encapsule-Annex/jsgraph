@@ -9,25 +9,22 @@
     var createDepthFirstSearchContext = dfv.createDepthFirstSearchContext;
     var depthFirstVisit = dfv.depthFirstVisit;
 
-    var depthFirstSearch = function(digraph_, visitorInterface_, externalContext_) {
+    var depthFirstSearch = function(digraph_, visitorInterface_) {
 
         if ((digraph_ === null) || !digraph_ ||
             (visitorInterface_ === null) || !visitorInterface_) {
             throw new Error("Missing required input parameter(s).");
         }
 
-        var searchContext = createDepthFirstSearchContext(digraph_, visitorInterface_, externalContext_);
+        var searchContext = createDepthFirstSearchContext(digraph_, visitorInterface_);
 
-        var signalStart = true;
         for (var vertexId in digraph_.rootMap) {
-            depthFirstVisit(digraph_, searchContext, vertexId, visitorInterface_, signalStart);
-            signalStart = false;
+            depthFirstVisit(digraph_, searchContext, vertexId, visitorInterface_);
         }
 
         while (Object.keys(searchContext.undiscoveredMap).length) {
             for (vertexId in searchContext.undiscoveredMap) {
-                depthFirstVisit(digraph_, searchContext, vertexId, visitorInterface_, signalStart);
-                signalStart = false;
+                depthFirstVisit(digraph_, searchContext, vertexId, visitorInterface_);
                 break;
             }
         }

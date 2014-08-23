@@ -28,6 +28,7 @@
             throw new Error("Missing required graph input parameter.");
         }
         var dfsContext = {
+            signalStartVertex: true,
             colorMap: {},
             undiscoveredMap: {},
         };
@@ -42,7 +43,7 @@
         return dfsContext;
     };
 
-    module.exports.depthFirstVisit = function (digraph_, searchContext_, startVertexId_, visitorInterface_, signalStartVertex_) {
+    module.exports.depthFirstVisit = function (digraph_, searchContext_, startVertexId_, visitorInterface_) {
 
         if ((digraph_ === null) || !digraph_ ||
             (searchContext_ === null) || !searchContext_ ||
@@ -61,9 +62,11 @@
         }
 
         // startVertex visitor callback
-        var signalStart = ((signalStartVertex_ !== null) && signalStartVertex_) || false;
-        if (signalStart && (visitorInterface_.startVertex !== null) && visitorInterface_.startVertex) {
-            visitorInterface_.startVertex(startVertexId_, digraph_);
+        if (searchContext_.signalStartVertex) {
+            if ((visitorInterface_.startVertex !== null) && visitorInterface_.startVertex) {
+                visitorInterface_.startVertex(startVertexId_, digraph_);
+            }
+            searchContext_.signalStartVertex = false;
         }
 
         // searchStack is a FILO of FIFO's (or stack of queues if you prefer)
