@@ -20,12 +20,48 @@ To execute the ~170 test vectors, clone the repo, npm install, and run the Grunt
         npm install
         grunt
 
-All tests should pass.
+**All tests should pass.**
 
-# Example
+# API Overview
+
+The jsgraph API is patterned after the design of the Boost C++ Graph Library (BGL) API. The method names and semantics of the `DirectedGraph` generic directed graph container object, the use of the visitor design pattern to decouple the graph data from the graph algorithms, and the callback function signatures and semantics that codify the BFS and DFS algorithm extension protocol for developers are all copied directly from the BGL.  
+
+The current release of jsgraph contains support only for directed graph datasets. Support for undirected graph datasets and algorithms is planned in a future release.
+
+## DirectedGraph
 
         var jsgraph = require('jsgraph');
         var digraph = new jsgraph.directed.DirectedGraph();
+
+* addVertex - add a vertex to the digraph w/optional property object
+* removeVertex - remove a vertex, and adjacent in-edges from the digraph
+* addEdge - add an edge w/optional property object to the digraph
+* removeEdge - remove an edge from the digraph
+* getRootVertices - retrieve the set of vertices with in-degree zero
+* getLeafVertices - retrieve the set of vertices with out-degree zero
+* verticesCount - retrieve the count of vertices in the digraph
+* edgesCount - retrieve the count of edges in the digraph
+* inEdges - retrieve the set of adjacent in-edges of a specific vertex
+* outEdges - retrieve the set of adjacent out-edges of a specific vertex
+* inDegree - retrieve the count of adjacent in-edges of a specific vertex
+* outDegree - retrieve the count of adjacent out-edges of a specific vertex
+* vertexPropertyObject - get a property object reference for a specific vertex
+* edgePropertyObject - get a property object reference for a specific edge
+
+## Algorithms
+
+jsgraph currently provides the following algorithms for working with DirectedGraph container object datasets:
+
+* transpose - create a copy of a DirectedGraph container object with direction of all the edges reversed
+* generic breadth-first-visit and breadth-first-search
+** callbacks: initializeVertex, discoverVertex, startVertex, examineVertex, examineEdge, treeEdge, nonTreeEdge, grayTarget, blackTarget, finishVertex
+* generic depth-first-visit and depth-first-search
+** callbacks: initializeVertex, startVertex, discoverVertex, examineEdge, treeEdge, backEdge, forwardOrCrossEdge, finishVertex
+
+# Example
+
+        var jsdigraph = require('jsgraph').directed;
+        var digraph = new jsdigraph.DirectedGraph();
 
         // This example is taken from chapter 22 of "Introduction to Algorithms".
         digraph.addEdge("u", "v");
@@ -143,7 +179,7 @@ Returns a copy of the `vertexId_` in-parameter.
 
 If a vertex with identifier `vertexId_` already exists in the graph, the call to `addVertex` is ignored.
 
-### jsgraph.directed.DirectedGraph.removeVertex
+## jsgraph.directed.DirectedGraph.removeVertex
 
         digraph.removeVertex(vertexId_);
 
