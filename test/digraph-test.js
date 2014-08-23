@@ -26,11 +26,11 @@ describe("DirectedGraph container object tests", function() {
         });
 
         it ("graph should have zero root vertices", function() {
-            assert.lengthOf(Object.keys(digraph.rootMap), 0);
+            assert.equal(digraph.getRootVertices().length, 0);
         });
 
         it ("graph should have zero leaf vertices", function() {
-            assert.lengthOf(Object.keys(digraph.leafMap), 0);
+            assert.equal(digraph.getLeafVertices().length, 0);
         });
     });
 
@@ -50,11 +50,11 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it ("graph should have one root vertex", function() {
-                assert.lengthOf(Object.keys(digraph.rootMap), 1);
+                assert.equal(digraph.getRootVertices().length, 1);
             });
 
             it ("graph should have one leaf vertex", function() {
-                assert.lengthOf(Object.keys(digraph.leafMap), 1);
+                assert.equal(digraph.getLeafVertices().length, 1);
             });
 
             it ("vertex should have zero in-degree", function() {
@@ -86,11 +86,11 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it("graph should have zero root vertices", function() {
-                assert.lengthOf(Object.keys(digraph.rootMap), 0);
+                assert.equal(digraph.getRootVertices().length, 0);
             });
 
             it("graph should have zero leaf vertices", function() {
-                assert.lengthOf(Object.keys(digraph.leafMap), 0);
+                assert.equal(digraph.getLeafVertices().length, 0);
             });
         };
 
@@ -128,11 +128,11 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it ("graph should have one root vertex", function() {
-                assert.lengthOf(Object.keys(digraph.rootMap), 1);
+                assert.equal(digraph.getRootVertices().length, 1);
             });
 
             it ("graph should have one leaf vertex", function() {
-                assert.lengthOf(Object.keys(digraph.leafMap), 1);
+                assert.equal(digraph.getLeafVertices().length, 1);
             });
 
             it ("vertex 'apple' should have in-degree zero", function() {
@@ -179,11 +179,11 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it ("graph should have two root vertices", function() {
-                assert.lengthOf(Object.keys(digraph.rootMap), 2);
+                assert.equal(digraph.getRootVertices().length, 2);
             });
 
             it ("graph should have two leaf vertices", function() {
-                assert.lengthOf(Object.keys(digraph.leafMap), 2);
+                assert.equal(digraph.getLeafVertices().length, 2);
             });
 
             it ("vertex 'apple' should have in-degree zero", function() {
@@ -255,11 +255,11 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it ("graph should have one root vertex", function() {
-                assert.lengthOf(Object.keys(digraph.rootMap), 1);
+                assert.equal(digraph.getRootVertices().length, 1);
             });
 
             it ("graph should have one leaf vertex", function() {
-                assert.lengthOf(Object.keys(digraph.leafMap), 1);
+                assert.equal(digraph.getLeafVertices().length, 1);
             });
 
             it ("vertex 'apple' should have in-degree zero", function() {
@@ -299,11 +299,11 @@ describe("DirectedGraph container object tests", function() {
         });
 
         it ("graph should have zero root vertices", function() {
-            assert.lengthOf(Object.keys(digraph.rootMap), 0);
+            assert.equal(digraph.getRootVertices().length, 0);
         });
 
         it ("graph should have zero leaf vertices", function() {
-            assert.lengthOf(Object.keys(digraph.leafMap), 0);
+            assert.equal(digraph.getLeafVertices().length, 0);
         });
 
         it ("vertex 'blue' should have in-degree one", function() {
@@ -358,11 +358,11 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it ("graph should have zero root vertices", function() {
-                assert.lengthOf(Object.keys(digraph.rootMap), 0);
+                assert.equal(digraph.getRootVertices().length, 0);
             });
 
             it ("graph should have zero leaf vertices", function() {
-                assert.lengthOf(Object.keys(digraph.leafMap), 0);
+                assert.equal(digraph.getLeafVertices().length, 0);
             });
 
             it ("vertex 'north1' should have in-degree one", function() {
@@ -398,11 +398,11 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it ("graph should have zero root vertices", function() {
-                assert.lengthOf(Object.keys(digraph.rootMap), 0);
+                assert.equal(digraph.getRootVertices().length, 0);
             });
 
             it ("graph should have one leaf vertices", function() {
-                assert.lengthOf(Object.keys(digraph.leafMap), 1);
+                assert.equal(digraph.getLeafVertices().length, 1);
             });
 
             it ("vertex 'east2' should have in-degree two", function() {

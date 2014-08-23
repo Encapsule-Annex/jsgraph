@@ -208,6 +208,22 @@ Integer indicating the number of vertices in this graph.
 
 Integer indicating the number of edges in this graph.
 
+## jsgraph.directed.DirectedGraph.getRootVertices
+
+        var vertices = digraph.getRootVertices();
+
+**Return:**
+
+Returns an array of identifier strings indicating the set of root vertices in the graph (i.e. the set of vertices with in-degree zero).
+
+## jsgraph.directed.Directedgraph.getLeafVertices
+
+        var vertices = digraph.getLeafVertices();
+
+**Return:**
+
+Returns an array of identifier strings indicating the set of leaf vertices in the graph (i.e. the set of vertices with out-degree zero).
+
 ## jsgraph.directed.DirectedGraph.inEdges
 
         var edgeArray = digraph.inEdges(vertexId_);

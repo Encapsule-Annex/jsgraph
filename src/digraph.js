@@ -9,6 +9,8 @@
 
         function DirectedGraph() {
             var _this = this;
+            // These are implementation details of the digraph container.
+            // Prefer prototype methods over direct access and coupling to these details.
             this.vertexMap = {};
             this.rootMap = {};
             this.leafMap = {};
@@ -16,6 +18,22 @@
         }
 
         DirectedGraph.prototype.type = "directed";
+
+        DirectedGraph.prototype.getRootVertices = function() {
+            var rootVertices = [];
+            for (var vertexId in this.rootMap) {
+                rootVertices.push(vertexId);
+            }
+            return rootVertices;
+        };
+
+        DirectedGraph.prototype.getLeafVertices = function() {
+            var leafVertices = [];
+            for (var vertexId in this.leafMap) {
+                leafVertices.push(vertexId);
+            }
+            return leafVertices;
+        };
 
         DirectedGraph.prototype.addVertex = function (vertexId_, properties_) {
             if ((vertexId_ === null) || !vertexId_) {
