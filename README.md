@@ -448,7 +448,8 @@ Thanks to [Azuqua, Inc.](http://azuqua.com), Seattle for support and assistance.
 
 Thanks to [Jeremy Seik](http://wphomes.soic.indiana.edu/jsiek/) for writing the BGL.
 
-Copyright &copy; 2014 Encapsule Project / ChrisRus
+Copyright &copy; 2014 [Encapsule Project](https://github.com/encapsule) / [ChrisRus](https://github.com/ChrisRus)
+
 
 
 
