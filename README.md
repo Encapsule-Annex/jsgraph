@@ -53,9 +53,11 @@ The current release of jsgraph contains support only for directed graph datasets
 jsgraph currently provides the following algorithms for working with DirectedGraph container object datasets:
 
 * **transpose** - create a copy of a DirectedGraph container object with direction of all the edges reversed
-* **breadth-first-visit** and **breadth-first-search** - (non-recursive, generic visitor pattern implementations)
+* **breadth-first-visit** and **breadth-first-search**
+  * non-recursive, generic visitor pattern implementations
   * callbacks: initializeVertex, discoverVertex, startVertex, examineVertex, examineEdge, treeEdge, nonTreeEdge, grayTarget, blackTarget, finishVertex
-* ** generic depth-first-visit** and **depth-first-search**  - (non-recursive, generic visitor pattern implementations)
+* **generic depth-first-visit** and **depth-first-search**
+  * non-recursive, generic visitor pattern implementations
   * callbacks: initializeVertex, startVertex, discoverVertex, examineEdge, treeEdge, backEdge, forwardOrCrossEdge, finishVertex
 
 # Example
