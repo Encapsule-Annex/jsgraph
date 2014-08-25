@@ -496,7 +496,7 @@ None.
 
 Please see the [Boost C++ Graph Library: DFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/DFSVisitor.html) documentation for a complete discussion of API semantics.
         
-# Acknowledgements
+# Acknowledgements 
 
 Thanks to [Azuqua, Inc.](http://azuqua.com), Seattle for support and assistance.
 
