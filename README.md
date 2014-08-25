@@ -378,7 +378,7 @@ All callback functions are optional; implement only those you require.
 
 Please see the [Boost C++ Graph Library: BFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/BFSVisitor.html) documentation for a complete discussion of API semantics.
 
-### createBreadFirstSearchContext
+### createBreadthFirstSearchContext
 
 Prior to calling either `breadthFirstVisit` or `breadthFirstSearch` you must initialize a context object for the algorithm's internal state.
 
