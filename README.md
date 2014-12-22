@@ -189,8 +189,8 @@ jsgraph is inspired by the design and implementation of the [Boost C++ Graph Lib
 
 **Parameters:**
 
-vertexId_ - (required) a unique string identifying the vertex to add to the graph.
-properties_ - (optional) reference to a property object to attach to the new vertex.
+- vertexId_ (required): a unique string identifying the vertex to add to the graph.
+- properties_ (optional): reference to a property object to attach to the new vertex.
 
 **Return:**
 
@@ -206,7 +206,7 @@ If a vertex with identifier `vertexId_` already exists in the graph, the call to
 
 **Parameters:**
 
-vertexId_ - (required) the unique string identifier of the vertex to remove from the graph
+- vertexId_ (required): the unique string identifier of the vertex to remove from the graph
 
 **Return:**
 
@@ -222,9 +222,9 @@ Removing a vertex automatically removes all the the vertex's in-edges (i.e. dire
 
 **Parameters:**
 
-vertexIdU_ - (required) a unqique string identifying the directed edge's source vertex, U.
-vertexIdV_ - (required) a unqique string identifying the directed edge's sink vertex, V.
-properties_ - (optional) reference to a property object to attach to the new edge.
+- vertexIdU_ (required): a unqique string identifying the directed edge's source vertex, U.
+- vertexIdV_ (required): a unqique string identifying the directed edge's sink vertex, V.
+- properties_ (optional): reference to a property object to attach to the new edge.
 
 **Return:**
 
@@ -242,8 +242,8 @@ If a vertex or vertices specified in a call to `addEdge` do not exist, they are 
 
 **Parameters:**
 
-vertexIdU_ - (required) the unqiue string identifying the directed edge's source vertex, U.
-vertexIdV_ - (required) the unique string identifying the directed edge's sink vertex, V.
+- vertexIdU_ (required): the unqiue string identifying the directed edge's source vertex, U.
+- vertexIdV_ (required): the unique string identifying the directed edge's sink vertex, V.
 
 **Return:**
 
@@ -287,7 +287,7 @@ Returns an array of identifier strings indicating the set of leaf vertices in th
 
 **Parameters:**
 
-vertexId_ - (required) the unique string identifying the vertex to query.
+- vertexId_ (required): the unique string identifying the vertex to query.
 
 **Return:**
 
@@ -299,7 +299,7 @@ Returns an array of edge descriptor objects specifying the source and sink verte
 
 **Parameters:**
 
-vertexId_ - (requierd) the unique string identifying the vertex to query.
+- vertexId_ (requierd): the unique string identifying the vertex to query.
 
 **Return:**
 
@@ -311,7 +311,7 @@ Returns an array of edge descriptor objects specifiy the source and sink vertex 
 
 **Parameters:**
 
-vertexId_ - (requierd) the unique string identifying the vertex to query.
+- vertexId_ (requierd): the unique string identifying the vertex to query.
 
 **Return:**
 
@@ -323,7 +323,7 @@ Integer indicating the in-degree of the specific vertex.
 
 **Parameters:**
 
-vertexId_ - (requierd) the unique string identifying the vertex to query.
+- vertexId_ (requierd): the unique string identifying the vertex to query.
 
 **Return:**
 
@@ -335,7 +335,7 @@ Integer indicating the out-degree of the specific vertex.
 
 **Parameters:**
 
-vertexId_ - (requierd) the unique string identifying the vertex to query.
+- vertexId_ (requierd): the unique string identifying the vertex to query.
 
 **Return:**
 
@@ -347,8 +347,8 @@ Returns a reference to the property object attached to the specified vertex when
 
 **Parameters:**
 
-vertexIdU_ - (required) the unqiue string identifying the directed edge's source vertex, U.
-vertexIdV_ - (required) the unique string identifying the directed edge's sink vertex, V.
+- vertexIdU_ (required): the unqiue string identifying the directed edge's source vertex, U.
+- vertexIdV_  (required): the unique string identifying the directed edge's sink vertex, V.
 
 **Return:**
 
@@ -362,7 +362,7 @@ Returns a reference to the property object attached to the specified edge when i
 
 **Parameters:**
 
-digraphIn_ - (required) a reference to a previously-constructed and initialized DirectedGraph object.
+- digraphIn_ (required): a reference to a previously-constructed and initialized DirectedGraph object.
 
 **Return:**
 
@@ -405,8 +405,8 @@ Prior to calling either `breadthFirstVisit` or `breadthFirstSearch` you must ini
 
 **Parameters:**
 
-digraph_ - (required) a reference to a previously-constructed DirectedGraph object.
-visitorInterface_ = (required) a reference to your application-specific BFS visitor interface object
+- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
+- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object
 
 **Remarks:**
 
@@ -418,10 +418,10 @@ You need to initialize a new context object every time you affect a new graph tr
 
 **Parameters:**
 
-digraph_ - (required) a reference to a previously-constructed DirectedGraph object.
-context_ - (required) a reference to your breadth-first search context object.
-startVertexId_ - (required) the string identifier of vertex at which to start the visit traversal.
-visitorInterface_ = (required) a reference to your application-specific BFS visitor interface object.
+- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
+- context_ (required): a reference to your breadth-first search context object.
+- startVertexId_ (required): the string identifier of vertex at which to start the visit traversal.
+- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object.
 
 **Return:**
 
@@ -433,10 +433,10 @@ None.
 
 **Parameters:**
 
-digraph_ - (required) a reference to a previously-constructed DirectedGraph object.
-context_ - (required) a reference to your breadth-first search context object.
-startVertexArray_ - (required) as array of string identifiers of the vertices to visit breadth-first.
-visitorInterface_ = (required) a reference to your application-specific BFS visitor interface object.
+- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
+- context_ (required): a reference to your breadth-first search context object.
+- startVertexArray_ (required): as array of string identifiers of the vertices to visit breadth-first.
+- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object.
 
 **Return:**
 
@@ -470,8 +470,8 @@ Prior to calling either `depthFirstVisit` you must initialize a context object f
 
 **Parameters:**
 
-digraph_ - (required) a reference to a previously-constructed DirectedGraph object.
-visitorInterface_ = (required) a reference to your application-specific BFS visitor interface object
+- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
+- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object
 
 **Remarks:**
 
@@ -485,10 +485,10 @@ This step is taken care of automatically by `depthFirstSearch` but not the lower
 
 **Parameters:**
 
-digraph_ - (required) a reference to a previously-constructed DirectedGraph object.
-context_ - (required) a reference to your depth-first search context object.
-startVertexArray_ - (required) as array of string identifiers of the vertices to visit depth-first search.
-visitorInterface_ = (required) a reference to your application-specific BFS visitor interface object.
+- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
+- context_ (required): a reference to your depth-first search context object.
+- startVertexArray_ (required): as array of string identifiers of the vertices to visit depth-first search.
+- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object.
 
 **Return:**
 
@@ -504,8 +504,8 @@ Please see the [Boost C++ Graph Library: DFS Visitor Concept](http://www.boost.o
 
 **Parameters:**
 
-digraph_ - (required) a reference to a previously-constructed DirectedGraph object.
-visitorInterface_ = (required) a reference to your application-specific BFS visitor interface object
+- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
+- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object
 
 **Return:**
 
