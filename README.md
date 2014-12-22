@@ -83,7 +83,7 @@ A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example f
         digraph.addEdge("z", "z");
 
         // We're going to traverse the topology of the directed graph stored in `digraph` using
-        // the depth-first search algorithm from jsgraph. We'll store our results in the `dfsResults` array.
+        // the depth-first search algorithm from jsgraph. Results will be stored in `dfsResults` array.
         var dfsResults = [];
 
         // Keep track of start, end times.
@@ -174,6 +174,7 @@ A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example f
            "38 backEdge [z,z]",
            "39 finishVertex z at time 11",
            "40 finishVertex w at time 12"]
+<3
 
 # jsgraph.directed.DirectedGraph object
 
