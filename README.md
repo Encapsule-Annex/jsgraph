@@ -62,10 +62,17 @@ jsgraph currently provides the following algorithms for working with DirectedGra
 
 # Example
 
+A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example from [Introduction to Algorithms 23.3](http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap23.htm).
+
+![Introduction to Algorithms DFS Example](ITA-23.4.gif "Introduction to Algorithms DFS Example")
+
+        // Use `require` to include the `jsgraph` module and select the `directed` graph namespace.
         var jsdigraph = require('jsgraph').directed;
+
+        // Use JavaScript `new` operator to create a new, empty instance of DirectedGraph container object.
         var digraph = new jsdigraph.DirectedGraph();
 
-        // This example is taken from chapter 22 of "Introduction to Algorithms".
+        // Create an in-memory model of the topology of the directed graph (a) depicted above.
         digraph.addEdge("u", "v");
         digraph.addEdge("v", "y");
         digraph.addEdge("y", "x");
@@ -75,10 +82,19 @@ jsgraph currently provides the following algorithms for working with DirectedGra
         digraph.addEdge("w", "z");
         digraph.addEdge("z", "z");
 
+        // We're going to traverse the topology of the directed graph stored in `digraph` using
+        // the depth-first search algorithm from jsgraph. We'll store our results in the `dfsResults` array.
         var dfsResults = [];
+
+        // Keep track of start, end times.
         var step = 0;
         var time = 0;
 
+        // Define a DFS visitor object.
+        // The properties are predefined function signatures that are called back iff defined.
+        // Which callbacks we implement, and what we do in our callbacks is entirely up to us.
+        // In this simple example we implement a simple logger that pushes each traversal step
+        // into the `dfsResults` array for demonstration purposes.
         var dfsVisitorInterface = {
             initializeVertex: function(u, g) {
                 dfsResults.push(step++ + " initializeVertex " + u);
@@ -108,11 +124,13 @@ jsgraph currently provides the following algorithms for working with DirectedGra
             }
         };
 
+        // jsgraph-provided algorithms are stateful and require a place to store their internal context.
         var dfsContext = jsgraph.directed.createDepthFirstSearchContext(digraph, dfsVisitorInterface);
 
-        // Traverse the graph...
+        // Invoke the depth-first search algorithm from jsgraph. 
         jsgraph.directed.depthFirstSearch(digraph, dfsVisitorInterface, dfsContext);
 
+        // Dump the `dfsResults` array to the console in JSON.
         console.log(JSON.stringify(dfsResults));
 
         > ["0 initializeVertex u",
