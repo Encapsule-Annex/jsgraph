@@ -17,6 +17,29 @@
             this.edgeCount = 0;
         }
 
+        DirectedGraph.prototype.import = function(json){
+            if(typeof json === "string"){
+                try{
+                    json = JSON.parse(json);
+                }catch(e){
+                    throw new Error("Invalid import JSON string");
+                }
+            }
+            this.vertexMap = json.vertexMap;
+            this.rootMap = json.rootMap;
+            this.leafMap = json.leafMap;
+            this.edgeCount = json.edgeCount;
+        };
+
+        DirectedGraph.prototype.export = function(){
+            return JSON.stringify({
+                vertexMap: this.vertexMap,
+                rootMap: this.rootMap,
+                leafMap: this.leafMap,
+                edgeCount: this.edgeCount
+            });
+        };
+
         DirectedGraph.prototype.type = "directed";
 
         DirectedGraph.prototype.getRootVertices = function() {
