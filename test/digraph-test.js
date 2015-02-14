@@ -34,6 +34,46 @@ describe("DirectedGraph container object tests", function() {
         });
     });
 
+    describe("Import/Export tests", function(){
+
+        var digraph = new DirectedGraph();
+        var copy = new DirectedGraph();
+        var vertices = ["foo", "bar", "baz"];
+        
+        before(function(){
+            vertices.forEach(function(v){
+                digraph.addVertex(v, { k: v });
+            });
+
+            vertices.forEach(function(u){
+                vertices.forEach(function(v){
+                    if(u !== v) digraph.addEdge(u, v);
+                });
+            });
+        });
+
+        it("graph should export properly structured JSON string", function(){
+            var json = digraph.export();
+            assert.isString(json);
+            json = JSON.parse(json);
+            assert.property(json, "vertexMap");
+            assert.property(json, "rootMap");
+            assert.property(json, "leafMap");
+            assert.property(json, "edgeCount");
+        });
+
+        it("graph should allow for import of JSON string", function(){
+            assert.doesNotThrow(function(){
+                copy.import(digraph.export());
+            });
+        });
+
+        it("graph should re-create identical graph from import", function(){
+            assert.equal(copy.export(), digraph.export());
+        });
+
+    });
+
     describe("Vertex API tests", function() {
 
         var digraph = new DirectedGraph();
