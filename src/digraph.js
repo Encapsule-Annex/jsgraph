@@ -7,38 +7,36 @@
 
     var DirectedGraph = (function() {
 
-        function DirectedGraph() {
+        function DirectedGraph(json_) {
             var _this = this;
+
             // These are implementation details of the digraph container.
-            // Prefer prototype methods over direct access and coupling to these details.
+            // Please use prototype methods where possible to maintain this encapsulation
+            // and disuade clients from taking a direct dependency on these details.
+            //
+            // TODO: Update this JSON I/O contract to onm v0.3 when stable.
+            //
+            if ( (json_ !== null) && json_ && (Object.prototype.toString.call(json_) === '[object String]') ) {
+                try {
+                    // This really isn't all that great.
+                    this.state = JSON.parse(json_);
+                } catch (exception_) {
+                    throw new Error("jsgraph.DirectedGraph constructor failed: Invalid JSON input specified.");
+                }
+            } else {
+                this.state = {
+                    vertexMap: {},
+                    rootMap: {},
+                    leafMap: {},
+                    edgeCount: 0
+                };
+            }
+
             this.vertexMap = {};
             this.rootMap = {};
             this.leafMap = {};
             this.edgeCount = 0;
         }
-
-        DirectedGraph.prototype.import = function(json){
-            if(typeof json === "string"){
-                try{
-                    json = JSON.parse(json);
-                }catch(e){
-                    throw new Error("Invalid import JSON string");
-                }
-            }
-            this.vertexMap = json.vertexMap;
-            this.rootMap = json.rootMap;
-            this.leafMap = json.leafMap;
-            this.edgeCount = json.edgeCount;
-        };
-
-        DirectedGraph.prototype.export = function(){
-            return JSON.stringify({
-                vertexMap: this.vertexMap,
-                rootMap: this.rootMap,
-                leafMap: this.leafMap,
-                edgeCount: this.edgeCount
-            });
-        };
 
         DirectedGraph.prototype.type = "directed";
 
@@ -171,6 +169,10 @@
 
         DirectedGraph.prototype.edgePropertyObject = function(vertexIdU_, vertexIdV_) {
             return this.vertexMap[vertexIdU_].edges.out[vertexIdV_].properties;
+        };
+
+        DirectedGraph.prototype.toJSON = function(replacer_, space_) {
+            return JSON.stringify(this.state, replacer_, space_);
         };
 
         return DirectedGraph;
