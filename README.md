@@ -11,6 +11,8 @@ _Use browserify or similar utility to leverage jsgraph in the client instead of 
 
 # Tests
 
+[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg)](https://travis-ci.org/Encapsule/jsgraph)
+
 jsgraph is tested using Mocha/Chai. If you find a bug, please file an issue.
 
 To execute the ~170 test vectors, clone the repo, npm install, and run the Grunt script:
