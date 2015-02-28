@@ -1,7 +1,7 @@
 {
   "name": "jsgraph",
-  "version": "0.1.5",
-  "description": "Directed mathematical graph container class for Node.js / HTML 5. Used for building highly complex application-specific in-memory databases, relational frameworks, compilers, games, web services, UI...",
+  "version": "0.1.6",
+  "description": "Directed mathematical graph container class for Node.js / HTML 5. Used for building highly complex application-specific in-memory databases, relational frameworks, compilers, games, web services, UI, protocols, parsers, engines, transformers, codecs, routers, dispatchers...",
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec ./test/tests.js"

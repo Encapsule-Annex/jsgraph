@@ -1,7 +1,80 @@
 jsgraph
 =======
 
-jsgraph is an API port of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html)'s generic directed graph container object, and several standard directed graph traversal algorithms.
+[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg)](https://travis-ci.org/Encapsule/jsgraph)
+
+jsgraph implements a hyper-dimensional, directed, in-memory, mathematical graph database for Node.js / HTML 5 that is used for building application-specific data set storage, and processing algorithms. For example: parsers, compilers, routers, protocol engines, data transformers, dispatchers, signal processors, stream engines, query processing, user interface, games...
+
+jsgraph is inspired by the design of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) that leverages C++ templates to affect a complete separation of concerns between (a) the storage and access of your hyper-dimensional dataset (b) the semantics of the dataset (c) the supplied re-usable algorithmic routines that comprise the libraries outward facing query/response API.
+
+From this perspective, jsgraph's `DirectedGraph` container object is similar in spirit to an STL container. And the algorithms packed with jsgraph like STL algorithms (i.e. can be applied to any dataset in an STL container regardless of its type). But unlike STL containers, jsgraph's `DirectedGraph` is hyper-dimensional, and inherently heterogeneous.
+
+Let's get going and create our first jsgraph `DirectedGraph` database. It's not too difficult.
+
+        cdr@debian:~/encapsule/jsgraph-example$ npm install jsgraph
+        jsgraph@0.1.5 node_modules/jsgraph
+        cdr@debian:~/encapsule/jsgraph-example$ node
+        > var jsgraph = require('jsgraph');
+        undefined
+        > var directed = jsgraph.directed
+        undefined
+        > var digraph = new directed.DirectedGraph();
+        undefined
+        > JSON.stringify(digraph);
+        '{"vertexMap":{},"rootMap":{},"leafMap":{},"edgeCount":0}'
+
+`digraph` is an in-memory database with no ascribed semantics at this point.
+
+To imbue `digraph` with meaning, we add data.
+
+        > digraph.addVertex("start");
+        'start'
+        > digraph.addVertex("step1");
+        'step1'
+        > digraph.addVertex("step2");
+        'step2'
+        > digraph.addVertex("end");
+        'end'
+        > JSON.stringify(digraph);
+        '{"vertexMap":{"start":{"edges":{"in":{},"out":{}}},"step1":{"edges":{"in":{},"out":{}}},"step2":{"edges":{"in":{},"out":{}}},"end":{"edges":{"in":{},"out":{}}}},"rootMap":{"start":{},"step1":{},"step2":{},"end":{}},"leafMap":{"start":{},"step1":{},"step2":{},"end":{}},"edgeCount":0}'
+
+Vertices are unique objects, identified with an ID string (e.g. 'start'), that represent an instance of some concept. 
+
+Let's create some associations between our concepts by adding directed edges from source to sink vertex.
+
+        > digraph.addEdge("start", "step1", { type: "link" });
+        { u: 'start', v: 'step1' }
+        > digraph.addEdge("step1", "step2", { type: "link" });
+        { u: 'step1', v: 'step2' }
+        > digraph.addEdge("step2", "end", { type: "link" });
+        { u: 'step2', v: 'end' }
+        > JSON.stringify(digraph);
+        '{"vertexMap":{"start":{"edges":{"in":{},"out":{"step1":{"properties":{"type":"link"}}}}},"step1":{"edges":{"in":{"start":{}},"out":{"step2":{"properties":{"type":"link"}}}}},"step2":{"edges":{"in":{"step1":{}},"out":{"end":{"properties":{"type":"link"}}}}},"end":{"edges":{"in":{"step2":{}},"out":{}}}},"rootMap":{"start":{}},"leafMap":{"end":{}},"edgeCount":3}'
+
+You now have (a) topological information (b) labels (i.e. application-specific semantics) stored in-memory.
+
+We can ask about relationships...
+
+        > digraph.inEdges("step2");
+        [ { u: 'step1', v: 'step2' } ]
+
+... or query properties...
+
+        > digraph.edgePropertyObject("start", "step1");
+        { type: 'link' }
+
+... or implement a visitor interface and call one of jsgraph's algorithms on your dataset to affect whatever you want.
+
+        > var dfsVisitor = { finishVertex: function(vertex, digraph) { console.log(vertex); } };
+        undefined
+        > var dfsContext = jsgraph.directed.createDepthFirstSearchContext(digraph, dfsVisitor);
+        undefined
+        > jsgraph.directed.depthFirstSearch(digraph, dfsVisitor);
+        end
+        step2
+        step1
+        start
+        true
 
 # Get the code
 
@@ -10,8 +83,6 @@ jsgraph is an API port of the [Boost C++ Graph Library](http://www.boost.org/doc
 _Use browserify or similar utility to leverage jsgraph in the client instead of Node.js._
 
 # Tests
-
-[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg)](https://travis-ci.org/Encapsule/jsgraph)
 
 jsgraph is tested using Mocha/Chai. If you find a bug, please file an issue.
 
@@ -176,7 +247,8 @@ A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example f
            "38 backEdge [z,z]",
            "39 finishVertex z at time 11",
            "40 finishVertex w at time 12"]
-<3
+
+**<3**
 
 # jsgraph.directed.DirectedGraph object
 
@@ -216,7 +288,8 @@ Returns true to indicate that the specified vertex is not part of the graph.
 
 **Remarks:**
 
-Removing a vertex automatically removes all the the vertex's in-edges (i.e. directed edges pointing at the vertex being removed are also removed).
+Removing a vertex automatically removes all the the vertex's edges (both in and out-edges are removed). 
+
 
 ## jsgraph.directed.DirectedGraph.addEdge
 
@@ -236,7 +309,7 @@ Returns an edge descriptor object containing the identifiers of the U and V vert
 
 **Remarks:**
 
-If a vertex or vertices specified in a call to `addEdge` do not exist, they are added automatically and then the edge is added.
+If a vertex or vertices specified in a call to `addEdge` do not exist, they are added automatically and then the edge is added without associated property objects (you'll need to assign these manually by vertex ID in this situation).
 
 ## jsgraph.directed.DirectedGraph.removeEdge
 
@@ -397,6 +470,16 @@ To leverage the `breadthFirstVisit` and `breadthFirstSearch` algorithms, you mus
 
 All callback functions are optional; implement only those you require.
 
+- initializeVertex - This invoked on every vertex of the graph before the start of the graph search.
+- discoverVertex - This is invoked when a vertex is encountered for the first time
+- examineVertex - This is invoked on a vertex as it is popped from the queue. This happens immediately before examine_edge() is invoked on each of the out-edges of vertex u.
+- examineEdge - This is invoked on every out-edge of each vertex after it is discovered.
+- treeEdge - This in invoked on edge edge as it becomes a member of the edges that form the search tree.
+- nonTreeEdge - This is invoked on back or cross edges.
+- grayTarget - This is invoked on the subset of non-tree edges whose target vertex is colored grat at the time of examination. The color gray indicates that the vertex is currently in the queue.
+- blackTarget - This is invoked on a subset of the edges whose target vertex is colored black at the time of examination. The color black indicates that the vertex has been removed from the queue.
+- finishVertex - This is invoked on a vertex after all of its out edges have been added to the search tree and all adjacent vertices have been discovered (but before the out-edges of the adjacent vertices have been examined).
+
 Please see the [Boost C++ Graph Library: BFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/BFSVisitor.html) documentation for a complete discussion of API semantics.
 
 ### createBreadthFirstSearchContext
@@ -462,6 +545,17 @@ To leverage the `depthFirstVisit' and 'depthFirstSearch' algorithms, you must im
         };
 
 All callback functions are optional; implement only those you require.
+
+- initializeVertex - This is invoked on every vertex of the graph before the start of the search.
+- startVertex - This is invoked on the source vertex once before the start of the search.
+- discoverVertex - This is invoked when a vertex is encountered for the first time.
+- examineEdge - This is invoked on every out-edge of each vertex after it is discovered.
+- treeEdge - This is invoked on each edge as it becomes a member of the edges that form the search tree.
+- backEdge - This is invoked on the back edges in the graph. For an undirected graph there is some ambiguity between tree edges and back edges since the edge (u,v) and (v,u) are the same edge, but both the tree_edge() and back_edge() functions will be invoked. One way to resolve this ambiguity is to record the tree edges, and then disregard the back-edges that are already marked as tree edges. An easy way to record tree edges is to record predecessors at the tree_edge event point.
+- forwardOrCrossEdge - This is invoked on forward or cross edges in the graph. In an undirected graph this method is never called.
+- finishEdge - This is invoked on each non-tree edge as well as on each tree edge after finish_vertex has been called on its target vertex.
+- finishVertex - This is invoked on vertex u after finish_vertex has been called for all the vertices in the DFS-tree rooted at vertex u. If vertex u is a leaf in the DFS-tree, then the finish_vertex function is called on u after all the out-edges of u have been examined.
+
 Please see the [Boost C++ Graph Library: DFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/DFSVisitor.html) documentation for a complete discussion of API semantics.
 
 ### jsgraph.directed.createDepthFirstSearchContext
@@ -517,20 +611,15 @@ None.
 
 Please see the [Boost C++ Graph Library: DFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/DFSVisitor.html) documentation for a complete discussion of API semantics.
         
-# Acknowledgements
+# Notes
 
-Thanks to [Azuqua, Inc.](http://azuqua.com), Seattle for support and assistance.
+[1] Support for undirected graph data sets, related algorithms is planned for a future jsgraph release.
+
+# Acknowledgements
 
 Thanks to [Jeremy Seik](http://wphomes.soic.indiana.edu/jsiek/) for writing the BGL.
 
-Copyright &copy; 2014 [Encapsule Project](https://github.com/encapsule) / [ChrisRus](https://github.com/ChrisRus)
+Copyright &copy; 2015 [Encapsule Project](https://github.com/encapsule) / [ChrisRus](https://github.com/ChrisRus)
 
-
-
-
-
-
-
-
-
+Thanks to [Azuqua, Inc.](http://azuqua.com), Seattle for support and assistance.
 
