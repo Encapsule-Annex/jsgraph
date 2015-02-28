@@ -470,13 +470,13 @@ To leverage the `breadthFirstVisit` and `breadthFirstSearch` algorithms, you mus
 
 All callback functions are optional; implement only those you require.
 
-- initializeVertex - This invoked on every vertex of the graph before the start of the graph search.
-- discoverVertex - This is invoked when a vertex is encountered for the first time
-- examineVertex - This is invoked on a vertex as it is popped from the queue. This happens immediately before examine_edge() is invoked on each of the out-edges of vertex u.
-- examineEdge - This is invoked on every out-edge of each vertex after it is discovered.
-- treeEdge - This in invoked on edge edge as it becomes a member of the edges that form the search tree.
-- nonTreeEdge - This is invoked on back or cross edges.
-- grayTarget - This is invoked on the subset of non-tree edges whose target vertex is colored grat at the time of examination. The color gray indicates that the vertex is currently in the queue.
+- **initializeVertex** - This invoked on every vertex of the graph before the start of the graph search.
+- **discoverVertex** - This is invoked when a vertex is encountered for the first time
+- **examineVertex** - This is invoked on a vertex as it is popped from the queue. This happens immediately before examine_edge() is invoked on each of the out-edges of vertex u.
+- **examineEdge** - This is invoked on every out-edge of each vertex after it is discovered.
+- **treeEdge** - This in invoked on edge edge as it becomes a member of the edges that form the search tree.
+- **nonTreeEdge** - This is invoked on back or cross edges.
+- **grayTarget** - This is invoked on the subset of non-tree edges whose target vertex is colored grat at the time of examination. The color gray indicates that the vertex is currently in the queue.
 - blackTarget - This is invoked on a subset of the edges whose target vertex is colored black at the time of examination. The color black indicates that the vertex has been removed from the queue.
 - finishVertex - This is invoked on a vertex after all of its out edges have been added to the search tree and all adjacent vertices have been discovered (but before the out-edges of the adjacent vertices have been examined).
 
@@ -546,15 +546,15 @@ To leverage the `depthFirstVisit' and 'depthFirstSearch' algorithms, you must im
 
 All callback functions are optional; implement only those you require.
 
-- initializeVertex - This is invoked on every vertex of the graph before the start of the search.
-- startVertex - This is invoked on the source vertex once before the start of the search.
-- discoverVertex - This is invoked when a vertex is encountered for the first time.
-- examineEdge - This is invoked on every out-edge of each vertex after it is discovered.
-- treeEdge - This is invoked on each edge as it becomes a member of the edges that form the search tree.
-- backEdge - This is invoked on the back edges in the graph. For an undirected graph there is some ambiguity between tree edges and back edges since the edge (u,v) and (v,u) are the same edge, but both the tree_edge() and back_edge() functions will be invoked. One way to resolve this ambiguity is to record the tree edges, and then disregard the back-edges that are already marked as tree edges. An easy way to record tree edges is to record predecessors at the tree_edge event point.
-- forwardOrCrossEdge - This is invoked on forward or cross edges in the graph. In an undirected graph this method is never called.
-- finishEdge - This is invoked on each non-tree edge as well as on each tree edge after finish_vertex has been called on its target vertex.
-- finishVertex - This is invoked on vertex u after finish_vertex has been called for all the vertices in the DFS-tree rooted at vertex u. If vertex u is a leaf in the DFS-tree, then the finish_vertex function is called on u after all the out-edges of u have been examined.
+- **initializeVertex** - This is invoked on every vertex of the graph before the start of the search.
+- **startVertex** - This is invoked on the source vertex once before the start of the search.
+- **discoverVertex** - This is invoked when a vertex is encountered for the first time.
+- **examineEdge** - This is invoked on every out-edge of each vertex after it is discovered.
+- **treeEdge** - This is invoked on each edge as it becomes a member of the edges that form the search tree.
+- **backEdge** - This is invoked on the back edges in the graph. For an undirected graph there is some ambiguity between tree edges and back edges since the edge (u,v) and (v,u) are the same edge, but both the tree_edge() and back_edge() functions will be invoked. One way to resolve this ambiguity is to record the tree edges, and then disregard the back-edges that are already marked as tree edges. An easy way to record tree edges is to record predecessors at the tree_edge event point.
+- **forwardOrCrossEdge** - This is invoked on forward or cross edges in the graph. In an undirected graph this method is never called.
+- **finishEdge** - This is invoked on each non-tree edge as well as on each tree edge after finish_vertex has been called on its target vertex.
+- **finishVertex** - This is invoked on vertex u after finish_vertex has been called for all the vertices in the DFS-tree rooted at vertex u. If vertex u is a leaf in the DFS-tree, then the finish_vertex function is called on u after all the out-edges of u have been examined.
 
 Please see the [Boost C++ Graph Library: DFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/DFSVisitor.html) documentation for a complete discussion of API semantics.
 
