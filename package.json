@@ -1,6 +1,6 @@
 {
   "name": "jsgraph",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Directed mathematical graph container class for Node.js / HTML 5. Used for building highly complex application-specific in-memory databases, relational frameworks, compilers, games, web services, UI, protocols, parsers, engines, transformers, codecs, routers, dispatchers...",
   "main": "index.js",
   "scripts": {

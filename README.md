@@ -3,13 +3,15 @@ jsgraph
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg)](https://travis-ci.org/Encapsule/jsgraph)
 
-jsgraph implements a hyper-dimensional, directed, in-memory, mathematical graph database for Node.js / HTML 5 that is used for building application-specific data set storage, and processing algorithms. For example: parsers, compilers, routers, protocol engines, data transformers, dispatchers, signal processors, stream engines, query processing, user interface, games...
+jsgraph implements an in-memory container abstraction for directed mathematical graph data sets. Vertices in the container are represented by user-assigned unique string identifiers. Edges in the container are represented by pairs of vertex identifier strings. The container supports the the attachment of arbitrary application-specific meta-data to vertices and edges. 
 
-jsgraph is inspired by the design of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) that leverages C++ templates to affect a complete separation of concerns between (a) the storage and access of your hyper-dimensional dataset (b) the semantics of the dataset (c) the supplied re-usable algorithmic routines that comprise the libraries outward facing query/response API.
+jsgraph's bundled breadth-first, and depth-first visitor algorithms leverage the container API and an external state store (color table) to affect the desired traversal firing synchronous callbacks to your code at specific stages of the traversal. 
 
-From this perspective, jsgraph's `DirectedGraph` container object is similar in spirit to an STL container. And the algorithms packed with jsgraph like STL algorithms (i.e. can be applied to any dataset in an STL container regardless of its type). But unlike STL containers, jsgraph's `DirectedGraph` is hyper-dimensional, and inherently heterogeneous.
+jsgraph is inspired by the design of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) that leverages C++ templates to affect a complete separation of concerns between (a) data storage and access (read you can adapt your own data source as necessary) (b) data semantics (BYO semantics) (c) re-usable algorithms that rely on generic protocols for (a) and (b) and thus just work by superposition.
 
-Let's get going and create our first jsgraph `DirectedGraph` database. It's not too difficult.
+There's some work planned on JSON import export planned in the very near future. As well, I anticipate a few minor API changes to support the next wave of Encapsule Project libraries.
+
+Let's get going and create our first jsgraph `DirectedGraph` container. It's not too difficult.
 
         cdr@debian:~/encapsule/jsgraph-example$ npm install jsgraph
         jsgraph@0.1.5 node_modules/jsgraph
@@ -23,7 +25,7 @@ Let's get going and create our first jsgraph `DirectedGraph` database. It's not 
         > JSON.stringify(digraph);
         '{"vertexMap":{},"rootMap":{},"leafMap":{},"edgeCount":0}'
 
-`digraph` is an in-memory database with no ascribed semantics at this point.
+`digraph` is an in-memory container with no ascribed semantics at this point.
 
 To imbue `digraph` with meaning, we add data.
 
