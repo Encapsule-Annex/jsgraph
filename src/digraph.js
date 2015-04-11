@@ -22,6 +22,14 @@ var exportJSON = require('./digraph-json-export');
 
         DirectedGraph.prototype.type = "directed";
 
+        DirectedGraph.prototype.getVertices = function() {
+            vertices = [];
+            for (var vertexId in this.vertexMap) {
+                vertices.push(vertexId);
+            }
+            return vertices;
+        };
+
         DirectedGraph.prototype.getRootVertices = function() {
             var rootVertices = [];
             for (var vertexId in this.rootMap) {
@@ -119,6 +127,21 @@ var exportJSON = require('./digraph-json-export');
             return this.edgeCount;
         };
 
+        DirectedGraph.prototype.getEdges = function() {
+            var self = this;
+            var edges = [];
+            var vertices = this.getVertices();
+            var processVertexOutEdges = function(outEdges_) {
+                outEdges_.forEach(function(outEdge_) {
+                    edges.push(outEdge_);
+                });
+            };
+            vertices.forEach(function(vertexId_) {
+                processVertexOutEdges(self.outEdges(vertexId_));
+            });
+            return edges;
+        };
+                             
         DirectedGraph.prototype.inEdges = function(vertexId_) {
             var result = [];
             var vertexIdV;
@@ -145,13 +168,35 @@ var exportJSON = require('./digraph-json-export');
             return Object.keys(this.vertexMap[vertexId_].edges.out).length;
         };
 
-        DirectedGraph.prototype.vertexPropertyObject = function(vertexId_) {
+        DirectedGraph.prototype.getVertexPropertyObject = function(vertexId_) {
             return this.vertexMap[vertexId_].properties;
         };
 
-        DirectedGraph.prototype.edgePropertyObject = function(vertexIdU_, vertexIdV_) {
+        DirectedGraph.prototype.vertexPropertyObject = function(vertexId_) {
+            console.log("DirectedGraph.vertexPropertyObject method is deprecated. Please use DirectedGraph.getVertexPropertyObject method instead.");
+            return this.getVertexPropertyObject(vertexId_);
+        };
+
+        DirectedGraph.prototype.setVertexPropertyObject = function(vertexId_, ref_) {
+            this.vertexMap[vertexId_].properties = ref_;
+            return vertexId_;
+        };
+
+        DirectedGraph.prototype.getEdgePropertyObject = function(vertexIdU_, vertexIdV_) {
             return this.vertexMap[vertexIdU_].edges.out[vertexIdV_].properties;
         };
+
+        DirectedGraph.prototype.setEdgePropertyObject = function(vertexIdU_, vertexIdV_, ref_) {
+            this.vertexMap[vertexIdU_].edges.out[vertexIdV_].properties = ref_;
+            return { u: vertexIdU_, v: vertexIdV_ };
+        };
+
+        DirectedGraph.prototype.edgePropertyObject = function(vertexIdU_, vertexIdV_) {
+            console.log("DirectedGraph.edgePropertyObject method is deprecated. Please us DirectedGraph.getEdgePropertyObject method instead.");
+            return this.getEdgePropertyObject(vertexIdU_, vertexIdV_);
+        };
+
+        
 
         DirectedGraph.prototype.toJSON = function(replacer_, space_) {
             return exportJSON(this, replacer_, space_);

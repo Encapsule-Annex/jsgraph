@@ -1,6 +1,6 @@
 {
   "name": "jsgraph",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Generic directed graph container, and visitor algorithms based on a port of the Boost C++ Graph Library API.",
   "main": "index.js",
   "scripts": {

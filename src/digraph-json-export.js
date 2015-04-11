@@ -16,7 +16,7 @@ module.exports = function (digraph_, replacer_, space_) {
     var vertexMap = digraph_.vertexMap;
 
     var processEdge = function(edge_) {
-        var edgeProps = digraph_.edgePropertyObject(edge_.u, edge_.v);
+        var edgeProps = digraph_.getEdgePropertyObject(edge_.u, edge_.v);
         exportObject.edges.push({ u: edge_.u, v: edge_.v, props: edgeProps });
     };
 

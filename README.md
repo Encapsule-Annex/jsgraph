@@ -3,7 +3,7 @@ jsgraph
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg)](https://travis-ci.org/Encapsule/jsgraph)
 
-jsgraph implements an in-memory container abstraction for directed mathematical graph data sets. Vertices in the container are represented by user-assigned unique string identifiers. Edges in the container are represented by pairs of vertex identifier strings. The container supports the the attachment of arbitrary application-specific meta-data to vertices and edges. 
+jsgraph implements an in-memory container abstraction for directed mathematical graph data sets. Vertices in the container are represented by user-assigned unique string identifiers. Edges in the container are represented by pairs of vertex identifier strings. The container supports the attachment of arbitrary application-specific meta-data to vertices and edges. 
 
 jsgraph's bundled breadth-first, and depth-first visitor algorithms leverage the container API and an external state store (color table) to affect the desired traversal firing synchronous callbacks to your code at specific stages of the traversal. 
 
@@ -13,9 +13,9 @@ There's some work planned on JSON import export planned in the very near future.
 
 Let's get going and create our first jsgraph `DirectedGraph` container. It's not too difficult.
 
-        cdr@debian:~/encapsule/jsgraph-example$ npm install jsgraph
+        $ npm install jsgraph
         jsgraph@0.1.5 node_modules/jsgraph
-        cdr@debian:~/encapsule/jsgraph-example$ node
+        $ node
         > var jsgraph = require('jsgraph');
         undefined
         > var directed = jsgraph.directed
@@ -106,22 +106,28 @@ The current release of jsgraph contains support only for directed graph datasets
 ## DirectedGraph
 
         var jsgraph = require('jsgraph');
-        var digraph = new jsgraph.directed.DirectedGraph();
+        var digraph = new jsgraph.directed.DirectedGraph(JSON); // JSON is optional
 
 * **addVertex** - add a vertex to the digraph w/optional property object
 * **removeVertex** - remove a vertex, and adjacent in-edges from the digraph
+* **getVertices** - retrive the set of vertices
 * **addEdge** - add an edge w/optional property object to the digraph
 * **removeEdge** - remove an edge from the digraph
 * **getRootVertices** - retrieve the set of vertices with in-degree zero
 * **getLeafVertices** - retrieve the set of vertices with out-degree zero
 * **verticesCount** - retrieve the count of vertices in the digraph
 * **edgesCount** - retrieve the count of edges in the digraph
+* **getEdges** - retrieve the set of out-edges in the entire graph
 * **inEdges** - retrieve the set of adjacent in-edges of a specific vertex
 * **outEdges** - retrieve the set of adjacent out-edges of a specific vertex
 * **inDegree** - retrieve the count of adjacent in-edges of a specific vertex
 * **outDegree** - retrieve the count of adjacent out-edges of a specific vertex
-* **vertexPropertyObject** - get a property object reference for a specific vertex
-* **edgePropertyObject** - get a property object reference for a specific edge
+* **getVertexPropertyObject** - get a property object reference for a specific vertex
+* **setVertexPropertyObject** - set a property object reference for a specific vertex
+* **getEdgePropertyObject** - get a property object reference for a specific edge
+* **setEdgePropertyObject** - set a property object reference for a specific edge
+* **toJSON** - export the contents of the directed graph container to JSON
+* **importJSON** - import the contents of a serialized DirectedGraph container into the current graph
 
 ## Algorithms
 
@@ -257,7 +263,7 @@ A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example f
 jsgraph is inspired by the design and implementation of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) that applies the C++ Standard Template Library concepts of generic containers and algorithms to mathematical graph datasets. 
 
         var jsgraph = require('jsgraph');
-        var digraph = new jsgraph.directed.DirectedGraph();
+        var digraph = new jsgraph.directed.DirectedGraph(JSON); // JSON is optional
 
 ## DirectedGraph.addVertex
 
@@ -292,6 +298,13 @@ Returns true to indicate that the specified vertex is not part of the graph.
 
 Removing a vertex automatically removes all the the vertex's edges (both in and out-edges are removed). 
 
+## jsgraph.directed.DirectedGraph.getVertices
+
+        vertices = digraph.getVertices();
+
+**Return:**
+
+Returns an array of string vertex identifiers.    
 
 ## jsgraph.directed.DirectedGraph.addEdge
 
@@ -341,6 +354,15 @@ Integer indicating the number of vertices in this graph.
 **Return:**
 
 Integer indicating the number of edges in this graph.
+
+## jsgraph.directed.DirectedGraph.getEdges
+
+        var edges = digraph.getEdges()
+
+**Returns:**
+
+Returns an array of edge descriptor objects with `u` and `v` properties set to tail and head vertex identifier strings respectively.
+
 
 ## jsgraph.directed.DirectedGraph.getRootVertices
 
@@ -406,9 +428,9 @@ Integer indicating the in-degree of the specific vertex.
 
 Integer indicating the out-degree of the specific vertex.
 
-## jsgraph.directed.DirectedGraph.vertexPropertyObject
+## jsgraph.directed.DirectedGraph.getVertexPropertyObject
 
-        var properties = digraph.vertexPropertyObject(vertexId_);
+        var properties = digraph.getVertexPropertyObject(vertexId_);
 
 **Parameters:**
 
@@ -418,9 +440,22 @@ Integer indicating the out-degree of the specific vertex.
 
 Returns a reference to the property object attached to the specified vertex when it was added to the graph.
 
-## jsgraph.directed.DirectedGraph.edgePropertyObject
+## jsgraph.directed.DirectedGraph.setVertexPropertyObject
 
-        var properties = digraph.vertexPropertyObject(vertexIdU_, vertexIdV);
+        var properties = digraph.getVertexPropertyObject(vertexId_, ref_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+- ref_: whatever you want as long as it's serializable to JSON
+
+**Return:**
+
+Returns true.
+
+## jsgraph.directed.DirectedGraph.getEdgePropertyObject
+
+        var properties = digraph.getEdgePropertyObject(vertexIdU_, vertexIdV);
 
 **Parameters:**
 
@@ -430,6 +465,40 @@ Returns a reference to the property object attached to the specified vertex when
 **Return:**
 
 Returns a reference to the property object attached to the specified edge when it was added to the graph.
+
+## jsgraph.directed.DirectedGraph.setEdgePropertyObject
+
+        var properties = digraph.getEdgePropertyObject(vertexIdU_, vertexIdV, ref_);
+
+**Parameters:**
+
+- vertexIdU_ (required): the unqiue string identifying the directed edge's source vertex, U.
+- vertexIdV_  (required): the unique string identifying the directed edge's sink vertex, V.
+- ref_: whatever you want as long as it's serializable to JSON
+
+**Return:**
+
+Returns the edge descriptor object.
+
+## jsgraph.directed.DirectedGraph.toJSON
+
+        digraph.toJSON(undefined,4);
+
+**Returns:**
+
+JSON-encoded serialization of the contents of the DirectedGraph container. 
+
+**Remarks:**
+
+Pass the JSON string returned by DirectedGraph.toJSON to method DirectedGraph.importJSON or the DirectedGraph constructor to import.
+
+## jsgraph.directed.DirectedGraph.importJSON
+
+        digraph.directed.DirectedGraph.importJSON(JSON);
+
+** Remarks:**
+
+JSON import adds vertices and edges to the current DirectedGraph container from an external JSON source. Duplicates are ignored.
 
 # Transforms
 
@@ -617,11 +686,25 @@ Please see the [Boost C++ Graph Library: DFS Visitor Concept](http://www.boost.o
 
 [1] Support for undirected graph data sets, related algorithms is planned for a future jsgraph release.
 
+# JSON Format
+
+jsgraph supports a very simple JSON format for representing the contents of a DirectedGraph container. An empty DirectedGraph container's JSON looks like this:
+
+        '{"vertices":[],"edges":[]}'
+
+The `vertices` array contains vertex descriptor objects that look like this:
+
+        '{"id":"test","props":"whatever we want"}'
+
+... and the `edges` array contains edge descriptor object that look like this:
+
+        '{"u":"apple","v":"orange","props":"not the same"}'
+
+
 # Acknowledgements
 
 Thanks to [Jeremy Seik](http://wphomes.soic.indiana.edu/jsiek/) for writing the BGL.
 
 Copyright &copy; 2015 [Encapsule Project](https://github.com/encapsule) / [ChrisRus](https://github.com/ChrisRus)
 
-Thanks to [Azuqua, Inc.](http://azuqua.com), Seattle for support and assistance.
 
