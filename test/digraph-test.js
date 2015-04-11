@@ -39,6 +39,7 @@ describe("DirectedGraph container object tests", function() {
         var digraph = new DirectedGraph();
         var copy = new DirectedGraph();
         var vertices = ["foo", "bar", "baz"];
+        var json = null;
         
         before(function(){
             vertices.forEach(function(v){
@@ -53,25 +54,28 @@ describe("DirectedGraph container object tests", function() {
         });
 
         it("graph should export properly structured JSON string", function(){
-            var json = digraph.export();
+            json = digraph.toJSON();
             assert.isString(json);
-            json = JSON.parse(json);
-            assert.property(json, "vertexMap");
-            assert.property(json, "rootMap");
-            assert.property(json, "leafMap");
-            assert.property(json, "edgeCount");
+            deserialized = JSON.parse(json);
+            assert.isObject(deserialized);
+            assert.property(deserialized, "vertices");
+            assert.isArray(deserialized.vertices);
+            assert.property(deserialized, "edges");
+            assert.isArray(deserialized.edges);
         });
 
-        it("graph should allow for import of JSON string", function(){
-            assert.doesNotThrow(function(){
-                copy.import(digraph.export());
+        describe("Re-create the directed graph container from the JSON.", function() {
+            var copy = null;
+            before(function() {
+                var constructCopy = function() {
+                    copy = new DirectedGraph(json);
+                };
+                assert.doesNotThrow(constructCopy);
+            });
+            it("graph should re-create identical graph from import", function(){
+                assert.equal(copy.toJSON(), json);
             });
         });
-
-        it("graph should re-create identical graph from import", function(){
-            assert.equal(copy.export(), digraph.export());
-        });
-
     });
 
     describe("Vertex API tests", function() {

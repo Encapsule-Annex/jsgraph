@@ -1,41 +1,23 @@
-
+// disgraph.js
 // Inspired by the Boost Graph Library (BGL)
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
 // http://en.wikipedia.org/wiki/Directed_graph
+
+var importJSON = require('./digraph-json-import');
+var exportJSON = require('./digraph-json-export');
 
 (function() {
 
     var DirectedGraph = (function() {
 
         function DirectedGraph(json_) {
-            var _this = this;
-
-            // These are implementation details of the digraph container.
-            // Please use prototype methods where possible to maintain this encapsulation
-            // and disuade clients from taking a direct dependency on these details.
-            //
-            // TODO: Update this JSON I/O contract to onm v0.3 when stable.
-            //
-            if ( (json_ !== null) && json_ && (Object.prototype.toString.call(json_) === '[object String]') ) {
-                try {
-                    // This really isn't all that great.
-                    this.state = JSON.parse(json_);
-                } catch (exception_) {
-                    throw new Error("jsgraph.DirectedGraph constructor failed: Invalid JSON input specified.");
-                }
-            } else {
-                this.state = {
-                    vertexMap: {},
-                    rootMap: {},
-                    leafMap: {},
-                    edgeCount: 0
-                };
-            }
-
             this.vertexMap = {};
             this.rootMap = {};
             this.leafMap = {};
             this.edgeCount = 0;
+            if ((json_ !== null) && json_) {
+                importJSON(this, json_);
+            }
         }
 
         DirectedGraph.prototype.type = "directed";
@@ -172,7 +154,11 @@
         };
 
         DirectedGraph.prototype.toJSON = function(replacer_, space_) {
-            return JSON.stringify(this.state, replacer_, space_);
+            return exportJSON(this, replacer_, space_);
+        };
+
+        DirectedGraph.prototype.importJSON = function(json_) {
+            return importJSON(this, json_);
         };
 
         return DirectedGraph;

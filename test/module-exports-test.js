@@ -4,7 +4,7 @@ var assert = chai.assert;
 var expect = chai.expect;
 var should = chai.should;
 
-var jsgraph = require('../library');
+var jsgraph = require('../index');
 
 describe("Module export tests", function() {
 

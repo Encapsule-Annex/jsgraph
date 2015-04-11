@@ -1,8 +1,8 @@
 {
   "name": "jsgraph",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Generic directed graph container, and visitor algorithms based on a port of the Boost C++ Graph Library API.",
-  "main": "library.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha -R spec ./test/tests.js"
   },
