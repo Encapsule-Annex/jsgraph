@@ -102,7 +102,7 @@ The jsgraph API is patterned after the design of the Boost C++ Graph Library (BG
 
 The current release of jsgraph contains support only for directed graph datasets. Support for undirected graph datasets and algorithms is planned in a future release.
 
-## DirectedGraph
+## DirectedGraph Generic Container
 
 ### Construction
 
@@ -269,7 +269,7 @@ A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example f
 
 **<3**
 
-# jsgraph.DirectedGraph object
+# DirectedGraph Generic Container
 
 jsgraph is inspired by the design and implementation of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) that applies the C++ Standard Template Library concepts of generic containers and algorithms to mathematical graph datasets. 
 
@@ -541,7 +541,7 @@ Pass the JSON string returned by DirectedGraph.toJSON to method DirectedGraph.im
 
 JSON import adds vertices and edges to the current DirectedGraph container from an external JSON source. Duplicates are ignored.
 
-# Transforms
+# Generic Transforms
 
 ## jsgraph.directed.transpose
 
@@ -555,7 +555,7 @@ JSON import adds vertices and edges to the current DirectedGraph container from 
 
 Returns a new instance of DirectedGraph that reverses the direction of all the edges in the source graph.
 
-# Algorithms: the jsgraph.directed export namespace
+# Generic Algorithms
 
 jsgraph provides several useful graph algorithms implemented using the visitor pattern in a manner that seeks to emulate the [Boost C++ Graph Library: Visitor Concepts](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/visitor_concepts.html).
 
