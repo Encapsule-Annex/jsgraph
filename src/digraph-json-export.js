@@ -31,7 +31,7 @@ module.exports = function (digraph_, replacer_, space_) {
         outEdges.forEach(processEdge);
     }
 
-    jsonExportObject = {
+    var jsonExportObject = {
         jsgraph: {
             version: packageMeta.version,
             directed: digraphState

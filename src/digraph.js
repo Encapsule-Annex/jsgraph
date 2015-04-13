@@ -115,13 +115,13 @@ var exportJSON = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.removeEdge = function(vertexIdU_, vertexIdV_) {
-            vertexU = this.vertexMap[vertexIdU_];
-            vertexV = this.vertexMap[vertexIdV_];
+            var vertexU = this.vertexMap[vertexIdU_];
+            var vertexV = this.vertexMap[vertexIdV_];
             if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
                 return false;
             }
             var outEdgeMap = vertexU.edges.out;
-            edge = outEdgeMap[vertexIdV_];
+            var edge = outEdgeMap[vertexIdV_];
             if (!((edge !== null) && edge)) {
                 return false;
             }
@@ -141,8 +141,8 @@ var exportJSON = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.isEdge = function(vertexIdU_, vertexIdV_) {
-            vertexU = this.vertexMap[vertexIdU_];
-            vertexV = this.vertexMap[vertexIdV_];
+            var vertexU = this.vertexMap[vertexIdU_];
+            var vertexV = this.vertexMap[vertexIdV_];
             if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
                 return false;
             }
@@ -220,8 +220,8 @@ var exportJSON = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.getEdgeProperty = function(vertexIdU_, vertexIdV_) {
-            vertexU = this.vertexMap[vertexIdU_];
-            vertexV = this.vertexMap[vertexIdV_];
+            var vertexU = this.vertexMap[vertexIdU_];
+            var vertexV = this.vertexMap[vertexIdV_];
             if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
                 return void 0;
             }
