@@ -37,8 +37,7 @@ To imbue `digraph` with meaning, we add data.
         'step2'
         > digraph.addVertex("end");
         'end'
-        > JSON.stringify(digraph);
-        '{"vertexMap":{"start":{"edges":{"in":{},"out":{}}},"step1":{"edges":{"in":{},"out":{}}},"step2":{"edges":{"in":{},"out":{}}},"end":{"edges":{"in":{},"out":{}}}},"rootMap":{"start":{},"step1":{},"step2":{},"end":{}},"leafMap":{"start":{},"step1":{},"step2":{},"end":{}},"edgeCount":0}'
+        > digraph.toJSON();
 
 Vertices are unique objects, identified with an ID string (e.g. 'start'), that represent an instance of some concept. 
 
@@ -50,8 +49,8 @@ Let's create some associations between our concepts by adding directed edges fro
         { u: 'step1', v: 'step2' }
         > digraph.addEdge("step2", "end", { type: "link" });
         { u: 'step2', v: 'end' }
-        > JSON.stringify(digraph);
-        '{"vertexMap":{"start":{"edges":{"in":{},"out":{"step1":{"properties":{"type":"link"}}}}},"step1":{"edges":{"in":{"start":{}},"out":{"step2":{"properties":{"type":"link"}}}}},"step2":{"edges":{"in":{"step1":{}},"out":{"end":{"properties":{"type":"link"}}}}},"end":{"edges":{"in":{"step2":{}},"out":{}}}},"rootMap":{"start":{}},"leafMap":{"end":{}},"edgeCount":3}'
+        > digraph.toJSON();
+
 
 You now have (a) topological information (b) labels (i.e. application-specific semantics) stored in-memory.
 
@@ -110,7 +109,7 @@ The current release of jsgraph contains support only for directed graph datasets
         var jsgraph = require('jsgraph');
         var digraph = new jsgraph.DirectedGraph(JSON); // JSON is optional
 
-### JSON I/O:**
+### JSON I/O:
 
 * **toJSON** - export the contents of the directed graph container to JSON
 * **importJSON** - import the contents of a serialized DirectedGraph container into the current graph
