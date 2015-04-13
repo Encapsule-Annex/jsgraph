@@ -56,12 +56,12 @@ describe("DirectedGraph container object tests", function() {
         it("graph should export properly structured JSON string", function(){
             json = digraph.toJSON();
             assert.isString(json);
-            deserialized = JSON.parse(json);
-            assert.isObject(deserialized);
-            assert.property(deserialized, "vertices");
-            assert.isArray(deserialized.vertices);
-            assert.property(deserialized, "edges");
-            assert.isArray(deserialized.edges);
+            var parsed = JSON.parse(json);
+            assert.isObject(parsed);
+            assert.isObject(parsed.jsgraph);
+            assert.isObject(parsed.jsgraph.directed);
+            assert.isArray(parsed.jsgraph.directed.vertices);
+            assert.isArray(parsed.jsgraph.directed.edges);
         });
 
         describe("Re-create the directed graph container from the JSON.", function() {

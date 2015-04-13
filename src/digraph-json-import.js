@@ -4,19 +4,40 @@
 module.exports = function (digraph_, json_) {
 
     var jsonParse;
-
-    try {
-        jsonParse = JSON.parse(json_);
-    } catch (exception_) {
-        throw new Error("JSON parse error: Cannot import invalid JSON document into jsgraph.");
-    }
-
     var getType = function(ref_) { return Object.prototype.toString.call(ref_); };
 
-    var type = getType(jsonParse);
+    var type = getType(json_);
+    switch (type) {
+    case '[object String]':
+        try {
+            jsonParse = JSON.parse(json_);
+        } catch (exception_) {
+            throw new Error("JSON parse error: Cannot import invalid JSON document into jsgraph.");
+        }
+        break;
+    case '[object Object]':
+        jsonParse = json_;
+        break;
+    default:
+        throw new Error("Invalid reference to '" + type + "' passed instead of expected JSON (or equivalent object) reference.");
+    }
+
+    type = getType(jsonParse);
     if (type !== '[object Object]') {
         throw new Error("JSON semantics error: Expected top-level object but found '" + type + "'.");
     }
+
+    type = getType(jsonParse.jsgraph);
+    if (type !== '[object Object]') {
+        throw new Error("JSON semantics error: Could not find required top-level object 'jsgraph'.");
+    }
+
+    type = getType(jsonParse.jsgraph.directed);
+    if (type !== '[object Object]') {
+        throw new Error("JSON semantics error: Could not find expected digraph state object 'jsgraph.directed'.");
+    }
+
+    jsonParse = jsonParse.jsgraph.directed;
 
     type = getType(jsonParse.vertices);
     if (type !== '[object Array]') {
@@ -29,11 +50,19 @@ module.exports = function (digraph_, json_) {
     }
 
     jsonParse.vertices.forEach(function(vertexDescriptor_) {
-        digraph_.addVertex(vertexDescriptor_.id, vertexDescriptor_.props);
+        type = getType(vertexDescriptor_);
+        if (type !== '[object Object]') {
+            throw new Error("JSON semantics error: Expected vertex descriptor object in 'vertices' array but found '" + type + "' instead.");
+        }
+        type = getType(vertexDescriptor_.vid);
+        if (type !== '[object String]') {
+            throw new Error("JSON semantics error: Expected vertex descriptor property 'vid' to be a string but found '" + type + "' instead.");
+        }
+        digraph_.addVertex(vertexDescriptor_.vid, vertexDescriptor_.vprops);
     });
 
     jsonParse.edges.forEach(function(edgeDescriptor_) {
-        digraph_.addEdge(edgeDescriptor_.u, edgeDescriptor_.v, edgeDescriptor_.props);
+        digraph_.addEdge(edgeDescriptor_.uid, edgeDescriptor_.vid, edgeDescriptor_.eprops);
     });
 
     return true;

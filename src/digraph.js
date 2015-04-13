@@ -56,20 +56,30 @@ var exportJSON = require('./digraph-json-export');
                 vertex.edges = {};
                 vertex.edges.in = {};
                 vertex.edges.out = {};
-                vertex.properties = properties_;
                 this.rootMap[vertexId_] = {};
                 this.leafMap[vertexId_] = {};
+            }
+            if ((properties_ !== null) && properties_) {
+                vertex.properties = properties_;
             }
             return vertexId_;
         };
 
+        DirectedGraph.prototype.isVertex = function (vertexId_) {
+            if ((vertexId_ === null) || !vertexId_) {
+                throw new Error("Missing required input parameter.");
+            }
+            var vertex = this.vertexMap[vertexId_];
+            return (vertex !== null) && vertex && true || false;
+        };
+            
         DirectedGraph.prototype.removeVertex = function (vertexId_) {
             if ((vertexId_ === null) || !vertexId_) {
                 throw new Error("Missing required input parameter.");
             }
             var vertexU = this.vertexMap[vertexId_];
             if ((vertexU === null) || !vertexU) {
-                return true;
+                return false;
             }
             var vertexIdX;
             for (vertexIdX in vertexU.edges.out) {
@@ -85,30 +95,41 @@ var exportJSON = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.addEdge = function (vertexIdU_, vertexIdV_, properties_) {
-            var vertexU = this.addVertex(vertexIdU_);
-            var vertexV = this.addVertex(vertexIdV_);
-            var outEdge = this.vertexMap[vertexU].edges.out[vertexIdV_];
+            this.addVertex(vertexIdU_);
+            this.addVertex(vertexIdV_);
+            var outEdge = this.vertexMap[vertexIdU_].edges.out[vertexIdV_];
             if ((outEdge === null) || !outEdge) {
-                outEdge = this.vertexMap[vertexU].edges.out[vertexIdV_] = {};
-                outEdge.properties = properties_;
+                outEdge = this.vertexMap[vertexIdU_].edges.out[vertexIdV_] = {};
                 delete this.leafMap[vertexIdU_];
             }
-            var inEdge = this.vertexMap[vertexV].edges.in[vertexIdU_];
+            var inEdge = this.vertexMap[vertexIdV_].edges.in[vertexIdU_];
             if ((inEdge === null) || !inEdge) {
-                inEdge = this.vertexMap[vertexV].edges.in[vertexIdU_] = {};
+                inEdge = this.vertexMap[vertexIdV_].edges.in[vertexIdU_] = {};
                 this.edgeCount++;
                 delete this.rootMap[vertexIdV_];
             }
-            return { u: vertexU, v: vertexV };
+            if ((properties_ !== null) && properties_) {
+                outEdge.properties = properties_;
+            }
+            return { u: vertexIdU_, v: vertexIdV_ };
         };
 
         DirectedGraph.prototype.removeEdge = function(vertexIdU_, vertexIdV_) {
-            var outEdgeMap = this.vertexMap[vertexIdU_].edges.out;
+            vertexU = this.vertexMap[vertexIdU_];
+            vertexV = this.vertexMap[vertexIdV_];
+            if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
+                return false;
+            }
+            var outEdgeMap = vertexU.edges.out;
+            edge = outEdgeMap[vertexIdV_];
+            if (!((edge !== null) && edge)) {
+                return false;
+            }
             delete outEdgeMap[vertexIdV_];
             if (!Object.keys(outEdgeMap).length) {
                 this.leafMap[vertexIdU_] = {};
             }
-            var inEdgeMap = this.vertexMap[vertexIdV_].edges.in;
+            var inEdgeMap = vertexV.edges.in;
             delete inEdgeMap[vertexIdU_];
             if (!Object.keys(inEdgeMap).length) {
                 this.rootMap[vertexIdV_] = {};
@@ -117,6 +138,16 @@ var exportJSON = require('./digraph-json-export');
                 this.edgeCount--;
             }
             return true;
+        };
+
+        DirectedGraph.prototype.isEdge = function(vertexIdU_, vertexIdV_) {
+            vertexU = this.vertexMap[vertexIdU_];
+            vertexV = this.vertexMap[vertexIdV_];
+            if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
+                return false;
+            }
+            var edge = vertexU.edges.out[vertexIdV_];
+            return (edge !== null) && edge && true || false;
         };
 
         DirectedGraph.prototype.verticesCount = function() {
@@ -161,42 +192,45 @@ var exportJSON = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.inDegree = function (vertexId_) {
-            return Object.keys(this.vertexMap[vertexId_].edges.in).length;
+            var vertexV = this.vertexMap[vertexId_];
+            if (!((vertexV !== null) && vertexV)) {
+                return -1;
+            }
+            return Object.keys(vertexV.edges.in).length;
         };
 
         DirectedGraph.prototype.outDegree = function (vertexId_) {
+            var vertexV = this.vertexMap[vertexId_];
+            if (!((vertexV !== null) && vertexV)) {
+                return -1;
+            }
             return Object.keys(this.vertexMap[vertexId_].edges.out).length;
         };
 
-        DirectedGraph.prototype.getVertexPropertyObject = function(vertexId_) {
+        DirectedGraph.prototype.getVertexProperty = function(vertexId_) {
+            var vertexDescriptor = this.vertexMap[vertexId_];
+            if (!((vertexDescriptor !== null) && vertexDescriptor)) {
+                return void 0;
+            }
             return this.vertexMap[vertexId_].properties;
         };
 
-        DirectedGraph.prototype.vertexPropertyObject = function(vertexId_) {
-            console.log("DirectedGraph.vertexPropertyObject method is deprecated. Please use DirectedGraph.getVertexPropertyObject method instead.");
-            return this.getVertexPropertyObject(vertexId_);
+        DirectedGraph.prototype.setVertexProperty = function(vertexId_, ref_) {
+            return this.addVertex(vertexId_, ref_);
         };
 
-        DirectedGraph.prototype.setVertexPropertyObject = function(vertexId_, ref_) {
-            this.vertexMap[vertexId_].properties = ref_;
-            return vertexId_;
+        DirectedGraph.prototype.getEdgeProperty = function(vertexIdU_, vertexIdV_) {
+            vertexU = this.vertexMap[vertexIdU_];
+            vertexV = this.vertexMap[vertexIdV_];
+            if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
+                return void 0;
+            }
+            return vertexU.edges.out[vertexIdV_].properties;
         };
 
-        DirectedGraph.prototype.getEdgePropertyObject = function(vertexIdU_, vertexIdV_) {
-            return this.vertexMap[vertexIdU_].edges.out[vertexIdV_].properties;
+        DirectedGraph.prototype.setEdgeProperty = function(vertexIdU_, vertexIdV_, ref_) {
+            return this.addEdge(vertexIdU_, vertexIdV_, ref_);
         };
-
-        DirectedGraph.prototype.setEdgePropertyObject = function(vertexIdU_, vertexIdV_, ref_) {
-            this.vertexMap[vertexIdU_].edges.out[vertexIdV_].properties = ref_;
-            return { u: vertexIdU_, v: vertexIdV_ };
-        };
-
-        DirectedGraph.prototype.edgePropertyObject = function(vertexIdU_, vertexIdV_) {
-            console.log("DirectedGraph.edgePropertyObject method is deprecated. Please us DirectedGraph.getEdgePropertyObject method instead.");
-            return this.getEdgePropertyObject(vertexIdU_, vertexIdV_);
-        };
-
-        
 
         DirectedGraph.prototype.toJSON = function(replacer_, space_) {
             return exportJSON(this, replacer_, space_);

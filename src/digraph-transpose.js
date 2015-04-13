@@ -14,7 +14,7 @@ module.exports = function (digraphIn_) {
     var index;
 
     for (var vertexId in digraphIn_.vertexMap) {
-        var vertexProperties = JSON.parse(JSON.stringify(digraphIn_.getVertexPropertyObject(vertexId)));
+        var vertexProperties = JSON.parse(JSON.stringify(digraphIn_.getVertexProperty(vertexId)));
         digraphOut.addVertex(vertexId, vertexProperties);
         var adjacentEdges = digraphIn_.outEdges(vertexId);
         for (index in adjacentEdges) {
@@ -24,7 +24,7 @@ module.exports = function (digraphIn_) {
 
     for (index in outEdges) {
         var edge = outEdges[index];
-        var edgeProperties = JSON.parse(JSON.stringify(digraphIn_.getEdgePropertyObject(edge.u, edge.v)));
+        var edgeProperties = JSON.parse(JSON.stringify(digraphIn_.getEdgeProperty(edge.u, edge.v)));
         digraphOut.addEdge(edge.v, edge.u, edgeProperties);
     }
 

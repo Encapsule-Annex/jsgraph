@@ -105,29 +105,41 @@ The current release of jsgraph contains support only for directed graph datasets
 
 ## DirectedGraph
 
+### Construction
+
         var jsgraph = require('jsgraph');
-        var digraph = new jsgraph.directed.DirectedGraph(JSON); // JSON is optional
+        var digraph = new jsgraph.DirectedGraph(JSON); // JSON is optional
+
+### JSON I/O:**
+
+* **toJSON** - export the contents of the directed graph container to JSON
+* **importJSON** - import the contents of a serialized DirectedGraph container into the current graph
+
+### Vertices
 
 * **addVertex** - add a vertex to the digraph w/optional property object
 * **removeVertex** - remove a vertex, and adjacent in-edges from the digraph
+* **isVertex** - determine if a vertex is in the graph or not
+* **verticesCount** - retrieve the count of vertices in the digraph
 * **getVertices** - retrive the set of vertices
-* **addEdge** - add an edge w/optional property object to the digraph
-* **removeEdge** - remove an edge from the digraph
 * **getRootVertices** - retrieve the set of vertices with in-degree zero
 * **getLeafVertices** - retrieve the set of vertices with out-degree zero
-* **verticesCount** - retrieve the count of vertices in the digraph
-* **edgesCount** - retrieve the count of edges in the digraph
-* **getEdges** - retrieve the set of out-edges in the entire graph
+* **getVertexProperty** - get a property object reference for a specific vertex
+* **setVertexProperty** - set a property object reference for a specific vertex
 * **inEdges** - retrieve the set of adjacent in-edges of a specific vertex
 * **outEdges** - retrieve the set of adjacent out-edges of a specific vertex
 * **inDegree** - retrieve the count of adjacent in-edges of a specific vertex
 * **outDegree** - retrieve the count of adjacent out-edges of a specific vertex
-* **getVertexPropertyObject** - get a property object reference for a specific vertex
-* **setVertexPropertyObject** - set a property object reference for a specific vertex
-* **getEdgePropertyObject** - get a property object reference for a specific edge
-* **setEdgePropertyObject** - set a property object reference for a specific edge
-* **toJSON** - export the contents of the directed graph container to JSON
-* **importJSON** - import the contents of a serialized DirectedGraph container into the current graph
+
+### Edges
+
+* **addEdge** - add an edge w/optional property object to the digraph
+* **removeEdge** - remove an edge from the digraph
+* **isEdge** - determine if an edge is in the graph or not
+* **edgesCount** - retrieve the count of edges in the digraph
+* **getEdges** - retrieve the set of out-edges in the entire graph
+* **getEdgeProperty** - get a property object reference for a specific edge
+* **setEdgeProperty** - set a property object reference for a specific edge
 
 ## Algorithms
 
@@ -258,12 +270,12 @@ A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example f
 
 **<3**
 
-# jsgraph.directed.DirectedGraph object
+# jsgraph.DirectedGraph object
 
 jsgraph is inspired by the design and implementation of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) that applies the C++ Standard Template Library concepts of generic containers and algorithms to mathematical graph datasets. 
 
         var jsgraph = require('jsgraph');
-        var digraph = new jsgraph.directed.DirectedGraph(JSON); // JSON is optional
+        var digraph = new jsgraph.DirectedGraph(JSON); // JSON is optional
 
 ## DirectedGraph.addVertex
 
@@ -276,13 +288,13 @@ jsgraph is inspired by the design and implementation of the [Boost C++ Graph Lib
 
 **Return:**
 
-Returns a copy of the `vertexId_` in-parameter.
+Returns a copy of the `vertexId_` in-parameter. If the vertex already exists, its properties are replaced if specified.
 
 **Remarks:**
 
 If a vertex with identifier `vertexId_` already exists in the graph, the call to `addVertex` is ignored.
 
-## jsgraph.directed.DirectedGraph.removeVertex
+## jsgraph.DirectedGraph.removeVertex
 
         digraph.removeVertex(vertexId_);
 
@@ -298,7 +310,23 @@ Returns true to indicate that the specified vertex is not part of the graph.
 
 Removing a vertex automatically removes all the the vertex's edges (both in and out-edges are removed). 
 
-## jsgraph.directed.DirectedGraph.getVertices
+## jsgraph.DirectedGraph.isVertex
+
+        digraph.isVertex('foo');
+
+**Return:**
+
+Returns boolean true iff the specified vertex ID is part of the graph. Otherwise, false.
+
+## jsgraph.DirectedGraph.verticesCount
+
+        var count = digraph.verticesCount();
+
+**Return:**
+
+Integer indicating the number of vertices in this graph.
+
+## jsgraph.DirectedGraph.getVertices
 
         vertices = digraph.getVertices();
 
@@ -306,7 +334,104 @@ Removing a vertex automatically removes all the the vertex's edges (both in and 
 
 Returns an array of string vertex identifiers.    
 
-## jsgraph.directed.DirectedGraph.addEdge
+## jsgraph.DirectedGraph.getRootVertices
+
+        var vertices = digraph.getRootVertices();
+
+**Return:**
+
+Returns an array of identifier strings indicating the set of root vertices in the graph (i.e. the set of vertices with in-degree zero).
+
+## jsgraph.Directedgraph.getLeafVertices
+
+        var vertices = digraph.getLeafVertices();
+
+**Return:**
+
+Returns an array of identifier strings indicating the set of leaf vertices in the graph (i.e. the set of vertices with out-degree zero).
+
+
+## jsgraph.DirectedGraph.getVertexPropertyObject
+
+        var properties = digraph.getVertexPropertyObject(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+
+**Return:**
+
+Returns a reference to the property object attached to the specified vertex when it was added to the graph.
+
+## jsgraph.DirectedGraph.setVertexPropertyObject
+
+        var properties = digraph.getVertexPropertyObject(vertexId_, ref_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+- ref_: whatever you want as long as it's serializable to JSON
+
+**Return:**
+
+Returns true if set. Otherwise false if the specified vertex is not part of the graph.
+
+## jsgraph.DirectedGraph.inEdges
+
+        var edgeArray = digraph.inEdges(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (required): the unique string identifying the vertex to query.
+
+**Return:**
+
+Returns an array of edge descriptor objects specifying the source and sink vertex ID's of each of the specified vertex's in-edges.
+
+## jsgraph.DirectedGraph.outEdges
+
+        var edgeArray = digraph.outEdges(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+
+**Return:**
+
+Returns an array of edge descriptor objects specifiy the source and sink vertex ID's of each of the specified vertex's out-edges.
+
+## jsgraph.DirectedGraph.inDegree
+
+        var degree = digraph.inDegree(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+
+**Return:**
+
+Integer indicating the in-degree of the specific vertex.
+
+## jsgraph.DirectedGraph.outDegree
+
+        var degree = digraph.outDegree(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+
+**Return:**
+
+Integer indicating the out-degree of the specific vertex.
+
+
+
+
+
+
+
+
+## jsgraph.DirectedGraph.addEdge
 
         var edge = digraph.addEdge(vertexIdU_, vertexIdV_, properties_);
 
@@ -326,28 +451,33 @@ Returns an edge descriptor object containing the identifiers of the U and V vert
 
 If a vertex or vertices specified in a call to `addEdge` do not exist, they are added automatically and then the edge is added without associated property objects (you'll need to assign these manually by vertex ID in this situation).
 
-## jsgraph.directed.DirectedGraph.removeEdge
+## jsgraph.DirectedGraph.removeEdge
 
-        digraph.removeEdge(vertexIdU_, vertexIdV_);
+        digraph.removeEdge(uid, vid);
 
 **Parameters:**
 
-- vertexIdU_ (required): the unqiue string identifying the directed edge's source vertex, U.
-- vertexIdV_ (required): the unique string identifying the directed edge's sink vertex, V.
+- uid (required): the unqiue string identifying the directed edge's source vertex, U.
+- vid (required): the unique string identifying the directed edge's sink vertex, V.
 
 **Return:**
 
 Returns true to indicate that the specified edge is not part of the graph.
 
-## jsgraph.directed.DirectedGraph.verticesCount
+## jsgraph.DirectedGraph.isEdge
 
-        var count = digraph.verticesCount();
+        digraph.isEdge(uid,vid);
+
+**Parameters:**
+
+- uid (required): the unique string identifying the directed edge's source vertex, U.
+- vid (required): the unique string identifying the directed edge's sink vertex, V.
 
 **Return:**
 
-Integer indicating the number of vertices in this graph.
+Return true if the edge is part of the graph. Otherwise, false.
 
-## jsgraph.directed.DirectedGraph.edgesCount
+## jsgraph.DirectedGraph.edgesCount
 
         var count = digraph.edgesCount();
 
@@ -355,7 +485,7 @@ Integer indicating the number of vertices in this graph.
 
 Integer indicating the number of edges in this graph.
 
-## jsgraph.directed.DirectedGraph.getEdges
+## jsgraph.DirectedGraph.getEdges
 
         var edges = digraph.getEdges()
 
@@ -364,96 +494,7 @@ Integer indicating the number of edges in this graph.
 Returns an array of edge descriptor objects with `u` and `v` properties set to tail and head vertex identifier strings respectively.
 
 
-## jsgraph.directed.DirectedGraph.getRootVertices
-
-        var vertices = digraph.getRootVertices();
-
-**Return:**
-
-Returns an array of identifier strings indicating the set of root vertices in the graph (i.e. the set of vertices with in-degree zero).
-
-## jsgraph.directed.Directedgraph.getLeafVertices
-
-        var vertices = digraph.getLeafVertices();
-
-**Return:**
-
-Returns an array of identifier strings indicating the set of leaf vertices in the graph (i.e. the set of vertices with out-degree zero).
-
-## jsgraph.directed.DirectedGraph.inEdges
-
-        var edgeArray = digraph.inEdges(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (required): the unique string identifying the vertex to query.
-
-**Return:**
-
-Returns an array of edge descriptor objects specifying the source and sink vertex ID's of each of the specified vertex's in-edges.
-
-## jsgraph.directed.DirectedGraph.outEdges
-
-        var edgeArray = digraph.outEdges(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-
-**Return:**
-
-Returns an array of edge descriptor objects specifiy the source and sink vertex ID's of each of the specified vertex's out-edges.
-
-## jsgraph.directed.DirectedGraph.inDegree
-
-        var degree = digraph.inDegree(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-
-**Return:**
-
-Integer indicating the in-degree of the specific vertex.
-
-## jsgraph.directed.DirectedGraph.outDegree
-
-        var degree = digraph.outDegree(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-
-**Return:**
-
-Integer indicating the out-degree of the specific vertex.
-
-## jsgraph.directed.DirectedGraph.getVertexPropertyObject
-
-        var properties = digraph.getVertexPropertyObject(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-
-**Return:**
-
-Returns a reference to the property object attached to the specified vertex when it was added to the graph.
-
-## jsgraph.directed.DirectedGraph.setVertexPropertyObject
-
-        var properties = digraph.getVertexPropertyObject(vertexId_, ref_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-- ref_: whatever you want as long as it's serializable to JSON
-
-**Return:**
-
-Returns true.
-
-## jsgraph.directed.DirectedGraph.getEdgePropertyObject
+## jsgraph.DirectedGraph.getEdgeProperty
 
         var properties = digraph.getEdgePropertyObject(vertexIdU_, vertexIdV);
 
@@ -466,7 +507,7 @@ Returns true.
 
 Returns a reference to the property object attached to the specified edge when it was added to the graph.
 
-## jsgraph.directed.DirectedGraph.setEdgePropertyObject
+## jsgraph.DirectedGraph.setEdgeProperty
 
         var properties = digraph.getEdgePropertyObject(vertexIdU_, vertexIdV, ref_);
 
@@ -480,8 +521,9 @@ Returns a reference to the property object attached to the specified edge when i
 
 Returns the edge descriptor object.
 
-## jsgraph.directed.DirectedGraph.toJSON
+## jsgraph.DirectedGraph.toJSON
 
+        var digraph = new DirectedGraph();
         digraph.toJSON(undefined,4);
 
 **Returns:**
@@ -492,9 +534,9 @@ JSON-encoded serialization of the contents of the DirectedGraph container.
 
 Pass the JSON string returned by DirectedGraph.toJSON to method DirectedGraph.importJSON or the DirectedGraph constructor to import.
 
-## jsgraph.directed.DirectedGraph.importJSON
+## jsgraph.DirectedGraph.importJSON
 
-        digraph.directed.DirectedGraph.importJSON(JSON);
+        digraph.DirectedGraph.importJSON(JSON);
 
 ** Remarks:**
 
@@ -504,7 +546,7 @@ JSON import adds vertices and edges to the current DirectedGraph container from 
 
 ## jsgraph.directed.transpose
 
-        var transposedDigraph = jsgraph.directed.transpose(digraphIn_);
+        var transposedDigraph = jsgraph.transpose(digraphIn_);
 
 **Parameters:**
 
@@ -514,7 +556,7 @@ JSON import adds vertices and edges to the current DirectedGraph container from 
 
 Returns a new instance of DirectedGraph that reverses the direction of all the edges in the source graph.
 
-# Algorithms
+# Algorithms: the jsgraph.directed export namespace
 
 jsgraph provides several useful graph algorithms implemented using the visitor pattern in a manner that seeks to emulate the [Boost C++ Graph Library: Visitor Concepts](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/visitor_concepts.html).
 

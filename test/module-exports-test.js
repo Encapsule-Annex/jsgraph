@@ -10,13 +10,12 @@ describe("Module export tests", function() {
 
     describe("Directed graph container API", function() {
 
-        it("module export 'jsgraph.directed' should be an object", function() {
-            expect(jsgraph.directed).to.be.a('object');
+        it("module export 'jsgraph.DirectedGraph' should be a constructor function", function() {
+            expect(jsgraph.DirectedGraph).to.be.a('function');
         });
 
-
-        it("module export 'jsgraph.directed.DirectedGraph' should be a constructor function", function() {
-            expect(jsgraph.directed.DirectedGraph).to.be.a('function');
+        it("module export 'jsgraph.directed' should be an object", function() {
+            expect(jsgraph.directed).to.be.a('object');
         });
 
         it("module export 'jsgraph.directed.transpose' should be a function", function() {

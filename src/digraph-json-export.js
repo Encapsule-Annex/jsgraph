@@ -7,24 +7,36 @@
 // constructor parameter to restore container state across
 // execution contexts.
 
+var packageMeta = require('../package');
+
 module.exports = function (digraph_, replacer_, space_) {
-    var exportObject = {
+
+    var digraphState = {
         vertices: [],
         edges: []
     };
-    var vertexId;
+
     var vertexMap = digraph_.vertexMap;
+    var vertexId;
 
     var processEdge = function(edge_) {
-        var edgeProps = digraph_.getEdgePropertyObject(edge_.u, edge_.v);
-        exportObject.edges.push({ u: edge_.u, v: edge_.v, props: edgeProps });
+        var edgeProps = digraph_.getEdgeProperty(edge_.u, edge_.v);
+        digraphState.edges.push({ uid: edge_.u, vid: edge_.v, eprops: edgeProps });
     };
 
     for (vertexId in vertexMap) {
         var vertexDescriptor = vertexMap[vertexId];
-        exportObject.vertices.push({ id: vertexId, props: vertexDescriptor.properties });
+        digraphState.vertices.push({ vid: vertexId, vprops: vertexDescriptor.properties });
         var outEdges = digraph_.outEdges(vertexId);
         outEdges.forEach(processEdge);
     }
-    return JSON.stringify(exportObject, replacer_, space_);
+
+    jsonExportObject = {
+        jsgraph: {
+            version: packageMeta.version,
+            directed: digraphState
+        }
+    };
+
+    return JSON.stringify(jsonExportObject, replacer_, space_);
 };
