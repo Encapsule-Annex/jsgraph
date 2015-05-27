@@ -7,8 +7,6 @@
 // constructor parameter to restore container state across
 // execution contexts.
 
-var packageMeta = require('../package');
-
 module.exports = function (digraph_, replacer_, space_) {
 
     var digraphState = {
@@ -31,12 +29,7 @@ module.exports = function (digraph_, replacer_, space_) {
         outEdges.forEach(processEdge);
     }
 
-    var jsonExportObject = {
-        jsgraph: {
-            version: packageMeta.version,
-            directed: digraphState
-        }
-    };
+    var jsonExportObject = { jsgraph: { digraph: digraphState } };
 
     return JSON.stringify(jsonExportObject, replacer_, space_);
 };

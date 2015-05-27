@@ -59,9 +59,9 @@ describe("DirectedGraph container object tests", function() {
             var parsed = JSON.parse(json);
             assert.isObject(parsed);
             assert.isObject(parsed.jsgraph);
-            assert.isObject(parsed.jsgraph.directed);
-            assert.isArray(parsed.jsgraph.directed.vertices);
-            assert.isArray(parsed.jsgraph.directed.edges);
+            assert.isObject(parsed.jsgraph.digraph);
+            assert.isArray(parsed.jsgraph.digraph.vertices);
+            assert.isArray(parsed.jsgraph.digraph.edges);
         });
 
         describe("Re-create the directed graph container from the JSON.", function() {

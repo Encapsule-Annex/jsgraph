@@ -32,24 +32,24 @@ module.exports = function (digraph_, json_) {
         throw new Error("JSON semantics error: Could not find required top-level object 'jsgraph'.");
     }
 
-    type = getType(jsonParse.jsgraph.directed);
+    type = getType(jsonParse.jsgraph.digraph);
     if (type !== '[object Object]') {
         throw new Error("JSON semantics error: Could not find expected digraph state object 'jsgraph.directed'.");
     }
 
-    jsonParse = jsonParse.jsgraph.directed;
+    digraphJSON = jsonParse.jsgraph.digraph;
 
-    type = getType(jsonParse.vertices);
+    type = getType(digraphJSON.vertices);
     if (type !== '[object Array]') {
         throw new Error("JSON semantics error: Expected 'vertices' to be an array but found '" + type + "'.");
     }
 
-    type = getType(jsonParse.edges);
+    type = getType(digraphJSON.edges);
     if (type !== '[object Array]') {
         throw new Error("JSON semantics error: Expected 'edges' to be an array but found '" + type + "'.");
     }
 
-    jsonParse.vertices.forEach(function(vertexDescriptor_) {
+    digraphJSON.vertices.forEach(function(vertexDescriptor_) {
         type = getType(vertexDescriptor_);
         if (type !== '[object Object]') {
             throw new Error("JSON semantics error: Expected vertex descriptor object in 'vertices' array but found '" + type + "' instead.");
@@ -61,7 +61,7 @@ module.exports = function (digraph_, json_) {
         digraph_.addVertex(vertexDescriptor_.vid, vertexDescriptor_.vprops);
     });
 
-    jsonParse.edges.forEach(function(edgeDescriptor_) {
+    digraphJSON.edges.forEach(function(edgeDescriptor_) {
         digraph_.addEdge(edgeDescriptor_.uid, edgeDescriptor_.vid, edgeDescriptor_.eprops);
     });
 
