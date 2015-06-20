@@ -44,7 +44,7 @@
         return bfsContext;
     };
 
-    module.exports.breadthFirstSearch = function(digraph_, searchContext_, startVertexId_, visitorInterface_, signalStartVertex_) {
+    module.exports.breadthFirstSearch = function(digraph_, searchContext_, startVertexId_, visitorInterface_, signalStartVertex_, maxDepth) {
 
         if ((digraph_ === null) || !digraph_ ||
             (searchContext_ === null) || !searchContext_ ||
@@ -89,7 +89,6 @@
         };
 
         if (initializeAsVisit) {
-
             enqueueRootVertex(startVertexId_);
 
         } else {
@@ -101,9 +100,23 @@
 
         }
 
+        var currentDepth = 0,
+            elementsToDepthIncrease = 1,
+            pendingDepthIncrease = true;
+
         while (searchQueue.length) {
+            if(elementsToDepthIncrease === 0) {
+                if(maxDepth && ++currentDepth > maxDepth) {
+                    return;
+                }
+
+                pendingDepthIncrease = true;
+            } else {
+                elementsToDepthIncrease--;
+            }
 
             var vertexId = searchQueue.shift();
+
             searchContext_.colorMap[vertexId] = colors.black;
 
             // examineVertex visitor callback.
@@ -112,6 +125,11 @@
             }
 
             var outEdges = digraph_.outEdges(vertexId);
+
+            if(pendingDepthIncrease) {
+                elementsToDepthIncrease = searchQueue.length;
+                pendingDepthIncrease = false;
+            }
 
             for (var index in outEdges) {
 
