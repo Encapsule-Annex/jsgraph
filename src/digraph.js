@@ -23,7 +23,7 @@ var exportJSON = require('./digraph-json-export');
         DirectedGraph.prototype.type = "directed";
 
         DirectedGraph.prototype.getVertices = function() {
-            vertices = [];
+            var vertices = [];
             for (var vertexId in this.vertexMap) {
                 vertices.push(vertexId);
             }
