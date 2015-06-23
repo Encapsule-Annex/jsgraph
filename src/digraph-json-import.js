@@ -54,15 +54,27 @@ module.exports = function (digraph_, json_) {
         if (type !== '[object Object]') {
             throw new Error("JSON semantics error: Expected vertex descriptor object in 'vertices' array but found '" + type + "' instead.");
         }
-        type = getType(vertexDescriptor_.vid);
+        type = getType(vertexDescriptor_.v);
         if (type !== '[object String]') {
-            throw new Error("JSON semantics error: Expected vertex descriptor property 'vid' to be a string but found '" + type + "' instead.");
+            throw new Error("JSON semantics error: Expected vertex descriptor property 'v' to be a string but found '" + type + "' instead.");
         }
-        digraph_.addVertex(vertexDescriptor_.vid, vertexDescriptor_.vprops);
+        digraph_.addVertex(vertexDescriptor_.v, vertexDescriptor_.p);
     });
 
     digraphJSON.edges.forEach(function(edgeDescriptor_) {
-        digraph_.addEdge(edgeDescriptor_.uid, edgeDescriptor_.vid, edgeDescriptor_.eprops);
+        type = getType(edgeDescriptor_);
+        if (type !== '[object Object]') {
+            throw new Error("JSON semantics error: Expected edge descriptor object in 'edges' array but found '" + type + "' instead.");
+        }
+        type = getType(edgeDescriptor_.u);
+        if (type !== '[object String]') {
+            throw new Error("JSON semantics error: Expected edge descriptor property 'u' to be a string but found '" + type + "' instead.");
+        }
+        type = getType(edgeDescriptor_.v);
+        if (type !== '[object String]') {
+            throw new Error("JSON semantics error: Expected edge descriptor property 'v' to be a string but found '" + type + "' instead.");
+        }
+        digraph_.addEdge(edgeDescriptor_.u, edgeDescriptor_.v, edgeDescriptor_.p);
     });
 
     return true;

@@ -19,12 +19,12 @@ module.exports = function (digraph_, replacer_, space_) {
 
     var processEdge = function(edge_) {
         var edgeProps = digraph_.getEdgeProperty(edge_.u, edge_.v);
-        digraphState.edges.push({ uid: edge_.u, vid: edge_.v, eprops: edgeProps });
+        digraphState.edges.push({ u: edge_.u, v: edge_.v, p: edgeProps });
     };
 
     for (vertexId in vertexMap) {
         var vertexDescriptor = vertexMap[vertexId];
-        digraphState.vertices.push({ vid: vertexId, vprops: vertexDescriptor.properties });
+        digraphState.vertices.push({ v: vertexId, p: vertexDescriptor.properties });
         var outEdges = digraph_.outEdges(vertexId);
         outEdges.forEach(processEdge);
     }
