@@ -6,17 +6,19 @@
 var importJSON = require('./digraph-json-import');
 var exportJSON = require('./digraph-json-export');
 
+var digraphExport = require('./digraph-json-export');
+
 (function() {
 
     var DirectedGraph = (function() {
 
-        function DirectedGraph(json_) {
+        function DirectedGraph(jsonOrObject_) {
             this.vertexMap = {};
             this.rootMap = {};
             this.leafMap = {};
             this.edgeCount = 0;
-            if ((json_ !== null) && json_) {
-                importJSON(this, json_);
+            if ((jsonOrObject_ !== null) && jsonOrObject_) {
+                importJSON(this, jsonOrObject_);
             }
         }
 
@@ -232,11 +234,20 @@ var exportJSON = require('./digraph-json-export');
             return this.addEdge(vertexIdU_, vertexIdV_, ref_);
         };
 
-        DirectedGraph.prototype.toJSON = function(replacer_, space_) {
-            return exportJSON(this, replacer_, space_);
+        DirectedGraph.prototype.toObject = function () {
+            return digraphExport.exportObject(this);
         };
 
+        DirectedGraph.prototype.toJSON = function(replacer_, space_) {
+            return digraphExport.exportJSON(this, replacer_, space_);
+        };
+
+        DirectedGraph.prototype.importJSONOrObject = function (jsonOrObject_) {
+            return importJSON(this, jsonOrObject_);
+        };
+        
         DirectedGraph.prototype.importJSON = function(json_) {
+            // This function is deprecated. Please switch to importJSONOrObject
             return importJSON(this, json_);
         };
 

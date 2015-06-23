@@ -1,22 +1,22 @@
 // digraph-json-import.js
 //
 
-module.exports = function (digraph_, json_) {
+module.exports = function (digraph_, jsonOrObject_) {
 
     var jsonParse;
     var getType = function(ref_) { return Object.prototype.toString.call(ref_); };
 
-    var type = getType(json_);
+    var type = getType(jsonOrObject_);
     switch (type) {
     case '[object String]':
         try {
-            jsonParse = JSON.parse(json_);
+            jsonParse = JSON.parse(jsonOrObject_);
         } catch (exception_) {
             throw new Error("JSON parse error: Cannot import invalid JSON document into jsgraph.");
         }
         break;
     case '[object Object]':
-        jsonParse = json_;
+        jsonParse = jsonOrObject_;
         break;
     default:
         throw new Error("Invalid reference to '" + type + "' passed instead of expected JSON (or equivalent object) reference.");
@@ -27,29 +27,26 @@ module.exports = function (digraph_, json_) {
         throw new Error("JSON semantics error: Expected top-level object but found '" + type + "'.");
     }
 
-    type = getType(jsonParse.jsgraph);
-    if (type !== '[object Object]') {
-        throw new Error("JSON semantics error: Could not find required top-level object 'jsgraph'.");
+    type = getType(jsonParse.__cid__);
+    if (type !== '[object String]') {
+        throw new Error("JSON semantics error: Expected top-level string property '__cid__' but found '" + type + "'.");
     }
 
-    type = getType(jsonParse.jsgraph.digraph);
-    if (type !== '[object Object]') {
-        throw new Error("JSON semantics error: Could not find expected digraph state object 'jsgraph.directed'.");
+    if (jsonParse.__cid__ !==  'C1D2eWCPTIKH-z3PP2uQlQ') {
+        throw new Error("JSON semantics error: Unrecognized object CID '" + jsonParse.__cid__ + "'.");
     }
 
-    digraphJSON = jsonParse.jsgraph.digraph;
-
-    type = getType(digraphJSON.vertices);
+    type = getType(jsonParse.vertices);
     if (type !== '[object Array]') {
         throw new Error("JSON semantics error: Expected 'vertices' to be an array but found '" + type + "'.");
     }
 
-    type = getType(digraphJSON.edges);
+    type = getType(jsonParse.edges);
     if (type !== '[object Array]') {
         throw new Error("JSON semantics error: Expected 'edges' to be an array but found '" + type + "'.");
     }
 
-    digraphJSON.vertices.forEach(function(vertexDescriptor_) {
+    jsonParse.vertices.forEach(function(vertexDescriptor_) {
         type = getType(vertexDescriptor_);
         if (type !== '[object Object]') {
             throw new Error("JSON semantics error: Expected vertex descriptor object in 'vertices' array but found '" + type + "' instead.");
@@ -61,7 +58,7 @@ module.exports = function (digraph_, json_) {
         digraph_.addVertex(vertexDescriptor_.v, vertexDescriptor_.p);
     });
 
-    digraphJSON.edges.forEach(function(edgeDescriptor_) {
+    jsonParse.edges.forEach(function(edgeDescriptor_) {
         type = getType(edgeDescriptor_);
         if (type !== '[object Object]') {
             throw new Error("JSON semantics error: Expected edge descriptor object in 'edges' array but found '" + type + "' instead.");

@@ -7,29 +7,30 @@
 // constructor parameter to restore container state across
 // execution contexts.
 
-module.exports = function (digraph_, replacer_, space_) {
 
+var DigraphDataExporter = module.exports = {};
+
+DigraphDataExporter.exportObject = function (digraph_) {
     var digraphState = {
+        __cid__: 'C1D2eWCPTIKH-z3PP2uQlQ', // Encapsule/jsgraph digraph container data export object
         vertices: [],
         edges: []
     };
-
     var vertexMap = digraph_.vertexMap;
     var vertexId;
-
     var processEdge = function(edge_) {
         var edgeProps = digraph_.getEdgeProperty(edge_.u, edge_.v);
         digraphState.edges.push({ u: edge_.u, v: edge_.v, p: edgeProps });
     };
-
     for (vertexId in vertexMap) {
         var vertexDescriptor = vertexMap[vertexId];
         digraphState.vertices.push({ v: vertexId, p: vertexDescriptor.properties });
         var outEdges = digraph_.outEdges(vertexId);
         outEdges.forEach(processEdge);
     }
+    return digraphState;
+};
 
-    var jsonExportObject = { jsgraph: { digraph: digraphState } };
-
-    return JSON.stringify(jsonExportObject, replacer_, space_);
+DigraphDataExporter.exportJSON = function (digraph_, replacer_, space_) {
+    return JSON.stringify(DigraphDataExporter.exportObject(digraph_), replacer_, space_);
 };

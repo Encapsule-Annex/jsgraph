@@ -58,10 +58,21 @@ describe("DirectedGraph container object tests", function() {
             assert.isString(json);
             var parsed = JSON.parse(json);
             assert.isObject(parsed);
-            assert.isObject(parsed.jsgraph);
-            assert.isObject(parsed.jsgraph.digraph);
-            assert.isArray(parsed.jsgraph.digraph.vertices);
-            assert.isArray(parsed.jsgraph.digraph.edges);
+            assert.property(parsed, '__cid__');
+            assert.isString(parsed.__cid__);
+            assert.isArray(parsed.vertices);
+            assert.isArray(parsed.edges);
+        });
+
+        it("graph export to object and JSON should be identical", function() {
+            var testObjectJSON = JSON.stringify(digraph.toObject());
+            var testJSON = digraph.toJSON();
+            assert.equal(testObjectJSON, testJSON);
+        });
+
+        it("graph constructed from export object should be identical to original", function() {
+            var testGraph = new DirectedGraph(digraph.toObject());
+            assert.equal(testGraph.toJSON(), digraph.toJSON());
         });
 
         describe("Re-create the directed graph container from the JSON.", function() {
@@ -76,6 +87,8 @@ describe("DirectedGraph container object tests", function() {
                 assert.equal(copy.toJSON(), json);
             });
         });
+
+        
     });
 
     describe("Vertex API tests", function() {
