@@ -60,7 +60,19 @@
         var rootVertices = 0;
         var signalStart = ((signalStartVertex_ !== null) && signalStartVertex_) || false;
 
+        var continueSearch = true;
+
+        var verifyVisitorResponse = function (visitorResponse_) {
+            var type = Object.prototype.toString.call(visitorResponse_);
+            if (type !== '[object Boolean]') {
+                throw new Error("All jsgraph visitor functions are required to return a boolean flag indicating if the search algorithm should proceed or not. Visitor returned type '" + type + "'.");
+            }
+            return visitorResponse_;
+        };
+
         var enqueueRootVertex = function(rootVertexId_) {
+
+            var continueSearch = true;
 
             var vertex = digraph_.vertexMap[rootVertexId_];
             if ((vertex === null) || !vertex) {
@@ -73,42 +85,48 @@
 
             // discoverVertex visitor callback (on rootVertexId_)
             if ((visitorInterface_.dicoverVertex !== null) && visitorInterface_.discoverVertex) {
-                visitorInterface_.discoverVertex(rootVertexId_, digraph_);
+                continueSearch = verifyVisitorResponse(visitorInterface_.discoverVertex(rootVertexId_, digraph_));
             }
 
             delete searchContext_.undiscoveredMap[rootVertexId_];
 
             // startVertex visitor callback (conditional)
             if (signalStart && (visitorInterface_.startVertex !== null) && visitorInterface_.startVertex) {
-                visitorInterface_.startVertex(rootVertexId_, digraph_);
+                continueSearch = continueSearch && verifyVisitorResponse(visitorInterface_.startVertex(rootVertexId_, digraph_));
             }
 
             searchQueue.push(rootVertexId_);
             searchContext_.colorMap[rootVertexId_] = colors.gray;
 
+            return continueSearch;
+
         };
 
         if (initializeAsVisit) {
-
-            enqueueRootVertex(startVertexId_);
-
+            continueSearch = enqueueRootVertex(startVertexId_);
         } else {
 
             // initialize as a breadth-first search (i.e. start with multiple root vertices as opposed to one).
             for (var vertexIndex in startVertexId_) {
-                enqueueRootVertex(startVertexId_[vertexIndex]);
+                continueSearch = enqueueRootVertex(startVertexId_[vertexIndex]);
+                if (!continueSearch) {
+                    break;
+                }
             }
-
         }
 
-        while (searchQueue.length) {
+        while (searchQueue.length && continueSearch) {
 
             var vertexId = searchQueue.shift();
             searchContext_.colorMap[vertexId] = colors.black;
 
             // examineVertex visitor callback.
             if ((visitorInterface_.examineVertex !== null) && visitorInterface_.examineVertex) {
-                visitorInterface_.examineVertex(vertexId, digraph_);
+                continueSearch = verifyVisitorResponse(visitorInterface_.examineVertex(vertexId, digraph_));
+            }
+
+            if (!continueSearch) {
+                continue;
             }
 
             var outEdges = digraph_.outEdges(vertexId);
@@ -119,56 +137,57 @@
 
                 // examineEdge visitor callback.
                 if ((visitorInterface_.examineEdge !== null) && visitorInterface_.examineEdge) {
-                    visitorInterface_.examineEdge(outEdge.u, outEdge.v, digraph_);
+                    continueSearch = verifyVisitorResponse(visitorInterface_.examineEdge(outEdge.u, outEdge.v, digraph_));
+                }
+
+                if (!continueSearch) {
+                    break;
                 }
 
                 var colorV = searchContext_.colorMap[outEdge.v];
                 switch (colorV) {
 
                 case colors.white:
-
                     // discoverVertex visitor callback.
                     if ((visitorInterface_.discoverVertex !== null) && visitorInterface_.discoverVertex) {
-                        visitorInterface_.discoverVertex(outEdge.v, digraph_);
+                        continueSearch = verifyVisitorResponse(visitorInterface_.discoverVertex(outEdge.v, digraph_));
                     }
                     delete searchContext_.undiscoveredMap[outEdge.v];
 
-                    // treeEdge visitor callback.
-                    if ((visitorInterface_.treeEdge !== null) && visitorInterface_.treeEdge) {
-                        visitorInterface_.treeEdge(outEdge.u, outEdge.v, digraph_);
+                    if (continueSearch) {
+                        // treeEdge visitor callback.
+                        if ((visitorInterface_.treeEdge !== null) && visitorInterface_.treeEdge) {
+                            continueSearch = verifyVisitorResponse(visitorInterface_.treeEdge(outEdge.u, outEdge.v, digraph_));
+                        }
+                        searchQueue.push(outEdge.v);
+                        searchContext_.colorMap[outEdge.v] = colors.gray;
                     }
-
-                    searchQueue.push(outEdge.v);
-                    searchContext_.colorMap[outEdge.v] = colors.gray;
-
                     break;
 
                 case colors.gray:
-
                     // nonTreeEdge visitor callback.
                     if ((visitorInterface_.nonTreeEdge !== null) && visitorInterface_.nonTreeEdge) {
-                        visitorInterface_.nonTreeEdge(outEdge.u, outEdge.v, digraph_);
+                        continueSearch = verifyVisitorResponse(visitorInterface_.nonTreeEdge(outEdge.u, outEdge.v, digraph_));
                     }
-
-                    // grayTarget visitor callback.
-                    if ((visitorInterface_.grayTarget !== null) && visitorInterface_.grayTarget) {
-                        visitorInterface_.grayTarget(outEdge.u, outEdge.v, digraph_);
+                    if (continueSearch) {
+                        // grayTarget visitor callback.
+                        if ((visitorInterface_.grayTarget !== null) && visitorInterface_.grayTarget) {
+                            continueSearch = verifyVisitorResponse(visitorInterface_.grayTarget(outEdge.u, outEdge.v, digraph_));
+                        }
                     }
-
                     break;
 
                 case colors.black:
-
                     // nonTreeEdge visitor callback.
                     if ((visitorInterface_.nonTreeEdge !== null) && visitorInterface_.nonTreeEdge) {
-                        visitorInterface_.nonTreeEdge(outEdge.u, outEdge.v, digraph_);
+                        continueSearch = verifyVisitorResponse(visitorInterface_.nonTreeEdge(outEdge.u, outEdge.v, digraph_));
                     }
-
-                    // blackTarget visitor callback.
-                    if ((visitorInterface_.blackTarget !== null) && visitorInterface_.blackTarget) {
-                        visitorInterface_.blackTarget(outEdge.u, outEdge.v, digraph_);
+                    if (continueSearch) {
+                        // blackTarget visitor callback.
+                        if ((visitorInterface_.blackTarget !== null) && visitorInterface_.blackTarget) {
+                            continueSearch = verifyVisitorResponse(visitorInterface_.blackTarget(outEdge.u, outEdge.v, digraph_));
+                        }
                     }
-
                     break;
 
                 default:
@@ -179,13 +198,14 @@
             } // for (outEdge in outEdges)
 
             // finishVertex visitor callback.
-            if ((visitorInterface_.finishVertex !== null) && visitorInterface_.finishVertex) {
-                visitorInterface_.finishVertex(vertexId, digraph_);
+            if ((visitorInterface_.finishVertex !== null) && visitorInterface_.finishVertex && continueSearch) {
+                continueSearch = verifyVisitorResponse(visitorInterface_.finishVertex(vertexId, digraph_));
             }
 
         } // while (searchQueue.length)
 
+        return continueSearch;
+
     };
 
 })();
-
