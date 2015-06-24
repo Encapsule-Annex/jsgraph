@@ -43,6 +43,31 @@
         return dfsContext;
     };
 
+    /*
+
+      request = {
+          digraph: reference to jsgraph.DirectedGraph container object (required)
+          visitor: reference to jsgraph DFV visitor object (required)
+          startVertex: reference to a string vertex ID (required)
+          options: {
+              signalStart: Boolean flag (optional - default is true if ommitted)
+                     Note: By default, DFV will call startVertex on each search root vertex.
+                     In advanced scenarios you may wish to override this behavior.
+              searchContext: reference to DFS search context object (optional)
+                     Note: By default, DFV allocates the search context internally and returns it to
+                     the caller. In advanced scenarios you may wish to provide a pre-initialized
+                     (or potentially pre-colored) search context object.
+          }
+      }
+
+      response = {
+          error: null indicating success or a string containing an explanation of the failure
+          result: {
+              searchCompleted: Boolean flag
+              searchContext: reference to the BFS search context object
+          } // or null to indicate a failure
+     */
+
     module.exports.depthFirstVisit = function (digraph_, searchContext_, startVertexId_, visitorInterface_) {
 
         if ((digraph_ === null) || !digraph_ ||

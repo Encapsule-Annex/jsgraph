@@ -99,8 +99,6 @@ describe("DirectedGraph container object tests", function() {
                 assert.equal(copy.toJSON(), json);
             });
         });
-
-        
     });
 
     describe("Vertex API tests", function() {
