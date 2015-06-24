@@ -3,9 +3,7 @@
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
 // http://en.wikipedia.org/wiki/Directed_graph
 
-var importJSON = require('./digraph-json-import');
-var exportJSON = require('./digraph-json-export');
-
+var digraphImport = require('./digraph-json-import');
 var digraphExport = require('./digraph-json-export');
 
 (function() {
@@ -18,7 +16,7 @@ var digraphExport = require('./digraph-json-export');
             this.leafMap = {};
             this.edgeCount = 0;
             if ((jsonOrObject_ !== null) && jsonOrObject_) {
-                importJSON(this, jsonOrObject_);
+                digraphImport(this, jsonOrObject_);
             }
         }
 
@@ -242,13 +240,12 @@ var digraphExport = require('./digraph-json-export');
             return digraphExport.exportJSON(this, replacer_, space_);
         };
 
-        DirectedGraph.prototype.importJSONOrObject = function (jsonOrObject_) {
-            return importJSON(this, jsonOrObject_);
+        DirectedGraph.prototype.fromObject = function (object_) {
+            return digraphImport(this, object_);
         };
         
-        DirectedGraph.prototype.importJSON = function(json_) {
-            // This function is deprecated. Please switch to importJSONOrObject
-            return importJSON(this, json_);
+        DirectedGraph.prototype.fromJSON = function(json_) {
+            return digraphImport(this, json_);
         };
 
         return DirectedGraph;

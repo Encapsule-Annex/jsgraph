@@ -75,6 +75,18 @@ describe("DirectedGraph container object tests", function() {
             assert.equal(testGraph.toJSON(), digraph.toJSON());
         });
 
+        it("empty graph filled using fromObject should be identical to original", function() {
+            var testGraph = new DirectedGraph();
+            testGraph.fromObject(digraph.toObject());
+            assert.equal(testGraph.toJSON(), digraph.toJSON());
+        });
+
+        it("empty graph filled using fromJSON should be identical to original", function() {
+            var testGraph = new DirectedGraph();
+            testGraph.fromJSON(digraph.toJSON());
+            assert.equal(testGraph.toJSON(), digraph.toJSON());
+        });
+
         describe("Re-create the directed graph container from the JSON.", function() {
             var copy = null;
             before(function() {
@@ -482,7 +494,7 @@ describe("DirectedGraph container object tests", function() {
 
     describe("Graph stress", function() {
 
-        var verticesToAllocate = 10000;
+        var verticesToAllocate = 1000000;
         var digraph = new DirectedGraph();
         var x;
         for (x = 0; x < verticesToAllocate; x++) {
