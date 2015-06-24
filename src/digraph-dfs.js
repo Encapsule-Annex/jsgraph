@@ -28,10 +28,7 @@
         }
 
         while (Object.keys(searchContext.undiscoveredMap).length && continueSearch) {
-            for (vertexId in searchContext.undiscoveredMap) {
-                continueSearch = depthFirstVisit(digraph_, searchContext, vertexId, visitorInterface_);
-                break;
-            }
+            throw new Error("Internal error: Undiscovered vertices after DFS completion '" + JSON.searchContext.undiscoveredMap + "'.");
         }
 
         return continueSearch;
