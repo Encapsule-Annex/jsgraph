@@ -1,101 +1,157 @@
-
+// Encapsule/jsgraph/src/digraph-bfs.js
+//
 // Inspired by the design of the Boost Graph Library (BGL)
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
 
-(function() {
+/*
+  All visitor callback functions are optional.
+  See also BFS Visitor Concept documentation from the BGL:
+  http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/BFSVisitor.html
 
-    /*
-      All visitor callback functions are optional.
-      See also BFS Visitor Concept documentation from the BGL:
-      http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/BFSVisitor.html
+  var breadthFirstVisitorInterface = {
+  initializeVertex: function(vertexId_, digraph_),
+  discoverVertex: function(vertexId_, digraph_),
+  startVertex: function(vertexId_, digraph_),
+  examineVertex: function(vertexId_, digraph_),
+  examineEdge: function(vertexIdU_, vertexIdV_, digraph_),
+  treeEdge: function(vertexIdU_, vertexIdV_, digraph_),
+  nonTreeEdge: function(vertexIdU_, vertexIdV_, digraph_),
+  grayTarget: function(vertexIdU_, vertexIdV_, digraph_),
+  blackTarget: function(vertexIdU_, vertexIdV_, digraph_),
+  finishVertex: function(vertexId_, digraph_)
+  };
+*/
 
-      var breadthFirstVisitorInterface = {
-          initializeVertex: function(vertexId_, digraph_),
-          discoverVertex: function(vertexId_, digraph_),
-          startVertex: function(vertexId_, digraph_),
-          examineVertex: function(vertexId_, digraph_),
-          examineEdge: function(vertexIdU_, vertexIdV_, digraph_),
-          treeEdge: function(vertexIdU_, vertexIdV_, digraph_),
-          nonTreeEdge: function(vertexIdU_, vertexIdV_, digraph_),
-          grayTarget: function(vertexIdU_, vertexIdV_, digraph_),
-          blackTarget: function(vertexIdU_, vertexIdV_, digraph_),
-          finishVertex: function(vertexId_, digraph_)
-      };
-    */
+var helperFunctions = require('./helper-functions');
+var colors = require('./digraph-bfs-colors');
+var createBreadthFirstSearchContext = require('./digraph-bfs-context');
 
-    var colors = module.exports.colors = { white: 0, gray: 1, black: 2 };
+/*
 
-    module.exports.createBreadthFirstSearchContext = function (digraph_, visitorInterface_) {
-        if ((digraph_ === null) || !digraph_) {
-            throw new Error("Missing required graph input parameter.");
+  request = {
+  digraph: reference to jsgraph.DirectedGraph container object (required)
+  visitor: reference to jsgraph BFV visitor object (required)
+  options: {
+  startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
+  Note: if ommitted, BFS uses the digraph's root vertex set as the start vertex set
+  signalStart: Boolean flag (optional - default is true if ommitted)
+  Note: By default, BFS will call startVertex on each search root vertex.
+  In advanced scenarios you may wish to override this behavior.
+  searchContext: reference to BFS search context object (optional)
+  Note: By default, BFS allocates the search context internally and returns it to
+  the caller. In advanced scenarios you may wish to provide a pre-initialized
+  (or potentially pre-colored) search context object.
+  }
+  }
+
+  response = {
+  error: null indicating success or a string containing an explanation of the failure
+  result: {
+  searchCompleted: Boolean flag
+  searchContext: reference to the BFS search context object
+  } // or null to indicate a failure
+
+*/
+
+
+module.exports.breadthFirstSearch = function (request_) {
+
+    var response = { error: null, result: null };
+    var errors = [];
+    var inBreakScope = false;
+    var createBreadthFirstSearchContext = function() {
+        var contextResponse = createBreadthFirstSearchContext({ digraph: request_.digraph });
+        if (contextResponse.error) {
+            errors.unshift(contextResponse.error);
+            return undefined;
         }
-        var bfsContext = {
-            colorMap: {},
-            undiscoveredMap: {}
-        };
-        for (var vertexId in digraph_.vertexMap) {
-            bfsContext.colorMap[vertexId] = colors.white;
-            bfsContext.undiscoveredMap[vertexId] = true;
-            if ((visitorInterface_ !== null) && visitorInterface_ &&
-                (visitorInterface_.initializeVertex !== null) && visitorInterface_.initializeVertex) {
-                visitorInterface_.initializeVertex(vertexId, digraph_);
-            }
-        }
-        return bfsContext;
+        return contextResponse.result;
     };
+    while (!inBreakScope) {
+        inBreakScope = true;
 
-    /*
+        var request = null;
 
-      request = {
-          digraph: reference to jsgraph.DirectedGraph container object (required)
-          visitor: reference to jsgraph BFV visitor object (required)
-          options: {
-              startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
-                     Note: if ommitted, BFS uses the digraph's root vertex set as the start vertex set
-              signalStart: Boolean flag (optional - default is true if ommitted)
-                     Note: By default, BFS will call startVertex on each search root vertex.
-                     In advanced scenarios you may wish to override this behavior.
-              searchContext: reference to BFS search context object (optional)
-                     Note: By default, BFS allocates the search context internally and returns it to
-                     the caller. In advanced scenarios you may wish to provide a pre-initialized
-                     (or potentially pre-colored) search context object.
-          }
-      }
+        // Verify the outer shape of the request object.
+        var innerResponse = helperFunctions.getJSType(request_);
+        if (innerResponse !== '[object Object]') {
+            errors.unshift("Missing request object ~. Found type '" + innerResponse + "'.");
+            break;
+        }
+        request = {};
+        innerResponse = helperFunctions.getJSType(request_.digraph);
+        if (innerResponse !== '[object Object]') {
+            errors.unshift("Missing required DirectedGraph reference ~.digraph. Found type '" + innerResponse + "'.");
+            break;
+        }
+        request.digraph = request_.digraph;
+        innerResponse = helperFunctions.getJSType(request_.visitor);
+        if (innerResponse !== '[object Object]') {
+            errors.unshift("Missing required visitor object reference ~.visitor. Found type '" + innerResponse + "'.");
+            break;
+        }
+        request.visitor = request_.visitor;
+        innerResponse = helperFunctions.getJSType(request_.options);
+        if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Object]')) {
+            errors.unshift("Options object ~.options is the wrong type. Found type '" + innerResponse + "'.");
+            break;
+        }
+        request.options = {};
+        if (innerResponse === '[object Object]') {
+            innerResponse = helperFunctions.getJSType(request_.options.startVector);
+            switch (innerResponse) {
+            case '[object Undefined]':
+                break;
+            case '[object String]':
+                request.options.startVector = [ request_.options.startVector ];
+                break;
+            case '[object Array]':
+                request.options.startVector = request_.options.startVector;
+                break;
+            default:
+                errors.unshift("Options object property ~.options.startVector is the wrong type. Expected either '[object String]', '[object Array]', or '[object Undefined]'. Found type '" + innerResponse + "'.");
+                break;
+            } // end switch
 
-      response = {
-          error: null indicating success or a string containing an explanation of the failure
-          result: {
-              searchCompleted: Boolean flag
-              searchContext: reference to the BFS search context object
-          } // or null to indicate a failure
-     */
+            if (errors.length) {
+                break;
+            }
 
+            innerResponse = helperFunctions.getJSType(request_.options.signalStart);
+            if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Boolean]')) {
+                errors.unshift("Options object property ~.options.signalStart is the wrong type. Expected either '[object Boolean]' or '[object Undefined]'. Found type '" + innerResponse + "'.");
+                break;
+            }
+            if (innerResponse === '[objectBoolean]') {
+                request.options.signalStart = request_.options.signalStart;
+            }
 
-    module.exports.breadthFirstSearch = function(digraph_, searchContext_, startVertexId_, visitorInterface_, signalStartVertex_) {
+            innerResponse = helperFunctions.getJSType(request_.options.searchContext);
+            if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Object]')) {
+                errors.unshift("Options object property ~.options.searchContext is the wrong type. Expected either '[object Object]' or '[object Undefined']. Found type '" + innerResponse + "'.");
+                break;
+            }
+            if (innerResponse === '[object Object]') {
+                request.options.searchContext = request_.options.searchContext;
+            }
 
-        if ((digraph_ === null) || !digraph_ ||
-            (searchContext_ === null) || !searchContext_ ||
-            (startVertexId_ === null) || !startVertexId_ ||
-            (visitorInterface_ === null) || !visitorInterface_) {
-            throw new Error("Missing required input parameter(s).");
+        } // end if options object specified
+        
+        helperFunctions.setValueIfUndefined(request.options.startVector, request.digraph.getRootVertices);
+        helperFunctions.setValueIfUndefined(request.options.signalStart, true);
+        helperFunctions.setValueIfUndefined(request.options.searchContext, createBreadthFirstSearchContext);
+
+        if (errors.length) {
+            break;
         }
 
         var searchQueue = [];
 
         var initializeAsVisit = !(startVertexId_ instanceof Array);
 
-        var rootVertices = 0;
         var signalStart = ((signalStartVertex_ !== null) && signalStartVertex_) || false;
 
         var continueSearch = true;
-
-        var verifyVisitorResponse = function (visitorResponse_) {
-            var type = Object.prototype.toString.call(visitorResponse_);
-            if (type !== '[object Boolean]') {
-                throw new Error("All jsgraph visitor functions are required to return a boolean flag indicating if the search algorithm should proceed or not. Visitor returned type '" + type + "'.");
-            }
-            return visitorResponse_;
-        };
 
         var enqueueRootVertex = function(rootVertexId_) {
 
@@ -231,8 +287,15 @@
 
         } // while (searchQueue.length)
 
-        return continueSearch;
+    } // end while (!inBreakScope)
 
-    };
-
-})();
+    if (errors.length) {
+        response.error = errors.unshift ' ';
+    } else {
+        response.result = {
+            searchCompleted: continueSearch,
+            searchContext: searchContext
+        };
+    }
+    return response;
+};
