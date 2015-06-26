@@ -8,44 +8,54 @@ module.exports = SearchPathRecorder = (function() {
         this.step = 0;
 
         this.visitorInterface = {
-            initializeVertex: function(u, g) {
-                self.results.push(self.step++ + " initializeVertex " + u);
+            // request = { u: vertexId, g: DirectedGraph }
+            initializeVertex: function(request) {
+                self.results.push(self.step++ + " initializeVertex " + request.u);
                 return true;
             },
-            startVertex: function(s, g) {
-                self.results.push(self.step++ + " startVertex " + s);
+            // request = { u: vertexId, g: DirectedGraph }
+            startVertex: function(request) {
+                self.results.push(self.step++ + " startVertex " + request.u);
                 return true;
             },
-            discoverVertex: function(u, g) {
-                self.results.push(self.step++ + " discoverVertex " + u);
+            // request = { u: vertexId, g: DirectedGraph }
+            discoverVertex: function(request) {
+                self.results.push(self.step++ + " discoverVertex " + request.u);
                 return true;
             },
-            examineVertex: function(u, g) {
-                self.results.push(self.step++ + " examineVertex " + u);
+            // request = { u: vertexId, g: DirectedGraph }
+            examineVertex: function(request) {
+                self.results.push(self.step++ + " examineVertex " + request.u);
                 return true;
             },
-            examineEdge: function(u, v, g) {
-                self.results.push(self.step++ + " examineEdge [" + u + "," + v + "]");
+            // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
+            examineEdge: function(request) {
+                self.results.push(self.step++ + " examineEdge [" + request.edut.u + "," + request.edge.v + "]");
                 return true;
             },
-            treeEdge: function(u, v, g) {
-                self.results.push(self.step++ + " treeEdge [" + u + "," + v + "]");
+            // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
+            treeEdge: function(request) {
+                self.results.push(self.step++ + " treeEdge [" + request.edge.u + "," + request.edge.v + "]");
                 return true;
             },
-            nonTreeEdge: function(u, v, g) {
-                self.results.push(self.step++ + " nonTreeEdge [" + u + "," + v + "]");
+            // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
+            nonTreeEdge: function(request) {
+                self.results.push(self.step++ + " nonTreeEdge [" + request.edge.u + "," + request.edge.v + "]");
                 return true;
             },
-            grayTarget: function(u, v, g) {
-                self.results.push(self.step++ + " grayTarget [" + u + "," + v + "]");
+            // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
+            grayTarget: function(request) {
+                self.results.push(self.step++ + " grayTarget [" + request.edge.u + "," + request.edge.v + "]");
                 return true;
             },
-            blackTarget: function(u, v, g) {
-                self.results.push(self.step++ + " blackTarget [" + u + "," + v + "]");
+            // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
+            blackTarget: function(request) {
+                self.results.push(self.step++ + " blackTarget [" + request.edge.u + "," + request.edge.v + "]");
                 return true;
             },
-            finishVertex: function(u, g) {
-                self.results.push(self.step++ + " finishVertex " + u);
+            // request = { u: vertexId, g: DirectedGraph }
+            finishVertex: function(request) {
+                self.results.push(self.step++ + " finishVertex " + request.u);
                 return true;
             }
         };

@@ -15,15 +15,15 @@ module.exports = function (request_) {
     var inBreakScope = false;
     while (!inBreakScope) {
         inBreakScope = true;
-        objectTS = '[object Object]';
+        var objectTS = '[object Object]';
         // Verify request.
-        var type = helperFunctions.getJSType(request_);
+        var type = helperFunctions.JSType(request_);
         if (type !== objectTS) {
             errors.unshift("Expected request to be of type '" + objectTS + "' but found '" + type + "'.");
             break;
         }
         // Verify request.digraph.
-        type = helperFunctions.getJSType(request_.digraph);
+        type = helperFunctions.JSType(request_.digraph);
         if (type !== objectTS) {
             errors.unshift("Expected request.digraph to be of type '" + objectTS + "' but found '" + type + "'.");
             break;

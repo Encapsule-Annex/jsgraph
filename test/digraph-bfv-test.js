@@ -8,33 +8,114 @@ var should = require('chai').should;
 // internal
 var DirectedGraph = require('../src/digraph');
 var bfs = require('../src/digraph-bfs');
-var createBreadthFirstSearchContext = bfs.createBreadthFirstSearchContext;
+var createBreadthFirstSearchContext = require('../src/digraph-bfs-context');
 var breadthFirstSearch = bfs.breadthFirstSearch;
 var SearchPathRecorder = require('./fixture/bfv-results-recorder');
 
 
+describe("BFV: manual search context create (bad) missing request object.", function() {
+    var response = null;
+
+    before(function() {
+        response = createBreadthFirstSearchContext();
+    });
+    it("createBreadthFirstSearchContext call should have returned a response object", function() {
+        assert.isDefined(response);
+        assert.isNotNull(response);
+        assert.isObject(response);
+    });
+    it("response JSON should match expected result", function() {
+        var expectedResult = '{"error":"jsgraph.directed.createBreadthFirstSearchContext failed: Expected request to be of type \'[object Object]\' but found \'[object Undefined]\'.","result":null}';
+        assert.equal(JSON.stringify(response), expectedResult);
+    });
+});
+
+describe("BFV: manual search context create (bad) missing digraph object.", function() {
+    var response = null;
+
+    before(function() {
+        response = createBreadthFirstSearchContext({});
+    });
+    it("createBreadthFirstSearchContext call should have returned a response object", function() {
+        assert.isDefined(response);
+        assert.isNotNull(response);
+        assert.isObject(response);
+    });
+    it("response JSON should match expected result", function() {
+        var expectedResult = '{"error":"jsgraph.directed.createBreadthFirstSearchContext failed: Expected request.digraph to be of type \'[object Object]\' but found \'[object Undefined]\'.","result":null}';
+        assert.equal(JSON.stringify(response), expectedResult);
+    });
+});
+
+
+describe("BFV: manual search context create (okay).", function() {
+
+    var digraph = null;
+    var response = null;
+    var searchResults = null;
+    var bfvContext = null;
+
+    before(function() {
+        digraph = new DirectedGraph();
+        digraph.addVertex('island');
+        searchResults = new SearchPathRecorder();
+        response = createBreadthFirstSearchContext({ digraph: digraph });
+    });
+
+    it("the call to createBreadthFirstSearchContext should have returned a response.", function() {
+        assert.isDefined(response);
+        assert.isNotNull(response);
+        assert.isObject(response);
+    });
+
+    it("response JSON should match expected result", function() {
+        var expectedResult = '{"error":null,"result":{"searchStatus":"pending","colorMap":{"island":0},"undiscoveredMap":{"island":true}}}';
+        assert.equal(JSON.stringify(response), expectedResult);
+    });
+
+});
+
 describe("BFV: single vertex", function() {
 
     var digraph = null;
-    var results = null;
-    var bfvContext = null;
+    var searchPathRecorder = null;
+    var bfsContextResponse = null;
+    var bfsSearchResponse = null;
 
-    var expectedResults = '["0 initializeVertex island","1 discoverVertex island","2 startVertex island","3 examineVertex island","4 finishVertex island"]';
-    var actualResults = null;
+    var expectedSearchPath = '["0 initializeVertex island","1 discoverVertex island","2 startVertex island","3 examineVertex island","4 finishVertex island"]';
+    var expectedSearchResult = '';
+    var actualSearchPath = null;
 
-    
     before(function() {
         digraph = new DirectedGraph();
         digraph.addVertex("island");
-        results = new SearchPathRecorder();
-        bfvContext = createBreadthFirstSearchContext(digraph, results.visitorInterface);
-        breadthFirstSearch(digraph, bfvContext, "island", results.visitorInterface, true);
+        searchPathRecorder = new SearchPathRecorder();
+        bfsContextResponse = createBreadthFirstSearchContext({ digraph: digraph });
+        assert.isNull(bfsContextResponse.error, "response.error should be null");
+        
+        bfsSearchResponse = breadthFirstSearch(
+            {
+                digraph: digraph,
+                visitor: searchPathRecorder.visitorInterface,
+                options: {
+                    startVector: "island",
+                    signalStart: true,
+                    searchContext: bfsContextResponse.result
+                }
+            }
+        );
+
         // console.log(results.toJSON());
-        actualResults = results.toJSON();
+        actualSearchPath = searchPathRecorder.toJSON();
+        actualSearchResult = JSON.stringify(bfsSearchResponse);
     });
 
-    it("search result path string should match expected traversal pattern", function() {
-        assert.equal(expectedResults, actualResults);
+    it("search path result string should match expected JSON.", function() {
+        assert.equal(expectedSearchPath, actualSearchPath);
+    });
+
+    it("seach result string should match expected JSON.", function() {
+        assert.equal(actualSearchResult, expectedSearchResult);
     });
 
 });

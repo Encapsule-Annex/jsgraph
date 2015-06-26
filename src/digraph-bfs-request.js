@@ -35,46 +35,46 @@ module.exports = function (request_) {
 
     var response = { error: null, result: null };
     var errors = [];
+    var nrequest = null;
     var inBreakScope = false;
     while (!inBreakScope) {
-
-        var request = null;
+        inBreakScope = true;
 
         // Verify the outer shape of the request object.
-        var innerResponse = helperFunctions.getJSType(request_);
+        var innerResponse = helperFunctions.JSType(request_);
         if (innerResponse !== '[object Object]') {
             errors.unshift("Missing request object ~. Found type '" + innerResponse + "'.");
             break;
         }
-        request = {};
-        innerResponse = helperFunctions.getJSType(request_.digraph);
+        nrequest = {};
+        innerResponse = helperFunctions.JSType(request_.digraph);
         if (innerResponse !== '[object Object]') {
             errors.unshift("Missing required DirectedGraph reference ~.digraph. Found type '" + innerResponse + "'.");
             break;
         }
-        request.digraph = request_.digraph;
-        innerResponse = helperFunctions.getJSType(request_.visitor);
+        nrequest.digraph = request_.digraph;
+        innerResponse = helperFunctions.JSType(request_.visitor);
         if (innerResponse !== '[object Object]') {
             errors.unshift("Missing required visitor object reference ~.visitor. Found type '" + innerResponse + "'.");
             break;
         }
-        request.visitor = request_.visitor;
-        innerResponse = helperFunctions.getJSType(request_.options);
+        nrequest.visitor = request_.visitor;
+        innerResponse = helperFunctions.JSType(request_.options);
         if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Object]')) {
             errors.unshift("Options object ~.options is the wrong type. Found type '" + innerResponse + "'.");
             break;
         }
-        request.options = {};
+        nrequest.options = {};
         if (innerResponse === '[object Object]') {
-            innerResponse = helperFunctions.getJSType(request_.options.startVector);
+            innerResponse = helperFunctions.JSType(request_.options.startVector);
             switch (innerResponse) {
             case '[object Undefined]':
                 break;
             case '[object String]':
-                request.options.startVector = [ request_.options.startVector ];
+                nrequest.options.startVector = [ request_.options.startVector ];
                 break;
             case '[object Array]':
-                request.options.startVector = request_.options.startVector;
+                nrequest.options.startVector = request_.options.startVector;
                 break;
             default:
                 errors.unshift("Options object property ~.options.startVector is the wrong type. Expected either '[object String]', '[object Array]', or '[object Undefined]'. Found type '" + innerResponse + "'.");
@@ -85,37 +85,37 @@ module.exports = function (request_) {
                 break;
             }
 
-            innerResponse = helperFunctions.getJSType(request_.options.signalStart);
+            innerResponse = helperFunctions.JSType(request_.options.signalStart);
             if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Boolean]')) {
                 errors.unshift("Options object property ~.options.signalStart is the wrong type. Expected either '[object Boolean]' or '[object Undefined]'. Found type '" + innerResponse + "'.");
                 break;
             }
-            if (innerResponse === '[objectBoolean]') {
-                request.options.signalStart = request_.options.signalStart;
+            if (innerResponse === '[object Boolean]') {
+                nrequest.options.signalStart = request_.options.signalStart;
             }
 
-            innerResponse = helperFunctions.getJSType(request_.options.searchContext);
+            innerResponse = helperFunctions.JSType(request_.options.searchContext);
             if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Object]')) {
                 errors.unshift("Options object property ~.options.searchContext is the wrong type. Expected either '[object Object]' or '[object Undefined']. Found type '" + innerResponse + "'.");
                 break;
             }
             if (innerResponse === '[object Object]') {
-                request.options.searchContext = request_.options.searchContext;
+                nrequest.options.searchContext = request_.options.searchContext;
             }
 
         } // end if options object specified
         
-        helperFunctions.setValueIfUndefined(request.options.startVector, request.digraph.getRootVertices);
-        helperFunctions.setValueIfUndefined(request.options.signalStart, true);
-        helperFunctions.setValueIfUndefined(request.options.searchContext, createBreadthFirstSearchContext);
+        helperFunctions.setValueIfUndefined(nrequest.options.startVector, nrequest.digraph.getRootVertices);
+        helperFunctions.setValueIfUndefined(nrequest.options.signalStart, true);
+        helperFunctions.setValueIfUndefined(nrequest.options.searchContext, createBreadthFirstSearchContext);
 
-
-
-
+        response.result = nrequest;
 
     }
     if (errors.length) {
         response.error = errors.join(' ');
+    } else {
+        response.result = nrequest;
     }
     return response;
 
