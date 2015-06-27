@@ -8,9 +8,35 @@ var digraphExport = require('./digraph-json-export');
 
 (function() {
 
+    var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
     var DirectedGraph = (function() {
 
         function DirectedGraph(jsonOrObject_) {
+            this.getVertices = __bind(this.getVertices, this);
+            this.getRootVertices = __bind(this.getRootVertices, this);
+            this.getLeafVertices = __bind(this.getLeafVertices, this);
+            this.addVertex = __bind(this.addVertex, this);
+            this.isVertex = __bind(this.isVertex, this);
+            this.removeVertex = __bind(this.removeVertex, this);
+            this.addEdge = __bind(this.addEdge, this);
+            this.removeEdge = __bind(this.removeEdge, this);
+            this.isEdge = __bind(this.isEdge, this);
+            this.verticesCount = __bind(this.verticesCount, this);
+            this.edgesCount = __bind(this.edgesCount, this);
+            this.getEdges = __bind(this.getEdges, this);
+            this.inEdges = __bind(this.inEdges, this);
+            this.outEdges = __bind(this.outEdges, this);
+            this.inDegree = __bind(this.inDegree, this);
+            this.outDegree = __bind(this.outDegree, this);
+            this.getVertexProperty = __bind(this.getVertexProperty, this);
+            this.getEdgeProperty = __bind(this.getEdgeProperty, this);
+            this.setVertexProperty = __bind(this.setVertexProperty, this);
+            this.setEdgeProperty = __bind(this.setEdgeProperty, this);
+            this.toObject = __bind(this.toObject, this);
+            this.toJSON = __bind(this.toJSON, this);
+            this.fromObject = __bind(this.fromObject, this);
+            this.fromJSON = __bind(this.fromJSON, this);
             this.vertexMap = {};
             this.rootMap = {};
             this.leafMap = {};
@@ -254,4 +280,4 @@ var digraphExport = require('./digraph-json-export');
 
     module.exports = DirectedGraph;
 
-})();
+}).call(this);
