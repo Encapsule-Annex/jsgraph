@@ -7,6 +7,9 @@ var should = require('chai').should;
 
 // internal
 var DirectedGraph = require('../src/digraph');
+
+var testBFSV = require('./test-runner-bfsv');
+
 var bfs = require('../src/digraph-bfs');
 var createBreadthFirstSearchContext = require('../src/digraph-bfs-context');
 var breadthFirstSearch = bfs.breadthFirstSearch;
@@ -75,6 +78,43 @@ describe("BFV: manual search context create (okay).", function() {
 
 });
 
+
+testBFSV({ testName: "Missing request", validConfig: false,
+           expectedResults: {
+               error: 'jsgraph.directed.breadthFirst* failure: Missing request object ~. Found type \'[object Undefined]\'.',
+               result: null,
+               path: null
+           }});
+
+testBFSV({ testName: "Bad request type", validConfig: false,
+           request: "No good",
+           expectedResults: {
+               error: 'jsgraph.directed.breadthFirst* failure: Missing request object ~. Found type \'[object String]\'.',
+               result: null,
+               path: null
+           }});
+
+testBFSV({ testName: "Empty request", validConfig: false,
+           request: {}, // also no good
+           expectedResults: {
+               error: 'jsgraph.directed.breadthFirst* failure: Missing required DirectedGraph reference ~.digraph. Found type \'[object Undefined]\'.',
+               result: null,
+               path: null
+           }});
+
+(function() {
+    var digraph = new DirectedGraph();
+    testBFSV({ testName: "Empty missing visitor", validConfig: true,
+               request: { digraph: digraph }, // also no good
+               expectedResults: {
+                   error: '',
+                   result: null,
+                   path: null
+               }});
+})();
+
+
+
 describe("BFV: single vertex", function() {
 
     var digraph = null;
@@ -83,8 +123,10 @@ describe("BFV: single vertex", function() {
     var bfsSearchResponse = null;
 
     var expectedSearchPath = '["0 initializeVertex island","1 discoverVertex island","2 startVertex island","3 examineVertex island","4 finishVertex island"]';
-    var expectedSearchResult = '';
     var actualSearchPath = null;
+
+    var expectedSearchResult = '{"error":null,"result":{"searchCompleted":true,"searchContext":{"searchStatus":"completed","colorMap":{"island":2},"undiscoveredMap":{}}}}';
+    var actualSearchResult = null;
 
     before(function() {
         digraph = new DirectedGraph();
@@ -116,6 +158,10 @@ describe("BFV: single vertex", function() {
 
     it("seach result string should match expected JSON.", function() {
         assert.equal(actualSearchResult, expectedSearchResult);
+    });
+
+    it("search path string should match expected JSON.", function() {
+        assert.equal(actualSearchPath, expectedSearchPath);
     });
 
 });

@@ -51,14 +51,14 @@ var JSTypeInTypeSet = function(request_) {
 
 };
 
-var setValueIfUndefined = function(reference_, valueOrFunction_) {
-    var type = JSType(reference_);
+ var setPropertyValueIfUndefined = function(reference_, propertyName_, valueOrFunction_) {
+     var type = JSType(reference_[propertyName_]);
     if (type === '[object Undefined]') {
-        type = getJSType(valueOrFunction_);
+        type = JSType(valueOrFunction_);
         if (type !== '[object Function]') {
-            reference_ = valueOrFunction_;
+            reference_[propertyName_] = valueOrFunction_;
         } else {
-            reference_ = valueOrFunction_();
+            reference_[propertyName_] = valueOrFunction_();
         }
         return true;
     }
@@ -67,5 +67,5 @@ var setValueIfUndefined = function(reference_, valueOrFunction_) {
 
 module.exports = {
     JSType: JSType,
-    setValueIfUndefined: setValueIfUndefined
+    setPropertyValueIfUndefined: setPropertyValueIfUndefined
 };

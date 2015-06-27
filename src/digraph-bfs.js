@@ -59,10 +59,13 @@ var normalizeRequest = require('./digraph-bfs-request');
 
 module.exports.breadthFirstSearch = function (request_) {
 
+    var nrequest = null; // normalized request object
     var response = { error: null, result: null };
     var errors = [];
     var continueSearch = true;
     var inBreakScope = false;
+    var searchQueue = [];
+
 
     while (!inBreakScope) {
         inBreakScope = true;
@@ -72,19 +75,44 @@ module.exports.breadthFirstSearch = function (request_) {
             errors.unshift(innerResponse.error);
             break;
         }
-        var nrequest = innerResponse.result;
+        nrequest = innerResponse.result;
+        var index, vertexId; 
 
-        var searchQueue = [];
+        // initializeVertex visitor callback.
+        if (nrequest.options.searchContext.searchStatus === 'pending') {
+            for (vertexId in nrequest.options.searchContext.colorMap) {
+                innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'initializeVertex', request: { u: vertexId, g: nrequest.digraph }});
+                if (innerResponse.error) {
+                    errors.unshift(innerResponse.error);
+                    break;
+                }
+                continueSearch = innerResponse.result;
+                if (!continueSearch) {
+                    break;
+                }
+            }
+        }
+
+        nrequest.options.searchContext.searchStatus = 'active';
+
+        if (errors.length || !continueSearch) {
+            break;
+        }
         
-        for (var index in nrequest.options.startVector) {
+        // Initialize the BF visit or search.
+        // Note that all that distinguishes visit from search is the number of starting vertices. One -> visit, N -> search.
+
+        for (index in nrequest.options.startVector) {
             var startingVertexId = nrequest.options.startVector[index];
             // Ensure the starting vertex is in the graph container.
             if (!nrequest.digraph.isVertex(startingVertexId)) {
-                throw new Error("BFV request failed. Vertex '" + startingVertexId + "' not found in specfied directed graph container.");
+                errors.unshift("BF* request failed. Vertex '" + startingVertexId + "' not found in specfied directed graph container.");
+                break;
             }
             // Ensure the vertex is white in the color map.
             if (nrequest.options.searchContext.colorMap[startingVertexId] !== colors.white) {
-                throw new Error("BFV request failed. Vertex '" + startingVertexId + "' color map not initialized to white.");
+                errors.unshift("BF* request failed. Vertex '" + startingVertexId + "' color map not initialized to white.");
+                break;
             }
             // discoverVertex visitor callback.
             innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'discoverVertex', request: { u: startingVertexId, g: nrequest.digraph }});
@@ -92,7 +120,7 @@ module.exports.breadthFirstSearch = function (request_) {
                 errors.unshift(innerResponse.error);
                 break;
             }
-            continueSearch = innerResponse.result
+            continueSearch = innerResponse.result;
 
             // Remove the vertex from the undiscovered vertex map.
             delete nrequest.options.searchContext.undiscoveredMap[startingVertexId];
@@ -108,7 +136,7 @@ module.exports.breadthFirstSearch = function (request_) {
                 errors.unshift(innerResponse.error);
                 break;
             }
-            continueSearch = innerResponse.result
+            continueSearch = innerResponse.result;
             // Add the vertex to the search
             searchQueue.push(startingVertexId);
 
@@ -119,11 +147,15 @@ module.exports.breadthFirstSearch = function (request_) {
             if (!continueSearch) {
                 break;
             }
-        }
 
+        } // for initialize search
+
+        // Execute the main breadth-first algorithm using the starting vertex set as the initial contents of the searchQueue.
         while (searchQueue.length && continueSearch && !errors.length) {
 
-            var vertexId = searchQueue.shift();
+            vertexId = searchQueue.shift();
+
+            // By convention
             nrequest.options.searchContext.colorMap[vertexId] = colors.black;
 
             // examineVertex visitor callback.
@@ -137,9 +169,9 @@ module.exports.breadthFirstSearch = function (request_) {
                 break;
             }
 
-            var outEdges = digraph_.outEdges(vertexId);
+            var outEdges = nrequest.digraph.outEdges(vertexId);
 
-            for (var index in outEdges) {
+            for (index in outEdges) {
 
                 var outEdge = outEdges[index];
 
@@ -159,57 +191,85 @@ module.exports.breadthFirstSearch = function (request_) {
 
                 case colors.white:
                     // discoverVertex visitor callback.
-                    if ((visitorInterface_.discoverVertex !== null) && visitorInterface_.discoverVertex) {
-                        continueSearch = verifyVisitorResponse(visitorInterface_.discoverVertex(outEdge.v, digraph_));
+                    innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'dicoverVertex', request: { u: outEdge.v, g: nrequest.digraph }});
+                    if (innerResponse.error) {
+                        errors.unshift(innerResponse.error);
+                        break;
                     }
-                    delete searchContext_.undiscoveredMap[outEdge.v];
-
-                    if (continueSearch) {
-                        // treeEdge visitor callback.
-                        if ((visitorInterface_.treeEdge !== null) && visitorInterface_.treeEdge) {
-                            continueSearch = verifyVisitorResponse(visitorInterface_.treeEdge(outEdge.u, outEdge.v, digraph_));
-                        }
-                        searchQueue.push(outEdge.v);
-                        nrequest.options.searchContext.colorMap[outEdge.v] = colors.gray;
+                    continueSearch = innerResponse.result;
+                    delete nrequest.options.searchContext.undiscoveredMap[outEdge.v];
+                    if (!continueSearch) {
+                        break;
                     }
+                    // treeEdge visitor callback.
+                    innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'treeEdge', request: { e: outEdge, g: nrequest.digraph }});
+                    if (innerResponse.error) {
+                        errors.unshift(innerResponse.error);
+                        break;
+                    }
+                    continueSearch = innerResponse.result;
+                    searchQueue.push(outEdge.v);
+                    nrequest.options.searchContext.colorMap[outEdge.v] = colors.gray;
                     break;
 
                 case colors.gray:
                     // nonTreeEdge visitor callback.
-                    if ((visitorInterface_.nonTreeEdge !== null) && visitorInterface_.nonTreeEdge) {
-                        continueSearch = verifyVisitorResponse(visitorInterface_.nonTreeEdge(outEdge.u, outEdge.v, digraph_));
+                    innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'nonTreeEdge', request: { e: outEdge, g: nrequest.digraph }});
+                    if (innerResponse.error) {
+                        errors.unshift(innerResponse.error);
+                        break;
                     }
+                    continueSearch = innerResponse.result;
                     if (continueSearch) {
                         // grayTarget visitor callback.
-                        if ((visitorInterface_.grayTarget !== null) && visitorInterface_.grayTarget) {
-                            continueSearch = verifyVisitorResponse(visitorInterface_.grayTarget(outEdge.u, outEdge.v, digraph_));
+                        innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'grayTarget', request: { e: outEdge, g: nrequest.digraph }});
+                        if (innerResponse.error) {
+                            errors.unshift(innerResponse.error);
+                            break;
                         }
+                        continueSearch = innerResponse.result;
                     }
                     break;
 
                 case colors.black:
                     // nonTreeEdge visitor callback.
-                    if ((visitorInterface_.nonTreeEdge !== null) && visitorInterface_.nonTreeEdge) {
-                        continueSearch = verifyVisitorResponse(visitorInterface_.nonTreeEdge(outEdge.u, outEdge.v, digraph_));
+                    innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'nonTreeEdge', request: { e: outEdge, g: nrequest.digraph }});
+                    if (innerResponse.error) {
+                        errors.unshift(innerResponse.error);
+                        break;
                     }
+                    continueSearch = innerResponse.result;
                     if (continueSearch) {
                         // blackTarget visitor callback.
-                        if ((visitorInterface_.blackTarget !== null) && visitorInterface_.blackTarget) {
-                            continueSearch = verifyVisitorResponse(visitorInterface_.blackTarget(outEdge.u, outEdge.v, digraph_));
+                        innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'blackTarget', request: { e: outEdge, g: nrequest.digraph }});
+                        if (innerResponse.error) {
+                            errors.unshift(innerResponse.error);
+                            break;
                         }
+                        continueSearch = innerResponse.result;
                     }
                     break;
 
                 default:
-                    throw new Error("BFV failure: An invalid color value was found in the color map for vertex '" + outEdge.v + "'. Please file an issue!");
+                    throw new Error("BF* failure: An invalid color value was found in the color map for vertex '" + outEdge.v + "'. Please file an issue!");
 
                 } // switch (colorV)
 
             } // for (outEdge in outEdges)
 
+            if (errors.length || !continueSearch) {
+                break;
+            }
+
             // finishVertex visitor callback.
-            if ((visitorInterface_.finishVertex !== null) && visitorInterface_.finishVertex && continueSearch) {
-                continueSearch = verifyVisitorResponse(visitorInterface_.finishVertex(vertexId, digraph_));
+            innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'finishVertex', request: { u: vertexId, g: nrequest.digraph }});
+            if (innerResponse.error) {
+                errors.unshift(innerResponse.error);
+                break;
+            }
+            continueSearch = innerResponse.result;
+            if (!continueSearch) {
+                break;
             }
 
         } // while (searchQueue.length)
@@ -217,11 +277,16 @@ module.exports.breadthFirstSearch = function (request_) {
     } // end while (!inBreakScope)
 
     if (errors.length) {
+        if (nrequest) {
+            nrequest.options.searchContext.searchStatus = 'error';
+        }
+        errors.unshift("jsgraph.directed.breadthFirst* failure:");
         response.error = errors.join(' ');
     } else {
+        nrequest.options.searchContext.searchStatus = continueSearch?'completed':'terminated';
         response.result = {
             searchCompleted: continueSearch,
-            searchContext: searchContext
+            searchContext: nrequest.options.searchContext
         };
     }
     return response;

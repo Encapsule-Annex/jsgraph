@@ -37,6 +37,19 @@ module.exports = function (request_) {
     var errors = [];
     var nrequest = null;
     var inBreakScope = false;
+
+    var createSearchContext = function() {
+        var response = createBreadthFirstSearchContext({ digraph: nrequest.digraph });
+        var result = null;
+        if (response.error) {
+            errors.unshift(response.error);
+        } else {
+            result = response.result;
+        }
+        return result;
+    };
+        
+
     while (!inBreakScope) {
         inBreakScope = true;
 
@@ -58,6 +71,7 @@ module.exports = function (request_) {
             errors.unshift("Missing required visitor object reference ~.visitor. Found type '" + innerResponse + "'.");
             break;
         }
+        
         nrequest.visitor = request_.visitor;
         innerResponse = helperFunctions.JSType(request_.options);
         if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Object]')) {
@@ -105,9 +119,9 @@ module.exports = function (request_) {
 
         } // end if options object specified
         
-        helperFunctions.setValueIfUndefined(nrequest.options.startVector, nrequest.digraph.getRootVertices);
-        helperFunctions.setValueIfUndefined(nrequest.options.signalStart, true);
-        helperFunctions.setValueIfUndefined(nrequest.options.searchContext, createBreadthFirstSearchContext);
+        helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'startVector', nrequest.digraph.getRootVertices);
+        helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'signalStart', true);
+        helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'searchContext', createSearchContext);
 
         response.result = nrequest;
 
