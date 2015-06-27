@@ -61,7 +61,6 @@ describe("BFV: manual search context create (okay).", function() {
     before(function() {
         digraph = new DirectedGraph();
         digraph.addVertex('island');
-        searchResults = new SearchPathRecorder();
         response = createBreadthFirstSearchContext({ digraph: digraph });
     });
 
@@ -104,15 +103,26 @@ testBFSV({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    testBFSV({ testName: "Empty missing visitor", validConfig: true,
-               request: { digraph: digraph }, // also no good
+    testBFSV({ testName: "Empty digraph", validConfig: true,
+               request: { digraph: digraph },
                expectedResults: {
                    error: '',
-                   result: null,
-                   path: null
+                   result: '{"searchCompleted":true,"searchContext":{"searchStatus":"completed","colorMap":{},"undiscoveredMap":{}}}',
+                   path: '[]'
                }});
 })();
 
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex("sunny friday night in seattle and i am writing test vectors");
+    testBFSV({ testName: "Single vertex", validConfig: true,
+               request: { digraph: digraph },
+               expectedResults: {
+                   error: '',
+                   result: '',
+                   path: '[]'
+               }});
+})();
 
 
 describe("BFV: single vertex", function() {

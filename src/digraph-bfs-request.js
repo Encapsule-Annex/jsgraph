@@ -48,6 +48,10 @@ module.exports = function (request_) {
         }
         return result;
     };
+
+    var getRootVertices = function() {
+        return nrequest.digraph.getRootVertices();
+    };
         
 
     while (!inBreakScope) {
@@ -119,7 +123,7 @@ module.exports = function (request_) {
 
         } // end if options object specified
         
-        helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'startVector', nrequest.digraph.getRootVertices);
+        helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'startVector', getRootVertices);
         helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'signalStart', true);
         helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'searchContext', createSearchContext);
 
