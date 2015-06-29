@@ -30,27 +30,27 @@ module.exports = SearchPathRecorder = (function() {
             },
             // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
             examineEdge: function(request) {
-                self.results.push(self.step++ + " examineEdge [" + request.edut.u + "," + request.edge.v + "]");
+                self.results.push(self.step++ + " examineEdge [" + request.e.u + "," + request.e.v + "]");
                 return true;
             },
             // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
             treeEdge: function(request) {
-                self.results.push(self.step++ + " treeEdge [" + request.edge.u + "," + request.edge.v + "]");
+                self.results.push(self.step++ + " treeEdge [" + request.e.u + "," + request.e.v + "]");
                 return true;
             },
             // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
             nonTreeEdge: function(request) {
-                self.results.push(self.step++ + " nonTreeEdge [" + request.edge.u + "," + request.edge.v + "]");
+                self.results.push(self.step++ + " nonTreeEdge [" + request.e.u + "," + request.e.v + "]");
                 return true;
             },
             // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
             grayTarget: function(request) {
-                self.results.push(self.step++ + " grayTarget [" + request.edge.u + "," + request.edge.v + "]");
+                self.results.push(self.step++ + " grayTarget [" + request.e.u + "," + request.e.v + "]");
                 return true;
             },
             // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
             blackTarget: function(request) {
-                self.results.push(self.step++ + " blackTarget [" + request.edge.u + "," + request.edge.v + "]");
+                self.results.push(self.step++ + " blackTarget [" + request.e.u + "," + request.e.v + "]");
                 return true;
             },
             // request = { u: vertexId, g: DirectedGraph }

@@ -22,12 +22,13 @@ module.exports = function (request_) {
     var inBreakScope = false;
     while (!inBreakScope) {
         inBreakScope = true;
-        if ((request_.visitor[request_.method] === null) && !request_.visitor[request_.method]) {
+        var visitorCallback = request_.visitor[request_.method];
+        if ((visitorCallback === null) && !visitorCallback) {
             // If the visitor is not defined on the visitor object, return true to continue the search.
             response.result = true;
             break;
         }
-        var continueSearch = request_.visitor[request_.method](request_.request);
+        var continueSearch = visitorCallback(request_.request);
         var jstype = helperFunctions.JSType(continueSearch);
         if (jstype !== '[object Boolean]') {
             errors.unshift("BFS visitor." + request_.method + " returned type '" + jstype + "' instead of expected '[object Boolean]'.");

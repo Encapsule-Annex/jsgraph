@@ -80,7 +80,7 @@ describe("BFV: manual search context create (okay).", function() {
 
 testBFSV({ testName: "Missing request", validConfig: false,
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* failure: Missing request object ~. Found type \'[object Undefined]\'.',
+               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing request object ~. Found type \'[object Undefined]\'.',
                result: null,
                path: null
            }});
@@ -88,7 +88,7 @@ testBFSV({ testName: "Missing request", validConfig: false,
 testBFSV({ testName: "Bad request type", validConfig: false,
            request: "No good",
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* failure: Missing request object ~. Found type \'[object String]\'.',
+               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing request object ~. Found type \'[object String]\'.',
                result: null,
                path: null
            }});
@@ -96,7 +96,7 @@ testBFSV({ testName: "Bad request type", validConfig: false,
 testBFSV({ testName: "Empty request", validConfig: false,
            request: {}, // also no good
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* failure: Missing required DirectedGraph reference ~.digraph. Found type \'[object Undefined]\'.',
+               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing required DirectedGraph reference ~.digraph. Found type \'[object Undefined]\'.',
                result: null,
                path: null
            }});
@@ -107,126 +107,114 @@ testBFSV({ testName: "Empty request", validConfig: false,
                request: { digraph: digraph },
                expectedResults: {
                    error: '',
-                   result: '{"searchCompleted":true,"searchContext":{"searchStatus":"completed","colorMap":{},"undiscoveredMap":{}}}',
+                   result: '{"searchStatus":"completed","colorMap":{},"undiscoveredMap":{}}',
                    path: '[]'
                }});
 })();
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("sunny friday night in seattle and i am writing test vectors");
-    testBFSV({ testName: "Single vertex", validConfig: true,
+    digraph.addVertex("lone-wolf-vertex");
+    testBFSV({ testName: "Single vertex, default starting vertex set", validConfig: true,
                request: { digraph: digraph },
                expectedResults: {
                    error: '',
+                   result: '{"searchStatus":"completed","colorMap":{"lone-wolf-vertex":2},"undiscoveredMap":{}}',
+                   path: '["0 initializeVertex lone-wolf-vertex","1 discoverVertex lone-wolf-vertex","2 startVertex lone-wolf-vertex","3 examineVertex lone-wolf-vertex","4 finishVertex lone-wolf-vertex"]'
+               }});
+})();
+
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex("lone-wolf-vertex");
+    testBFSV({ testName: "Single vertex, starting vertex not in the graph", validConfig: false,
+               request: { digraph: digraph, options: { startVector: 'orange'}},
+               expectedResults: {
+                   error: 'jsgraph.directed.breadthFirst* algorithm failure: BF* request failed. Vertex \'orange\' not found in specfied directed graph container.',
                    result: '',
-                   path: '[]'
+                   path: ''
+               }});
+})();
+
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex("lone-wolf-vertex");
+    testBFSV({ testName: "Single vertex, starting vertex specified explicity in request", validConfig: true,
+               request: { digraph: digraph, options: { startVector: 'lone-wolf-vertex'}},
+               expectedResults: {
+                   error: '',
+                   result: '{"searchStatus":"completed","colorMap":{"lone-wolf-vertex":2},"undiscoveredMap":{}}',
+                   path: '["0 initializeVertex lone-wolf-vertex","1 discoverVertex lone-wolf-vertex","2 startVertex lone-wolf-vertex","3 examineVertex lone-wolf-vertex","4 finishVertex lone-wolf-vertex"]'
+               }});
+})();
+
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex('islandA');
+    digraph.addVertex('islandB');
+    testBFSV({ testName: "Two disconnected vertices, default starting vertex set", validConfig: true,
+               request: { digraph: digraph },
+               expectedResults: {
+                   error: '',
+                   result: '{"searchStatus":"completed","colorMap":{"islandA":2,"islandB":2},"undiscoveredMap":{}}',
+                   path: '["0 initializeVertex islandA","1 initializeVertex islandB","2 discoverVertex islandA","3 startVertex islandA","4 discoverVertex islandB","5 startVertex islandB","6 examineVertex islandA","7 finishVertex islandA","8 examineVertex islandB","9 finishVertex islandB"]'
                }});
 })();
 
 
-describe("BFV: single vertex", function() {
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex('islandA');
+    digraph.addVertex('islandB');
+    testBFSV({ testName: "Two disconnected vertices, starting vertex set set to 'islandA'", validConfig: true,
+               request: { digraph: digraph, options: { startVector: 'islandA' }},
+               expectedResults: {
+                   error: '',
+                   result: '{"searchStatus":"completed","colorMap":{"islandA":2,"islandB":0},"undiscoveredMap":{"islandB":true}}',
+                   path: '["0 initializeVertex islandA","1 initializeVertex islandB","2 discoverVertex islandA","3 startVertex islandA","4 examineVertex islandA","5 finishVertex islandA"]'
+               }});
+})();
 
-    var digraph = null;
-    var searchPathRecorder = null;
-    var bfsContextResponse = null;
-    var bfsSearchResponse = null;
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex('islandA');
+    digraph.addVertex('islandB');
+    testBFSV({ testName: "Two disconnected vertices, starting vertex set set to 'islandB'", validConfig: true,
+               request: { digraph: digraph, options: { startVector: 'islandB' }},
+               expectedResults: {
+                   error: '',
+                   result: '{"searchStatus":"completed","colorMap":{"islandA":0,"islandB":2},"undiscoveredMap":{"islandA":true}}',
+                   path: '["0 initializeVertex islandA","1 initializeVertex islandB","2 discoverVertex islandB","3 startVertex islandB","4 examineVertex islandB","5 finishVertex islandB"]'
+               }});
+})();
 
-    var expectedSearchPath = '["0 initializeVertex island","1 discoverVertex island","2 startVertex island","3 examineVertex island","4 finishVertex island"]';
-    var actualSearchPath = null;
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addEdge('islandA', 'islandB', 'bridge');
+    testBFSV({ testName: "Two connected vertices, default starting vertex set'", validConfig: true,
+               request: { digraph: digraph },
+               expectedResults: {
+                   error: '',
+                   result: '{"searchStatus":"completed","colorMap":{"islandA":2,"islandB":2},"undiscoveredMap":{}}',
+                   path: '["0 initializeVertex islandA","1 initializeVertex islandB","2 discoverVertex islandA","3 startVertex islandA","4 examineVertex islandA","5 examineEdge [islandA,islandB]","6 discoverVertex islandB","7 treeEdge [islandA,islandB]","8 finishVertex islandA","9 examineVertex islandB","10 finishVertex islandB"]'
+               }});
+})();
 
-    var expectedSearchResult = '{"error":null,"result":{"searchCompleted":true,"searchContext":{"searchStatus":"completed","colorMap":{"island":2},"undiscoveredMap":{}}}}';
-    var actualSearchResult = null;
-
-    before(function() {
-        digraph = new DirectedGraph();
-        digraph.addVertex("island");
-        searchPathRecorder = new SearchPathRecorder();
-        bfsContextResponse = createBreadthFirstSearchContext({ digraph: digraph });
-        assert.isNull(bfsContextResponse.error, "response.error should be null");
-        
-        bfsSearchResponse = breadthFirstSearch(
-            {
-                digraph: digraph,
-                visitor: searchPathRecorder.visitorInterface,
-                options: {
-                    startVector: "island",
-                    signalStart: true,
-                    searchContext: bfsContextResponse.result
-                }
-            }
-        );
-
-        // console.log(results.toJSON());
-        actualSearchPath = searchPathRecorder.toJSON();
-        actualSearchResult = JSON.stringify(bfsSearchResponse);
-    });
-
-    it("search path result string should match expected JSON.", function() {
-        assert.equal(expectedSearchPath, actualSearchPath);
-    });
-
-    it("seach result string should match expected JSON.", function() {
-        assert.equal(actualSearchResult, expectedSearchResult);
-    });
-
-    it("search path string should match expected JSON.", function() {
-        assert.equal(actualSearchPath, expectedSearchPath);
-    });
-
-});
-
-describe("BFV: two disconnected vertices", function() {
-
-    var digraph = null;
-    var results = null;
-    var bfvContext = null;
-
-    var expectedResults = '["0 initializeVertex islandA","1 initializeVertex islandB","2 discoverVertex islandA","3 startVertex islandA","4 examineVertex islandA","5 finishVertex islandA"]';
-    var actualResults = null;
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addEdge('islandA', 'islandB', 'bridge');
+    testBFSV({ testName: "Two connected vertices, starting vertex set set to 'islandA'", validConfig: true,
+               request: { digraph: digraph, options: { startVector: 'islandA' }},
+               expectedResults: {
+                   error: '',
+                   result: '{"searchStatus":"completed","colorMap":{"islandA":2,"islandB":2},"undiscoveredMap":{}}',
+                   path: '["0 initializeVertex islandA","1 initializeVertex islandB","2 discoverVertex islandA","3 startVertex islandA","4 examineVertex islandA","5 examineEdge [islandA,islandB]","6 discoverVertex islandB","7 treeEdge [islandA,islandB]","8 finishVertex islandA","9 examineVertex islandB","10 finishVertex islandB"]'
+               }});
+})();
 
 
-    before(function() {
-        digraph = new DirectedGraph();
-        digraph.addVertex("islandA");
-        digraph.addVertex("islandB");
-        results = new SearchPathRecorder();
-        bfvContext = createBreadthFirstSearchContext(digraph, results.visitorInterface);
-        breadthFirstSearch(digraph, bfvContext, "islandA", results.visitorInterface, true);
-        // console.log(results.toJSON());
-        actualResults = results.toJSON();
-    });
 
-    it("search result path string should match expected traversal pattern", function() {
-        assert.equal(expectedResults, actualResults);
-    });
 
-});
-
-describe("BFV: two connected vertices", function() {
-
-    var digraph = null;
-    var results = null;
-    var bfvContext = null;
-
-    var expectedResults = '["0 initializeVertex islandA","1 initializeVertex islandB","2 discoverVertex islandA","3 startVertex islandA","4 examineVertex islandA","5 examineEdge [islandA,islandB]","6 discoverVertex islandB","7 treeEdge [islandA,islandB]","8 finishVertex islandA","9 examineVertex islandB","10 finishVertex islandB"]';
-    var actualResults = null;
-
-    before(function() {
-        digraph = new DirectedGraph();
-        digraph.addEdge("islandA", "islandB", { type: "bridge" });
-        results = new SearchPathRecorder();
-        bfvContext = createBreadthFirstSearchContext(digraph, results.visitorInterface);
-        breadthFirstSearch(digraph, bfvContext, "islandA", results.visitorInterface, true);
-        // console.log(results.toJSON());
-        actualResults = results.toJSON();
-    });
-
-    it("search result path string should match expected traversal pattern", function() {
-        assert.equal(expectedResults, actualResults);
-    });
-
-});
 
 
 describe("BFV: two connected vertices, plus another diconnected vertex", function() {

@@ -191,7 +191,7 @@ module.exports.breadthFirstSearch = function (request_) {
 
                 case colors.white:
                     // discoverVertex visitor callback.
-                    innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'dicoverVertex', request: { u: outEdge.v, g: nrequest.digraph }});
+                    innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'discoverVertex', request: { u: outEdge.v, g: nrequest.digraph }});
                     if (innerResponse.error) {
                         errors.unshift(innerResponse.error);
                         break;
@@ -280,14 +280,11 @@ module.exports.breadthFirstSearch = function (request_) {
         if (nrequest) {
             nrequest.options.searchContext.searchStatus = 'error';
         }
-        errors.unshift("jsgraph.directed.breadthFirst* failure:");
+        errors.unshift("jsgraph.directed.breadthFirst* algorithm failure:");
         response.error = errors.join(' ');
     } else {
         nrequest.options.searchContext.searchStatus = continueSearch?'completed':'terminated';
-        response.result = {
-            searchCompleted: continueSearch,
-            searchContext: nrequest.options.searchContext
-        };
+        response.result = nrequest.options.searchContext;
     }
     return response;
 };
