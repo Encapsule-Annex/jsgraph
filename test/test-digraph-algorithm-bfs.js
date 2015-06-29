@@ -1,4 +1,4 @@
-// digraph-bfs-test.js
+// test-digraph-algrithm-bfs.js
 
 // external
 var assert = require('chai').assert;
