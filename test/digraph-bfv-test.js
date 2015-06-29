@@ -2,19 +2,11 @@
 
 // external
 var assert = require('chai').assert;
-var expect = require('chai').expect;
-var should = require('chai').should;
 
 // internal
 var DirectedGraph = require('../src/digraph');
-
 var testBFSV = require('./test-runner-bfsv');
-
-var bfs = require('../src/digraph-bfs');
 var createBreadthFirstSearchContext = require('../src/digraph-bfs-context');
-var breadthFirstSearch = bfs.breadthFirstSearch;
-var SearchPathRecorder = require('./fixture/bfv-results-recorder');
-
 
 describe("BFV: manual search context create (bad) missing request object.", function() {
     var response = null;
