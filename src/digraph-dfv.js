@@ -43,6 +43,31 @@
         return dfsContext;
     };
 
+    /*
+
+      request = {
+          digraph: reference to jsgraph.DirectedGraph container object (required)
+          visitor: reference to jsgraph DFV visitor object (required)
+          startVertex: reference to a string vertex ID (required)
+          options: {
+              signalStart: Boolean flag (optional - default is true if ommitted)
+                     Note: By default, DFV will call startVertex on each search root vertex.
+                     In advanced scenarios you may wish to override this behavior.
+              searchContext: reference to DFS search context object (optional)
+                     Note: By default, DFV allocates the search context internally and returns it to
+                     the caller. In advanced scenarios you may wish to provide a pre-initialized
+                     (or potentially pre-colored) search context object.
+          }
+      }
+
+      response = {
+          error: null indicating success or a string containing an explanation of the failure
+          result: {
+              searchCompleted: Boolean flag
+              searchContext: reference to the BFS search context object
+          } // or null to indicate a failure
+     */
+
     module.exports.depthFirstVisit = function (digraph_, searchContext_, startVertexId_, visitorInterface_) {
 
         if ((digraph_ === null) || !digraph_ ||
@@ -61,10 +86,20 @@
             throw new Error("DFV request failed. Vertex '" + startVertexId_ + "' color map not initialized to white.");
         }
 
+        var continueSearch = true;
+
+        var verifyVisitorResponse = function (visitorResponse_) {
+            var type = Object.prototype.toString.call(visitorResponse_);
+            if (type !== '[object Boolean]') {
+                throw new Error("All jsgraph visitor functions are required to return a boolean flag indicating if the search algorithm should proceed or not. Visitor returned type '" + type + "'.");
+            }
+            return visitorResponse_;
+        };
+
         // startVertex visitor callback
         if (searchContext_.signalStartVertex) {
             if ((visitorInterface_.startVertex !== null) && visitorInterface_.startVertex) {
-                visitorInterface_.startVertex(startVertexId_, digraph_);
+                continueSearch = verifyVisitorResponse(visitorInterface_.startVertex(startVertexId_, digraph_));
             }
             searchContext_.signalStartVertex = false;
         }
@@ -76,7 +111,7 @@
 
         // Iterate until search tree completion dispatching visitor call backs.
         //
-        while (searchStack.length) {
+        while (searchStack.length && continueSearch) {
 
             // Peek at the identifier of the vertex at the front of the queue atop the search stack.
 
@@ -92,13 +127,13 @@
                 // Callback: treeEdge
                 if (searchStack.length > 1) {
                     if ((visitorInterface_.treeEdge !== null) && visitorInterface_.treeEdge) {
-                        visitorInterface_.treeEdge((searchStack[searchStack.length - 2])[0], vertexIdV, digraph_);
+                        continueSearch = verifyVisitorResponse(visitorInterface_.treeEdge((searchStack[searchStack.length - 2])[0], vertexIdV, digraph_));
                     }
                 }
 
                 // Callback: discoverVertex
-                if ((visitorInterface_.discoverVertex !== null) && visitorInterface_.discoverVertex) {
-                    visitorInterface_.discoverVertex(vertexIdV, digraph_);
+                if ((visitorInterface_.discoverVertex !== null) && visitorInterface_.discoverVertex && continueSearch) {
+                    continueSearch = verifyVisitorResponse(visitorInterface_.discoverVertex(vertexIdV, digraph_));
                 }
 
                 // Change the vertex's state to GRAY to record its discovery.
@@ -107,13 +142,17 @@
                 // Examine adjacent vertices
                 var vertexOutEdges = digraph_.outEdges(vertexIdV);
                 var adjacentVertices = [];
-                while (vertexOutEdges.length) {
+                while (vertexOutEdges.length && continueSearch) {
 
                     var adjacentVertex = vertexOutEdges.shift().v;
 
                     // Callback: examineEdge
                     if ((visitorInterface_.examineEdge !== null) && visitorInterface_.examineEdge) {
-                        visitorInterface_.examineEdge(vertexIdV, adjacentVertex, digraph_);
+                        continueSearch = verifyVisitorResponse(visitorInterface_.examineEdge(vertexIdV, adjacentVertex, digraph_));
+                    }
+
+                    if (!continueSearch) {
+                        break;
                     }
 
                     var adjacentColor = searchContext_.colorMap[adjacentVertex];
@@ -125,12 +164,12 @@
                         break;
                     case colors.gray:
                         if ((visitorInterface_.backEdge !== null) && visitorInterface_.backEdge) {
-                            visitorInterface_.backEdge(vertexIdV, adjacentVertex, digraph_);
+                            continueSearch = verifyVisitorResponse(visitorInterface_.backEdge(vertexIdV, adjacentVertex, digraph_));
                         }
                         break;
                     case colors.black:
                         if ((visitorInterface_.forwardOrCrossEdge !== null) && visitorInterface_.forwardOrCrossEdge) {
-                            visitorInterface_.forwardOrCrossEdge(vertexIdV, adjacentVertex, digraph_);
+                            continueSearch = verifyVisitorResponse(visitorInterface_.forwardOrCrossEdge(vertexIdV, adjacentVertex, digraph_));
                         }
                         break;
                     }
@@ -146,7 +185,7 @@
                 searchContext_.colorMap[vertexIdV] = colors.black;
 
                 if ((visitorInterface_.finishVertex !== null) && visitorInterface_.finishVertex) {
-                    visitorInterface_.finishVertex(vertexIdV, digraph_);
+                    continueSearch = verifyVisitorResponse(visitorInterface_.finishVertex(vertexIdV, digraph_));
                 }
 
                 var finishedVertexId = searchStack[searchStack.length - 1].shift();
@@ -164,7 +203,7 @@
 
                 if (searchStack.length > 1) {
                     if ((visitorInterface_.forwardOrCrossEdge !== null) && visitorInterface_.forwardOrCrossEdge) {
-                        visitorInterface_.forwardOrCrossEdge((searchStack[searchStack.length - 2])[0], vertexIdV, digraph_);
+                        continueSearch = verifyVisitorResponse(visitorInterface_.forwardOrCrossEdge((searchStack[searchStack.length - 2])[0], vertexIdV, digraph_));
                     }
                 }
 
@@ -178,6 +217,7 @@
                 throw new Error("DFV failure: An invalid color value was found in the color map for vertex '" + vertexIdV + "'. Please file an issue!");
             }
         }
+        return continueSearch;
     };
 
 })();
