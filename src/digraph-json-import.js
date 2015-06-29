@@ -27,15 +27,6 @@ module.exports = function (digraph_, jsonOrObject_) {
         throw new Error("JSON semantics error: Expected top-level object but found '" + type + "'.");
     }
 
-    type = getType(jsonParse.__cid__);
-    if (type !== '[object String]') {
-        throw new Error("JSON semantics error: Expected top-level string property '__cid__' but found '" + type + "'.");
-    }
-
-    if (jsonParse.__cid__ !==  'C1D2eWCPTIKH-z3PP2uQlQ') {
-        throw new Error("JSON semantics error: Unrecognized object CID '" + jsonParse.__cid__ + "'.");
-    }
-
     type = getType(jsonParse.vertices);
     if (type !== '[object Array]') {
         throw new Error("JSON semantics error: Expected 'vertices' to be an array but found '" + type + "'.");

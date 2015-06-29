@@ -46,8 +46,6 @@ var digraphExport = require('./digraph-json-export');
             }
         }
 
-        DirectedGraph.prototype.type = "directed";
-
         DirectedGraph.prototype.getVertices = function() {
             var vertices = [];
             for (var vertexId in this.vertexMap) {
