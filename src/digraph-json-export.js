@@ -12,22 +12,38 @@ var DigraphDataExporter = module.exports = {};
 
 DigraphDataExporter.exportObject = function (digraph_) {
     var digraphState = {
-        __cid__: 'C1D2eWCPTIKH-z3PP2uQlQ', // Encapsule/jsgraph digraph container data export object
-        vertices: [],
-        edges: []
+        vlist: [],
+        elist: []
     };
+    var vertexMentionedMap = {};
+    
     var vertexMap = digraph_.vertexMap;
     var vertexId;
+
+
     var processEdge = function(edge_) {
         var edgeProps = digraph_.getEdgeProperty(edge_.u, edge_.v);
-        digraphState.edges.push({ u: edge_.u, v: edge_.v, p: edgeProps });
+        digraphState.elist.push({ e: { u: edge_.u, v: edge_.v}, p: edgeProps });
+        vertexMentionedMap[edge_.u] = true;
+        vertexMentionedMap[edge_.v] = true;
     };
+
     for (vertexId in vertexMap) {
-        var vertexDescriptor = vertexMap[vertexId];
-        digraphState.vertices.push({ v: vertexId, p: vertexDescriptor.properties });
+        // var vertexDescriptor = vertexMap[vertexId];
+        // digraphState.vlist.push({ u: vertexId, p: vertexDescriptor.properties });
+        
         var outEdges = digraph_.outEdges(vertexId);
         outEdges.forEach(processEdge);
     }
+    for (vertexId in vertexMap) {
+        var vertexDescriptor = vertexMap[vertexId];
+        var vertexMentioned = (vertexMentionedMap[vertexId] !== null) && vertexMentionedMap[vertexId] || false;
+        
+        if (!vertexMentioned || ((vertexDescriptor.properties !== null) && vertexDescriptor.properties)) {
+            digraphState.vlist.push({ u: vertexId, p: vertexDescriptor.properties });
+        }
+    }
+
     return digraphState;
 };
 

@@ -27,51 +27,46 @@ module.exports = function (digraph_, jsonOrObject_) {
         throw new Error("JSON semantics error: Expected top-level object but found '" + type + "'.");
     }
 
-    type = getType(jsonParse.__cid__);
-    if (type !== '[object String]') {
-        throw new Error("JSON semantics error: Expected top-level string property '__cid__' but found '" + type + "'.");
-    }
-
-    if (jsonParse.__cid__ !==  'C1D2eWCPTIKH-z3PP2uQlQ') {
-        throw new Error("JSON semantics error: Unrecognized object CID '" + jsonParse.__cid__ + "'.");
-    }
-
-    type = getType(jsonParse.vertices);
+    type = getType(jsonParse.vlist);
     if (type !== '[object Array]') {
-        throw new Error("JSON semantics error: Expected 'vertices' to be an array but found '" + type + "'.");
+        throw new Error("JSON semantics error: Expected 'vlist' (vertices) to be an array but found '" + type + "'.");
     }
 
-    type = getType(jsonParse.edges);
+    type = getType(jsonParse.elist);
     if (type !== '[object Array]') {
-        throw new Error("JSON semantics error: Expected 'edges' to be an array but found '" + type + "'.");
+        throw new Error("JSON semantics error: Expected 'e' (edges) to be an array but found '" + type + "'.");
     }
 
-    jsonParse.vertices.forEach(function(vertexDescriptor_) {
+    jsonParse.vlist.forEach(function(vertexDescriptor_) {
         type = getType(vertexDescriptor_);
         if (type !== '[object Object]') {
-            throw new Error("JSON semantics error: Expected vertex descriptor object in 'vertices' array but found '" + type + "' instead.");
+            throw new Error("JSON semantics error: Expected vertex descriptor object in 'v' array but found '" + type + "' instead.");
         }
-        type = getType(vertexDescriptor_.v);
+        type = getType(vertexDescriptor_.u);
         if (type !== '[object String]') {
-            throw new Error("JSON semantics error: Expected vertex descriptor property 'v' to be a string but found '" + type + "' instead.");
+            throw new Error("JSON semantics error: Expected vertex descriptor property 'u' to be a string but found '" + type + "' instead.");
         }
-        digraph_.addVertex(vertexDescriptor_.v, vertexDescriptor_.p);
+        digraph_.addVertex(vertexDescriptor_.u, vertexDescriptor_.p);
     });
 
-    jsonParse.edges.forEach(function(edgeDescriptor_) {
+    jsonParse.elist.forEach(function(edgeDescriptor_) {
         type = getType(edgeDescriptor_);
         if (type !== '[object Object]') {
-            throw new Error("JSON semantics error: Expected edge descriptor object in 'edges' array but found '" + type + "' instead.");
+            throw new Error("JSON semantics error: Expected edge descriptor object in 'elist' array but found '" + type + "' instead.");
         }
-        type = getType(edgeDescriptor_.u);
+        type = getType(edgeDescriptor_.e);
+        if (type !== '[object Object]') {
+            throw new Error("JSON semantics error: 'elist' array should contain object(s) but but found '" + type + "' instead.");
+        }
+        type = getType(edgeDescriptor_.e.u);
         if (type !== '[object String]') {
-            throw new Error("JSON semantics error: Expected edge descriptor property 'u' to be a string but found '" + type + "' instead.");
+            throw new Error("JSON semantics error: Expected edge descriptor property 'e.u' to be a string but found '" + type + "' instead.");
         }
-        type = getType(edgeDescriptor_.v);
+        type = getType(edgeDescriptor_.e.v);
         if (type !== '[object String]') {
-            throw new Error("JSON semantics error: Expected edge descriptor property 'v' to be a string but found '" + type + "' instead.");
+            throw new Error("JSON semantics error: Expected edge descriptor property 'e.v' to be a string but found '" + type + "' instead.");
         }
-        digraph_.addEdge(edgeDescriptor_.u, edgeDescriptor_.v, edgeDescriptor_.p);
+        digraph_.addEdge(edgeDescriptor_.e.u, edgeDescriptor_.e.v, edgeDescriptor_.p);
     });
 
     return true;

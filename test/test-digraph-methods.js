@@ -53,15 +53,18 @@ describe("DirectedGraph container object tests", function() {
             });
         });
 
+        it("graph export JSON should match expected control string", function() {
+            var expectedJSON = '{"vlist":[{"u":"foo","p":{"k":"foo"}},{"u":"bar","p":{"k":"bar"}},{"u":"baz","p":{"k":"baz"}}],"elist":[{"e":{"u":"foo","v":"bar"}},{"e":{"u":"foo","v":"baz"}},{"e":{"u":"bar","v":"foo"}},{"e":{"u":"bar","v":"baz"}},{"e":{"u":"baz","v":"foo"}},{"e":{"u":"baz","v":"bar"}}]}';
+            assert.equal(digraph.toJSON(), expectedJSON);
+        });
+
         it("graph should export properly structured JSON string", function(){
             json = digraph.toJSON();
             assert.isString(json);
             var parsed = JSON.parse(json);
             assert.isObject(parsed);
-            assert.property(parsed, '__cid__');
-            assert.isString(parsed.__cid__);
-            assert.isArray(parsed.vertices);
-            assert.isArray(parsed.edges);
+            assert.isArray(parsed.vlist);
+            assert.isArray(parsed.elist);
         });
 
         it("graph export to object and JSON should be identical", function() {
@@ -99,6 +102,40 @@ describe("DirectedGraph container object tests", function() {
                 assert.equal(copy.toJSON(), json);
             });
         });
+
+        describe("Test JSON export algorith's vertex skip facility", function() {
+
+            var testGraph = null;
+            var expectedJSON = '{"vlist":[{"u":"strawberry","p":"has a property"},{"u":"not-mentioned-no-property"}],"elist":[{"e":{"u":"apple","v":"orange"}},{"e":{"u":"bannana","v":"apple"}},{"e":{"u":"pineapple","v":"orange"}},{"e":{"u":"strawberry","v":"blueberry"},"p":"link"}]}';
+            var actualJSON = null;
+            
+            before(function() {
+                var digraph = new DirectedGraph({
+                    vlist: [
+                        { u: 'apple' },
+                        { u: 'orange' },
+                        { u: 'bannana' },
+                        { u: 'pineapple' },
+                        { u: 'strawberry', p: "has a property" },
+                        { u: 'blueberry' },
+                        { u: 'not-mentioned-no-property' }
+                    ],
+                    elist: [
+                        { e: { u: 'strawberry', v: 'blueberry' }, p: 'link' },
+                        { e: { u: 'bannana', v: 'apple' }},
+                        { e: { u: 'apple', v: 'orange' }},
+                        { e: { u: 'pineapple', v: 'orange' }}
+                    ]
+                });
+                actualJSON = digraph.toJSON();
+            });
+
+            it("Exported JSON should match expected JSON value.", function() {
+                assert.equal(actualJSON, expectedJSON);
+            });
+
+        });
+
     });
 
     describe("Vertex API tests", function() {
