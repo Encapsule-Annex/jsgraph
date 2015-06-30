@@ -27,20 +27,20 @@ module.exports = function (digraph_, jsonOrObject_) {
         throw new Error("JSON semantics error: Expected top-level object but found '" + type + "'.");
     }
 
-    type = getType(jsonParse.vertices);
+    type = getType(jsonParse.v);
     if (type !== '[object Array]') {
-        throw new Error("JSON semantics error: Expected 'vertices' to be an array but found '" + type + "'.");
+        throw new Error("JSON semantics error: Expected 'v' (vertices) to be an array but found '" + type + "'.");
     }
 
-    type = getType(jsonParse.edges);
+    type = getType(jsonParse.e);
     if (type !== '[object Array]') {
-        throw new Error("JSON semantics error: Expected 'edges' to be an array but found '" + type + "'.");
+        throw new Error("JSON semantics error: Expected 'e' (edges) to be an array but found '" + type + "'.");
     }
 
-    jsonParse.vertices.forEach(function(vertexDescriptor_) {
+    jsonParse.v.forEach(function(vertexDescriptor_) {
         type = getType(vertexDescriptor_);
         if (type !== '[object Object]') {
-            throw new Error("JSON semantics error: Expected vertex descriptor object in 'vertices' array but found '" + type + "' instead.");
+            throw new Error("JSON semantics error: Expected vertex descriptor object in 'v' array but found '" + type + "' instead.");
         }
         type = getType(vertexDescriptor_.v);
         if (type !== '[object String]') {
@@ -49,10 +49,10 @@ module.exports = function (digraph_, jsonOrObject_) {
         digraph_.addVertex(vertexDescriptor_.v, vertexDescriptor_.p);
     });
 
-    jsonParse.edges.forEach(function(edgeDescriptor_) {
+    jsonParse.e.forEach(function(edgeDescriptor_) {
         type = getType(edgeDescriptor_);
         if (type !== '[object Object]') {
-            throw new Error("JSON semantics error: Expected edge descriptor object in 'edges' array but found '" + type + "' instead.");
+            throw new Error("JSON semantics error: Expected edge descriptor object in 'e' array but found '" + type + "' instead.");
         }
         type = getType(edgeDescriptor_.u);
         if (type !== '[object String]') {

@@ -12,19 +12,18 @@ var DigraphDataExporter = module.exports = {};
 
 DigraphDataExporter.exportObject = function (digraph_) {
     var digraphState = {
-        __cid__: 'C1D2eWCPTIKH-z3PP2uQlQ', // Encapsule/jsgraph digraph container data export object
-        vertices: [],
-        edges: []
+        v: [],
+        e: []
     };
     var vertexMap = digraph_.vertexMap;
     var vertexId;
     var processEdge = function(edge_) {
         var edgeProps = digraph_.getEdgeProperty(edge_.u, edge_.v);
-        digraphState.edges.push({ u: edge_.u, v: edge_.v, p: edgeProps });
+        digraphState.e.push({ u: edge_.u, v: edge_.v, p: edgeProps });
     };
     for (vertexId in vertexMap) {
         var vertexDescriptor = vertexMap[vertexId];
-        digraphState.vertices.push({ v: vertexId, p: vertexDescriptor.properties });
+        digraphState.v.push({ v: vertexId, p: vertexDescriptor.properties });
         var outEdges = digraph_.outEdges(vertexId);
         outEdges.forEach(processEdge);
     }

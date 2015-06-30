@@ -58,10 +58,8 @@ describe("DirectedGraph container object tests", function() {
             assert.isString(json);
             var parsed = JSON.parse(json);
             assert.isObject(parsed);
-            assert.property(parsed, '__cid__');
-            assert.isString(parsed.__cid__);
-            assert.isArray(parsed.vertices);
-            assert.isArray(parsed.edges);
+            assert.isArray(parsed.v);
+            assert.isArray(parsed.e);
         });
 
         it("graph export to object and JSON should be identical", function() {

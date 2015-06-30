@@ -28,7 +28,7 @@ module.exports = function (testVector_) {
         var searchPathRecorder = null;
 
         before(function() {
-            searchPathRecorder = new SearchPathRecorder();
+            searchPathRecorder = new SearchPathRecorder(testVector_.visitor);
             var bfsRequest = testVector_.request;
             if (bfsRequest) {
                 bfsRequest.visitor = searchPathRecorder.visitorInterface;
