@@ -4,7 +4,7 @@
   "description": "Generic directed graph container, and visitor algorithms based on a port of the Boost C++ Graph Library API.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec ./test/tests.js"
+    "test": "mocha -R spec ./test/test-jsgraph.js"
   },
   "repository": {
     "type": "git",
