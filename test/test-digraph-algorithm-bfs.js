@@ -34,21 +34,268 @@ var testBFSV = require('./test-runner-bfsv');
 })();
 
 (function() {
-    var digraph = new DirectedGraph({
-        vlist: [
-            { u: 'A' },
-            { u: 'B' },
-            { u: 'C' },
-            { u: 'D' },
-            { u: 'E' }
-        ],
-        elist: [
-            { e: { u: 'A', v: 'B' }},
-            { e: { u: 'B', v: 'C' }},
-            { e: { u: 'B', v: 'D' }},
-            { e: { u: 'D', v: 'A' }},
-            { e: { u: 'A', v: 'E' }}
-        ]
+    describe("Breadth-first visitor termination tests.", function() {
+
+        var digraph = new DirectedGraph({
+            vlist: [
+                { u: 'A' },
+                { u: 'B' },
+                { u: 'C' },
+                { u: 'D' },
+                { u: 'E' }
+            ],
+            elist: [
+                { e: { u: 'A', v: 'B' }},
+                { e: { u: 'B', v: 'C' }},
+                { e: { u: 'B', v: 'D' }},
+                { e: { u: 'D', v: 'A' }},
+                { e: { u: 'A', v: 'E' }}
+            ]
+        });
+
+        testBFSV({
+            testName: "Breadth-first visit terminate baseline (search not terminated)", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {},
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"completed","colorMap":{"A":2,"B":2,"C":2,"D":2,"E":2},"undiscoveredMap":{}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]","12 grayTarget [A,B]","13 examineEdge [A,E]","14 discoverVertex E","15 treeEdge [A,E]","16 finishVertex A","17 examineVertex B","18 examineEdge [B,C]","19 discoverVertex C","20 treeEdge [B,C]","21 examineEdge [B,D]","22 discoverVertex D","23 treeEdge [B,D]","24 finishVertex B","25 examineVertex E","26 finishVertex E","27 examineVertex C","28 finishVertex C","29 examineVertex D","30 examineEdge [D,A]","31 nonTreeEdge [D,A]","32 blackTarget [D,A]","33 finishVertex D"]'
+            }
+        });
+
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'initializeVertex'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    initializeVertex: function(request_) {
+                        return (request_.u !== 'D');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":0,"B":0,"C":0,"D":0,"E":0},"undiscoveredMap":{"A":true,"B":true,"C":true,"D":true,"E":true}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D"]'
+            }
+        });
+
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'initializeVertex'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    initializeVertex: function(request_) {
+                        return (request_.u !== 'D');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":0,"B":0,"C":0,"D":0,"E":0},"undiscoveredMap":{"A":true,"B":true,"C":true,"D":true,"E":true}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D"]'
+            }
+        });
+
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'startVertex'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    startVertex: function(request_) {
+                        return (request_.u !== 'B');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":1,"B":1,"C":0,"D":0,"E":0},"undiscoveredMap":{"C":true,"D":true,"E":true}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B"]'
+            }
+        });
+
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'discoverVertex'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    discoverVertex: function(request_) {
+                        return (request_.u !== 'D');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":2,"B":2,"C":1,"D":0,"E":1},"undiscoveredMap":{}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]","12 grayTarget [A,B]","13 examineEdge [A,E]","14 discoverVertex E","15 treeEdge [A,E]","16 finishVertex A","17 examineVertex B","18 examineEdge [B,C]","19 discoverVertex C","20 treeEdge [B,C]","21 examineEdge [B,D]","22 discoverVertex D"]'
+            }
+        });
+
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'examineVertex'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    examineVertex: function(request_) {
+                        return (request_.u !== 'D');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":2,"B":2,"C":2,"D":2,"E":2},"undiscoveredMap":{}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]","12 grayTarget [A,B]","13 examineEdge [A,E]","14 discoverVertex E","15 treeEdge [A,E]","16 finishVertex A","17 examineVertex B","18 examineEdge [B,C]","19 discoverVertex C","20 treeEdge [B,C]","21 examineEdge [B,D]","22 discoverVertex D","23 treeEdge [B,D]","24 finishVertex B","25 examineVertex E","26 finishVertex E","27 examineVertex C","28 finishVertex C","29 examineVertex D"]'
+            }
+        });
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'examineEdge'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    examineEdge: function(request_) {
+                        return (request_.e.v !== 'C');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":2,"B":2,"C":0,"D":0,"E":1},"undiscoveredMap":{"C":true,"D":true}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]","12 grayTarget [A,B]","13 examineEdge [A,E]","14 discoverVertex E","15 treeEdge [A,E]","16 finishVertex A","17 examineVertex B","18 examineEdge [B,C]"]'
+            }
+        });
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'treeEdge'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    treeEdge: function(request_) {
+                        return (request_.e.v !== 'E');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":2,"B":1,"C":0,"D":0,"E":1},"undiscoveredMap":{"C":true,"D":true}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]","12 grayTarget [A,B]","13 examineEdge [A,E]","14 discoverVertex E","15 treeEdge [A,E]"]'
+            }
+        });
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'nonTreeEdge'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    nonTreeEdge: function(request_) {
+                        return (request_.e.v !== 'B');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":2,"B":1,"C":0,"D":0,"E":0},"undiscoveredMap":{"C":true,"D":true,"E":true}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]"]'
+            }
+        });
+        
+
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'grayTarget'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    grayTarget: function(request_) {
+                        return (request_.e.v !== 'B');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":2,"B":1,"C":0,"D":0,"E":0},"undiscoveredMap":{"C":true,"D":true,"E":true}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]","12 grayTarget [A,B]"]'
+            }
+        });
+        
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'blackTarget'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    blackTarget: function(request_) {
+                        return (request_.e.v !== 'A');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":2,"B":2,"C":2,"D":2,"E":2},"undiscoveredMap":{}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]","12 grayTarget [A,B]","13 examineEdge [A,E]","14 discoverVertex E","15 treeEdge [A,E]","16 finishVertex A","17 examineVertex B","18 examineEdge [B,C]","19 discoverVertex C","20 treeEdge [B,C]","21 examineEdge [B,D]","22 discoverVertex D","23 treeEdge [B,D]","24 finishVertex B","25 examineVertex E","26 finishVertex E","27 examineVertex C","28 finishVertex C","29 examineVertex D","30 examineEdge [D,A]","31 nonTreeEdge [D,A]","32 blackTarget [D,A]"]'
+            }
+        });
+        
+        testBFSV({
+            testName: "Breadth-first visit terminate on 'finishVertex'", validConfig: true,
+            request: {
+                digraph: digraph,
+                visitor: {
+                    finishVertex: function(request_) {
+                        return (request_.u !== 'A');
+                    }
+                },
+                options: {
+                    startVector: [ 'A', 'B' ]
+                }
+            },
+            expectedResults: {
+                error: '',
+                result: '{"searchStatus":"terminated","colorMap":{"A":2,"B":1,"C":0,"D":0,"E":1},"undiscoveredMap":{"C":true,"D":true}}',
+                path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 initializeVertex D","4 initializeVertex E","5 discoverVertex A","6 startVertex A","7 discoverVertex B","8 startVertex B","9 examineVertex A","10 examineEdge [A,B]","11 nonTreeEdge [A,B]","12 grayTarget [A,B]","13 examineEdge [A,E]","14 discoverVertex E","15 treeEdge [A,E]","16 finishVertex A"]'
+            }
+        });
+        
+
+
     });
 })();
-

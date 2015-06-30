@@ -102,6 +102,40 @@ describe("DirectedGraph container object tests", function() {
                 assert.equal(copy.toJSON(), json);
             });
         });
+
+        describe("Test JSON export algorith's vertex skip facility", function() {
+
+            var testGraph = null;
+            var expectedJSON = '{"vlist":[{"u":"strawberry","p":"has a property"},{"u":"not-mentioned-no-property"}],"elist":[{"e":{"u":"apple","v":"orange"}},{"e":{"u":"bannana","v":"apple"}},{"e":{"u":"pineapple","v":"orange"}},{"e":{"u":"strawberry","v":"blueberry"},"p":"link"}]}';
+            var actualJSON = null;
+            
+            before(function() {
+                var digraph = new DirectedGraph({
+                    vlist: [
+                        { u: 'apple' },
+                        { u: 'orange' },
+                        { u: 'bannana' },
+                        { u: 'pineapple' },
+                        { u: 'strawberry', p: "has a property" },
+                        { u: 'blueberry' },
+                        { u: 'not-mentioned-no-property' }
+                    ],
+                    elist: [
+                        { e: { u: 'strawberry', v: 'blueberry' }, p: 'link' },
+                        { e: { u: 'bannana', v: 'apple' }},
+                        { e: { u: 'apple', v: 'orange' }},
+                        { e: { u: 'pineapple', v: 'orange' }}
+                    ]
+                });
+                actualJSON = digraph.toJSON();
+            });
+
+            it("Exported JSON should match expected JSON value.", function() {
+                assert.equal(actualJSON, expectedJSON);
+            });
+
+        });
+
     });
 
     describe("Vertex API tests", function() {

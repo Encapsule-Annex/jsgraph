@@ -13,7 +13,7 @@ module.exports = SearchPathRecorder = (function() {
             initializeVertex: function(request) {
                 self.results.push(self.step++ + " initializeVertex " + request.u);
                 if (self.chainedVisitor.initializeVertex) {
-                    return self.chainedVisitor.initializeVertex(request_);
+                    return self.chainedVisitor.initializeVertex(request);
                 }
                 return true;
             },
@@ -21,7 +21,7 @@ module.exports = SearchPathRecorder = (function() {
             startVertex: function(request) {
                 self.results.push(self.step++ + " startVertex " + request.u);
                 if (self.chainedVisitor.startVertex) {
-                    return self.chainedVisitor.startVertex(request_);
+                    return self.chainedVisitor.startVertex(request);
                 }
                 return true;
             },
@@ -29,7 +29,7 @@ module.exports = SearchPathRecorder = (function() {
             discoverVertex: function(request) {
                 self.results.push(self.step++ + " discoverVertex " + request.u);
                 if (self.chainedVisitor.discoverVertex) {
-                    return self.chainedVisitor.discoverVertex(request_);
+                    return self.chainedVisitor.discoverVertex(request);
                 }
                 return true;
             },
@@ -37,7 +37,7 @@ module.exports = SearchPathRecorder = (function() {
             examineVertex: function(request) {
                 self.results.push(self.step++ + " examineVertex " + request.u);
                 if (self.chainedVisitor.examineVertex) {
-                    return self.chainVisitor.examineVertex(request_);
+                    return self.chainedVisitor.examineVertex(request);
                 }
                 return true;
             },
@@ -45,7 +45,7 @@ module.exports = SearchPathRecorder = (function() {
             examineEdge: function(request) {
                 self.results.push(self.step++ + " examineEdge [" + request.e.u + "," + request.e.v + "]");
                 if (self.chainedVisitor.examineEdge) {
-                    return self.chainedVisitor.examineEdge(request_);
+                    return self.chainedVisitor.examineEdge(request);
                 }
                 return true;
             },
@@ -53,7 +53,7 @@ module.exports = SearchPathRecorder = (function() {
             treeEdge: function(request) {
                 self.results.push(self.step++ + " treeEdge [" + request.e.u + "," + request.e.v + "]");
                 if (self.chainedVisitor.treeEdge) {
-                    return self.chainedVisitor.treeEdge(request_);
+                    return self.chainedVisitor.treeEdge(request);
                 }
                 return true;
             },
@@ -61,15 +61,15 @@ module.exports = SearchPathRecorder = (function() {
             nonTreeEdge: function(request) {
                 self.results.push(self.step++ + " nonTreeEdge [" + request.e.u + "," + request.e.v + "]");
                 if (self.chainedVisitor.nonTreeEdge) {
-                    return self.chainedVisitor.nonTreeEdge(request_);
+                    return self.chainedVisitor.nonTreeEdge(request);
                 }
                 return true;
             },
             // request = { e: { u: vertexId, v: vertexId }, g: DirectedGraph }
             grayTarget: function(request) {
                 self.results.push(self.step++ + " grayTarget [" + request.e.u + "," + request.e.v + "]");
-                if (self.chainedVisitor.grayTargt) {
-                    return self.chainedVisitor.grayTarget(request_);
+                if (self.chainedVisitor.grayTarget) {
+                    return self.chainedVisitor.grayTarget(request);
                 }
                 return true;
             },
@@ -77,7 +77,7 @@ module.exports = SearchPathRecorder = (function() {
             blackTarget: function(request) {
                 self.results.push(self.step++ + " blackTarget [" + request.e.u + "," + request.e.v + "]");
                 if (self.chainedVisitor.blackTarget) {
-                    return self.chainedVisitor.blackTarget(request_);
+                    return self.chainedVisitor.blackTarget(request);
                 }
                 return true;
             },
@@ -85,7 +85,7 @@ module.exports = SearchPathRecorder = (function() {
             finishVertex: function(request) {
                 self.results.push(self.step++ + " finishVertex " + request.u);
                 if (self.chainedVisitor.finishVertex) {
-                    return self.chainedVisitor.finishVertex(request_);
+                    return self.chainedVisitor.finishVertex(request);
                 }
                 return true;
             }

@@ -255,6 +255,10 @@ module.exports.breadthFirstSearch = function (request_) {
 
                 } // switch (colorV)
 
+                if (errors.length || !continueSearch) {
+                    break;
+                }
+                
             } // for (outEdge in outEdges)
 
             if (errors.length || !continueSearch) {

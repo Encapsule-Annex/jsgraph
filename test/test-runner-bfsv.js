@@ -28,7 +28,11 @@ module.exports = function (testVector_) {
         var searchPathRecorder = null;
 
         before(function() {
-            searchPathRecorder = new SearchPathRecorder(testVector_.visitor);
+            var visitor;
+            if ((testVector_.request !== null) && testVector_.request && (testVector_.request.visitor !== null) && testVector_.request.visitor) {
+                visitor = testVector_.request.visitor;
+            }
+            searchPathRecorder = new SearchPathRecorder(visitor);
             var bfsRequest = testVector_.request;
             if (bfsRequest) {
                 bfsRequest.visitor = searchPathRecorder.visitorInterface;
