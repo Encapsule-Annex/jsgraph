@@ -12,18 +12,18 @@ var DigraphDataExporter = module.exports = {};
 
 DigraphDataExporter.exportObject = function (digraph_) {
     var digraphState = {
-        v: [],
-        e: []
+        vlist: [],
+        elist: []
     };
     var vertexMap = digraph_.vertexMap;
     var vertexId;
     var processEdge = function(edge_) {
         var edgeProps = digraph_.getEdgeProperty(edge_.u, edge_.v);
-        digraphState.e.push({ u: edge_.u, v: edge_.v, p: edgeProps });
+        digraphState.elist.push({ e: { u: edge_.u, v: edge_.v}, p: edgeProps });
     };
     for (vertexId in vertexMap) {
         var vertexDescriptor = vertexMap[vertexId];
-        digraphState.v.push({ v: vertexId, p: vertexDescriptor.properties });
+        digraphState.vlist.push({ u: vertexId, p: vertexDescriptor.properties });
         var outEdges = digraph_.outEdges(vertexId);
         outEdges.forEach(processEdge);
     }

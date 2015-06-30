@@ -53,13 +53,18 @@ describe("DirectedGraph container object tests", function() {
             });
         });
 
+        it("graph export JSON should match expected control string", function() {
+            var expectedJSON = '{"vlist":[{"u":"foo","p":{"k":"foo"}},{"u":"bar","p":{"k":"bar"}},{"u":"baz","p":{"k":"baz"}}],"elist":[{"e":{"u":"foo","v":"bar"}},{"e":{"u":"foo","v":"baz"}},{"e":{"u":"bar","v":"foo"}},{"e":{"u":"bar","v":"baz"}},{"e":{"u":"baz","v":"foo"}},{"e":{"u":"baz","v":"bar"}}]}';
+            assert.equal(digraph.toJSON(), expectedJSON);
+        });
+
         it("graph should export properly structured JSON string", function(){
             json = digraph.toJSON();
             assert.isString(json);
             var parsed = JSON.parse(json);
             assert.isObject(parsed);
-            assert.isArray(parsed.v);
-            assert.isArray(parsed.e);
+            assert.isArray(parsed.vlist);
+            assert.isArray(parsed.elist);
         });
 
         it("graph export to object and JSON should be identical", function() {
