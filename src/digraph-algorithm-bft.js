@@ -23,9 +23,9 @@
 */
 
 var helperFunctions = require('./helper-functions');
-var colors = require('./digraph-colors');
-var callBFSVisitor = require('./digraph-visit');
-var normalizeRequest = require('./bft/digraph-algorithm-bft-request');
+var colors = require('./digraph-algorithm-common-colors');
+var callBFSVisitor = require('./digraph-algorithm-common-visit');
+var normalizeRequest = require('./digraph-algorithm-common-request');
 
 /*
   request = {

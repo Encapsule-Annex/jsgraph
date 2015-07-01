@@ -2,7 +2,7 @@
 //
 
 var assert = require('chai').assert;
-var normalizeBFTRequest = require('../../src/bft/digraph-algorithm-bft-request');
+var normalizeBFTRequest = require('../../src/digraph-algorithm-common-request');
 
 /*
   request = {

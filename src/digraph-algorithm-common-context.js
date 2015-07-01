@@ -1,8 +1,8 @@
 // Encapsule/jsgraph/src/digraph-bfs-contex.js
 //
 
-var helperFunctions = require('../helper-functions');
-var colors = require('../digraph-colors');
+var helperFunctions = require('./helper-functions');
+var colors = require('./digraph-algorithm-common-colors');
 
 module.exports = function (request_) {
     var response = { error: null, result: null };

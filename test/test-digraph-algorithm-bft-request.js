@@ -1,7 +1,7 @@
 // test-digraph-algorithm-bft-request.js
 
 var DirectedGraph = require('../src/digraph');
-var createBFTContext = require('../src/bft/digraph-algorithm-bft-context');
+var createBFTContext = require('../src/digraph-algorithm-common-context');
 
 var assert = require('chai').assert;
 var testBFTRequestNormalizer = require('./fixture/test-runner-digraph-algorithm-bft-request');

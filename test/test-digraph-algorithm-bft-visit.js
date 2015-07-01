@@ -6,7 +6,7 @@ var assert = require('chai').assert;
 // internal
 var DirectedGraph = require('../src/digraph');
 var testBFSV = require('./fixture/test-runner-digraph-algorithm-bft');
-var createBreadthFirstSearchContext = require('../src/bft/digraph-algorithm-bft-context');
+var createBreadthFirstSearchContext = require('../src/digraph-algorithm-common-context');
 
 describe("BFV: manual search context create (bad) missing request object.", function() {
     var response = null;

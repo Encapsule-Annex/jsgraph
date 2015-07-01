@@ -3,13 +3,12 @@
 
 var DirectedGraph = require('./src/digraph');
 
+var createTraversalContext = require('./src/digraph-algorithm-common-context');
 var digraphTranspose = require('./src/digraph-algorithm-transpose');
-
 var digraphBFT = require('./src/digraph-algorithm-bft');
-var digraphBFTContext = require('./src/bft/digraph-algorithm-bft-context');
 
+// In flux::
 var digraph_dfs = require('./src/digraph-dfs');
-
 // NEW STUFF :: HOLD OFF ON DFT FOR NOW...
 // var DFT = require('./src/digraph-algorithm-dft');
 // var createDepthFirstTraverseContext = require('./src/digraph-algorithm-dft-context');
@@ -24,19 +23,22 @@ module.exports = {
     directed: {
 
         // Color constants.
-        colors: require('./src/digraph-colors'),
+        colors: require('./src/digraph-algorithm-common-colors'),
 
         // Directed graph transposition algorithm.
         transpose: digraphTranspose,
 
         // Directed graph breadth-first visit and search algorithms (unified API).
         breadthFirstTraverse: digraphBFT,
-        createBreadthFirstTraverseContext: digraphBFTContext,
 
         // Directed graph depth-first visit and search algorithms.
         createDepthFirstSearchContext: digraph_dfs.createDepthFirstSearchContext,
         depthFirstVisit: digraph_dfs.depthFirstVisit,
         depthFirstSearch: digraph_dfs.depthFirstSearch        
+
+        // Directed graph traversal context factory (advanced).
+        createTraversalContext: digraphTraverseContext,
+
 
         // NEW STUFF :: 
         // depthFirstTraverse: DTF,

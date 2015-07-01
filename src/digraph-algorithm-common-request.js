@@ -1,8 +1,8 @@
 // Encapsule/jsgraph/src/digraph-bfs-request.js
 //
 
-var helperFunctions = require('../helper-functions');
-var createBreadthFirstTraverseContext = require('./digraph-algorithm-bft-context');
+var helperFunctions = require('./helper-functions');
+var createBreadthFirstTraverseContext = require('./digraph-algorithm-common-context');
 
 /*
   request = {
