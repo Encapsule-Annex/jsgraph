@@ -6,7 +6,7 @@ var DirectedGraph = require('./src/digraph');
 var digraphTranspose = require('./src/digraph-algorithm-transpose');
 
 var digraphBFT = require('./src/digraph-algorithm-bft');
-var digraphBFTContext = require('./src/digraph-algorithm-bft-context');
+var digraphBFTContext = require('./src/bft/digraph-algorithm-bft-context');
 
 var digraph_dfs = require('./src/digraph-dfs');
 

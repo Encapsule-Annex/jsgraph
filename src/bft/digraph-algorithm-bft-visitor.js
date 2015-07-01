@@ -1,7 +1,7 @@
 // Encapsule/jsgraph/src/digraph-bfs-visitor.js
 //
 
-var helperFunctions = require('./helper-functions');
+var helperFunctions = require('../helper-functions');
 
 /*
   request = {
