@@ -1,7 +1,7 @@
 jsgraph
 =======
 
-[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg)](https://travis-ci.org/Encapsule/jsgraph)
+[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
 jsgraph implements an in-memory container abstraction for directed mathematical graph data sets. Vertices in the container are represented by user-assigned unique string identifiers. Edges in the container are represented by pairs of vertex identifier strings. The container supports the attachment of arbitrary application-specific meta-data to vertices and edges. 
 
