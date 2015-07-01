@@ -23,6 +23,9 @@ module.exports = {
     // Directed graph algorithms and transforms.
     directed: {
 
+        // Color constants.
+        colors: require('./src/digraph-colors'),
+
         // Directed graph transposition algorithm.
         transpose: digraphTranspose,
 

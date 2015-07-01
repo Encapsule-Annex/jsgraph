@@ -2,7 +2,7 @@
 //
 
 var helperFunctions = require('../helper-functions');
-var colors = require('./digraph-algorithm-bft-colors');
+var colors = require('../digraph-colors');
 
 module.exports = function (request_) {
     var response = { error: null, result: null };
