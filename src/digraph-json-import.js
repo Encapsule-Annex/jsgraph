@@ -28,12 +28,26 @@ module.exports = function (digraph_, jsonOrObject_) {
     }
 
     type = getType(jsonParse.vlist);
-    if (type !== '[object Array]') {
+    switch (type) {
+    case '[object Undefined]':
+        jsonParse.vlist = []; // default to empty vertex list
+        break;
+    case '[object Array]':
+        // do nothing the array is parsed below
+        break;
+    default:
         throw new Error("JSON semantics error: Expected 'vlist' (vertices) to be an array but found '" + type + "'.");
     }
 
     type = getType(jsonParse.elist);
-    if (type !== '[object Array]') {
+    switch (type) {
+    case '[object Undefined]':
+        jsonParse.elist = []; // default to empty edge list
+        break;
+    case '[object Array]':
+        // do nothing
+        break;
+    default:
         throw new Error("JSON semantics error: Expected 'e' (edges) to be an array but found '" + type + "'.");
     }
 

@@ -1,4 +1,4 @@
-// Encapsule/jsgraph/test/test-runner-bfsv.js
+// Encapsule/jsgraph/test/fixture/test-runner-digraph-algorithm-bft.js
 //
 
 var assert = require('chai').assert;
