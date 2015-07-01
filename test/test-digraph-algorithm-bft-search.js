@@ -5,7 +5,7 @@ var assert = require('chai').assert;
 
 // internal
 var DirectedGraph = require('../src/digraph');
-var testBFSV = require('./test-runner-bfsv');
+var testBFSV = require('./fixture/test-runner-digraph-algorithm-bft');
 
 (function() {
     var digraph = new DirectedGraph();

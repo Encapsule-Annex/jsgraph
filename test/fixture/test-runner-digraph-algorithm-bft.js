@@ -1,10 +1,9 @@
-// Encapsule/jsgraph/test/test-runner-bfsv.js
+// Encapsule/jsgraph/test/fixture/test-runner-digraph-algorithm-bft.js
 //
 
 var assert = require('chai').assert;
-var bfs = require('../src/digraph-bfs');
-var breadthFirstSearch = bfs.breadthFirstSearch;
-var SearchPathRecorder = require('./fixture/bfv-results-recorder');
+var BFT = require('../../src/digraph-algorithm-bft');
+var SearchPathRecorder = require('./bfv-results-recorder');
 
 /*
   request = {
@@ -20,7 +19,7 @@ var SearchPathRecorder = require('./fixture/bfv-results-recorder');
 
 module.exports = function (testVector_) {
 
-    var testName = "BF* test case: " + testVector_.testName + ":";
+    var testName = "BFT test case: " + testVector_.testName + ":";
 
     describe(testName, function() {
 
@@ -38,7 +37,7 @@ module.exports = function (testVector_) {
                 bfsRequest.visitor = searchPathRecorder.visitorInterface;
             }
             var executeRequestedBFS = function() {
-                searchResponse = breadthFirstSearch(bfsRequest);
+                searchResponse = BFT(bfsRequest);
             };
             assert.doesNotThrow(executeRequestedBFS);
         });

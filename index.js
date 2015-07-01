@@ -1,29 +1,44 @@
-// library.js - encapsule/jsgraph module exports
+// Encapsule/jsgraph/index.js
+// Public package exports for jsgraph module.
 
-var digraph = require('./src/digraph');
-var digraph_bfs = require('./src/digraph-bfs');
-var createBreadthFirstSearchContext = require('./src/digraph-bfs-context');
+var DirectedGraph = require('./src/digraph');
+
+var digraphTranspose = require('./src/digraph-algorithm-transpose');
+
+var digraphBFT = require('./src/digraph-algorithm-bft');
+var digraphBFTContext = require('./src/digraph-algorithm-bft-context');
+
 var digraph_dfs = require('./src/digraph-dfs');
-var digraph_transpose = require('./src/digraph-transpose');
+
+// NEW STUFF :: HOLD OFF ON DFT FOR NOW...
+// var DFT = require('./src/digraph-algorithm-dft');
+// var createDepthFirstTraverseContext = require('./src/digraph-algorithm-dft-context');
 
 
 module.exports = {
 
     // Generic directed graph container.
-    DirectedGraph: digraph, 
-    // Directed graph-specific algorithms and transforms.
+    DirectedGraph: DirectedGraph, 
+
+    // Directed graph algorithms and transforms.
     directed: {
-        // Generic, in-memory directed graph container object.
+
         // Directed graph transposition algorithm.
-        transpose: digraph_transpose,
-        // Directed graph breadth-first visit and search algorithms.
-        createBreadthFirstSearchContext: createBreadthFirstSearchContext,
-        breadthFirstVisit: digraph_bfs.breadthFirstSearch,
-        breadthFirstSearch: digraph_bfs.breadthFirstSearch,
+        transpose: digraphTranspose,
+
+        // Directed graph breadth-first visit and search algorithms (unified API).
+        breadthFirstTraverse: digraphBFT,
+        createBreadthFirstTraverseContext: digraphBFTContext,
+
         // Directed graph depth-first visit and search algorithms.
         createDepthFirstSearchContext: digraph_dfs.createDepthFirstSearchContext,
         depthFirstVisit: digraph_dfs.depthFirstVisit,
-        depthFirstSearch: digraph_dfs.depthFirstSearch
+        depthFirstSearch: digraph_dfs.depthFirstSearch        
+
+        // NEW STUFF :: 
+        // depthFirstTraverse: DTF,
+        // createDepthFirstSearchContext: createDepthFirstTraverseContext
+
     },
 
     // Someday this too will be available.

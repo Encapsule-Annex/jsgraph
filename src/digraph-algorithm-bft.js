@@ -1,4 +1,4 @@
-// Encapsule/jsgraph/src/digraph-bfs.js
+// Encapsule/jsgraph/src/digraph-algorithm-bft.js
 //
 // Inspired by the design of the Boost Graph Library (BGL)
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
@@ -23,41 +23,38 @@
 */
 
 var helperFunctions = require('./helper-functions');
-var colors = require('./digraph-bfs-colors');
-var createBreadthFirstSearchContext = module.exports.createBreadthFirstSearchContext = require('./digraph-bfs-context');
-var callBFSVisitor = require('./digraph-bfs-visitor');
 
-var normalizeRequest = require('./digraph-bfs-request');
+var colors = require('./digraph-algorithm-bft-colors');
+var callBFSVisitor = require('./digraph-algorithm-bft-visitor');
+var normalizeRequest = require('./digraph-algorithm-bft-request');
+
 
 /*
-
   request = {
-  digraph: reference to jsgraph.DirectedGraph container object (required)
-  visitor: reference to jsgraph BFV visitor object (required)
-  options: {
-      startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
-          Note: if ommitted, BFS uses the digraph's root vertex set as the start vertex set
-      signalStart: Boolean flag (optional - default is true if ommitted)
-          Note: By default, BFS will call startVertex on each search root vertex.
-          In advanced scenarios you may wish to override this behavior.
-      searchContext: reference to BFS search context object (optional)
-          Note: By default, BFS allocates the search context internally and returns it to
-          the caller. In advanced scenarios you may wish to provide a pre-initialized
-          (or potentially pre-colored) search context object.
+      digraph: reference to jsgraph.DirectedGraph container object (required)
+      visitor: reference to jsgraph BFV visitor object (required)
+      options: {
+          startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
+              Note: if ommitted, BFT uses the digraph's root vertex set as the start vertex set
+          signalStart: Boolean flag (optional - default is true if ommitted)
+              Note: By default, BFT will call startVertex on each search root vertex.
+              In advanced scenarios you may wish to override this behavior.
+          traverseContext: reference to BFT search context object (optional)
+              Note: By default, BFT allocates the traversal context internally and returns it to
+              the caller. In advanced scenarios you may wish to provide a pre-initialized
+              (or potentially pre-colored) traversal context object.
+          }
       }
   }
 
   response = {
-      error: null indicating success or a string containing an explanation of the failure
-      result: {
-      searchCompleted: Boolean flag
-      searchContext: reference to the BFS search context object
-  } // or null to indicate a failure
-
+      error: null or string explaining why result is null
+      result: BFS search context object
+  }
 */
 
 
-module.exports.breadthFirstSearch = function (request_) {
+module.exports = function (request_) {
 
     var nrequest = null; // normalized request object
     var response = { error: null, result: null };
@@ -79,8 +76,8 @@ module.exports.breadthFirstSearch = function (request_) {
         var index, vertexId; 
 
         // initializeVertex visitor callback.
-        if (nrequest.options.searchContext.searchStatus === 'pending') {
-            for (vertexId in nrequest.options.searchContext.colorMap) {
+        if (nrequest.options.traverseContext.searchStatus === 'pending') {
+            for (vertexId in nrequest.options.traverseContext.colorMap) {
                 innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'initializeVertex', request: { u: vertexId, g: nrequest.digraph }});
                 if (innerResponse.error) {
                     errors.unshift(innerResponse.error);
@@ -93,7 +90,7 @@ module.exports.breadthFirstSearch = function (request_) {
             }
         }
 
-        nrequest.options.searchContext.searchStatus = 'active';
+        nrequest.options.traverseContext.searchStatus = 'active';
 
         if (errors.length || !continueSearch) {
             break;
@@ -106,12 +103,12 @@ module.exports.breadthFirstSearch = function (request_) {
             var startingVertexId = nrequest.options.startVector[index];
             // Ensure the starting vertex is in the graph container.
             if (!nrequest.digraph.isVertex(startingVertexId)) {
-                errors.unshift("BF* request failed. Vertex '" + startingVertexId + "' not found in specfied directed graph container.");
+                errors.unshift("BFT request failed. Vertex '" + startingVertexId + "' not found in specfied directed graph container.");
                 break;
             }
             // Ensure the vertex is white in the color map.
-            if (nrequest.options.searchContext.colorMap[startingVertexId] !== colors.white) {
-                errors.unshift("BF* request failed. Vertex '" + startingVertexId + "' color map not initialized to white.");
+            if (nrequest.options.traverseContext.colorMap[startingVertexId] !== colors.white) {
+                errors.unshift("BFT request failed. Vertex '" + startingVertexId + "' color map not initialized to white.");
                 break;
             }
             // discoverVertex visitor callback.
@@ -123,7 +120,7 @@ module.exports.breadthFirstSearch = function (request_) {
             continueSearch = innerResponse.result;
 
             // Remove the vertex from the undiscovered vertex map.
-            delete nrequest.options.searchContext.undiscoveredMap[startingVertexId];
+            delete nrequest.options.traverseContext.undiscoveredMap[startingVertexId];
 
             // Conditionally exit the loop if discoverVertex returned false.
             if (!continueSearch) {
@@ -141,7 +138,7 @@ module.exports.breadthFirstSearch = function (request_) {
             searchQueue.push(startingVertexId);
 
             // Color the vertex discovered (gray)
-            nrequest.options.searchContext.colorMap[startingVertexId] = colors.gray;
+            nrequest.options.traverseContext.colorMap[startingVertexId] = colors.gray;
 
             // Conditionally exit the loop if discoverVertex returned false.
             if (!continueSearch) {
@@ -156,7 +153,7 @@ module.exports.breadthFirstSearch = function (request_) {
             vertexId = searchQueue.shift();
 
             // By convention
-            nrequest.options.searchContext.colorMap[vertexId] = colors.black;
+            nrequest.options.traverseContext.colorMap[vertexId] = colors.black;
 
             // examineVertex visitor callback.
             innerResponse = callBFSVisitor({ visitor: nrequest.visitor, method: 'examineVertex', request: { u: vertexId, g: nrequest.digraph }});
@@ -186,7 +183,7 @@ module.exports.breadthFirstSearch = function (request_) {
                     break;
                 }
 
-                var colorV = nrequest.options.searchContext.colorMap[outEdge.v];
+                var colorV = nrequest.options.traverseContext.colorMap[outEdge.v];
                 switch (colorV) {
 
                 case colors.white:
@@ -197,7 +194,7 @@ module.exports.breadthFirstSearch = function (request_) {
                         break;
                     }
                     continueSearch = innerResponse.result;
-                    delete nrequest.options.searchContext.undiscoveredMap[outEdge.v];
+                    delete nrequest.options.traverseContext.undiscoveredMap[outEdge.v];
                     if (!continueSearch) {
                         break;
                     }
@@ -209,7 +206,7 @@ module.exports.breadthFirstSearch = function (request_) {
                     }
                     continueSearch = innerResponse.result;
                     searchQueue.push(outEdge.v);
-                    nrequest.options.searchContext.colorMap[outEdge.v] = colors.gray;
+                    nrequest.options.traverseContext.colorMap[outEdge.v] = colors.gray;
                     break;
 
                 case colors.gray:
@@ -251,7 +248,8 @@ module.exports.breadthFirstSearch = function (request_) {
                     break;
 
                 default:
-                    throw new Error("BF* failure: An invalid color value was found in the color map for vertex '" + outEdge.v + "'. Please file an issue!");
+                    errors.unshift("BFT failure: An invalid color value was found in the color map for vertex '" + outEdge.v + "'. Please file an issue!");
+                    break;
 
                 } // switch (colorV)
 
@@ -282,13 +280,13 @@ module.exports.breadthFirstSearch = function (request_) {
 
     if (errors.length) {
         if (nrequest) {
-            nrequest.options.searchContext.searchStatus = 'error';
+            nrequest.options.traverseContext.searchStatus = 'error';
         }
         errors.unshift("jsgraph.directed.breadthFirst* algorithm failure:");
         response.error = errors.join(' ');
     } else {
-        nrequest.options.searchContext.searchStatus = continueSearch?'completed':'terminated';
-        response.result = nrequest.options.searchContext;
+        nrequest.options.traverseContext.searchStatus = continueSearch?'completed':'terminated';
+        response.result = nrequest.options.traverseContext;
     }
     return response;
 };

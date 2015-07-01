@@ -2,33 +2,30 @@
 //
 
 var helperFunctions = require('./helper-functions');
-var createBreadthFirstSearchContext = require('./digraph-bfs-context');
+var createBreadthFirstTraverseContext = require('./digraph-algorithm-bft-context');
 
 /*
-
   request = {
-  digraph: reference to jsgraph.DirectedGraph container object (required)
-  visitor: reference to jsgraph BFV visitor object (required)
-  options: {
-  startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
-  Note: if ommitted, BFS uses the digraph's root vertex set as the start vertex set
-  signalStart: Boolean flag (optional - default is true if ommitted)
-  Note: By default, BFS will call startVertex on each search root vertex.
-  In advanced scenarios you may wish to override this behavior.
-  searchContext: reference to BFS search context object (optional)
-  Note: By default, BFS allocates the search context internally and returns it to
-  the caller. In advanced scenarios you may wish to provide a pre-initialized
-  (or potentially pre-colored) search context object.
-  }
+      digraph: reference to jsgraph.DirectedGraph container object (required)
+      visitor: reference to jsgraph BFV visitor object (required)
+      options: {
+          startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
+              Note: if ommitted, BFT uses the digraph's root vertex set as the start vertex set
+          signalStart: Boolean flag (optional - default is true if ommitted)
+              Note: By default, BFT will call startVertex on each search root vertex.
+              In advanced scenarios you may wish to override this behavior.
+          traverseContext: reference to BFT search context object (optional)
+              Note: By default, BFT allocates the traversal context internally and returns it to
+              the caller. In advanced scenarios you may wish to provide a pre-initialized
+              (or potentially pre-colored) traversal context object.
+          }
+      }
   }
 
   response = {
-  error: null indicating success or a string containing an explanation of the failure
-  result: {
-  searchCompleted: Boolean flag
-  searchContext: reference to the BFS search context object
-  } // or null to indicate a failure
-
+      error: null or string explaining why result is null
+      result: BFS search context object
+  }
 */
 
 module.exports = function (request_) {
@@ -38,8 +35,8 @@ module.exports = function (request_) {
     var nrequest = null;
     var inBreakScope = false;
 
-    var createSearchContext = function() {
-        var response = createBreadthFirstSearchContext({ digraph: nrequest.digraph });
+    var createTraverseContext = function() {
+        var response = createBreadthFirstTraverseContext({ digraph: nrequest.digraph });
         var result = null;
         if (response.error) {
             errors.unshift(response.error);
@@ -112,20 +109,20 @@ module.exports = function (request_) {
                 nrequest.options.signalStart = request_.options.signalStart;
             }
 
-            innerResponse = helperFunctions.JSType(request_.options.searchContext);
+            innerResponse = helperFunctions.JSType(request_.options.traverseContext);
             if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Object]')) {
-                errors.unshift("Options object property ~.options.searchContext is the wrong type. Expected either '[object Object]' or '[object Undefined']. Found type '" + innerResponse + "'.");
+                errors.unshift("Options object property ~.options.traverseContext is the wrong type. Expected either '[object Object]' or '[object Undefined']. Found type '" + innerResponse + "'.");
                 break;
             }
             if (innerResponse === '[object Object]') {
-                nrequest.options.searchContext = request_.options.searchContext;
+                nrequest.options.traverseContext = request_.options.traverseContext;
             }
 
         } // end if options object specified
         
         helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'startVector', getRootVertices);
         helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'signalStart', true);
-        helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'searchContext', createSearchContext);
+        helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'traverseContext', createTraverseContext);
 
         response.result = nrequest;
 
