@@ -22,16 +22,12 @@ describe("Module export tests", function() {
             expect(jsgraph.directed.transpose).to.be.a('function');
         });
 
-        it("module export 'jsgraph.directed.createBreadthFirstSearchContext' should be a function", function() {
-            expect(jsgraph.directed.createBreadthFirstSearchContext).to.be.a('function');
+        it("module export 'jsgraph.directed.createBreadthFirstTraverseContext' should be a function", function() {
+            expect(jsgraph.directed.createBreadthFirstTraverseContext).to.be.a('function');
         });
 
-        it("module export 'jsgraph.directed.breadthFirstVisit' should be a function", function() {
-            expect(jsgraph.directed.breadthFirstVisit).to.be.a('function');
-        });
-
-        it("module export 'jsgraph.directed.breadthFirstSearch' should be a function", function() {
-            expect(jsgraph.directed.breadthFirstSearch).to.be.a('function');
+        it("module export 'jsgraph.directed.breadthFirstTraverse' should be a function", function() {
+            expect(jsgraph.directed.breadthFirstTraverse).to.be.a('function');
         });
 
         it("module export 'jsgraph.directed.createDepthFirstVisit' should be a function", function() {

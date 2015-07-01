@@ -5,7 +5,7 @@ var should = require('chai').should;
 var uuid = require('node-uuid');
 
 var DirectedGraph = require('../src/digraph');
-var transposeDigraph = require('../src/digraph-transpose');
+var transposeDigraph = require('../src/digraph-algorithm-transpose');
 
 describe("Directed graph tranposition test", function() {
 

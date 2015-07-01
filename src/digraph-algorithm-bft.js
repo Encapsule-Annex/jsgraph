@@ -1,4 +1,4 @@
-// Encapsule/jsgraph/src/digraph-bfs.js
+// Encapsule/jsgraph/src/digraph-algorithm-bft.js
 //
 // Inspired by the design of the Boost Graph Library (BGL)
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
@@ -23,41 +23,37 @@
 */
 
 var helperFunctions = require('./helper-functions');
-var colors = require('./digraph-bfs-colors');
-var createBreadthFirstSearchContext = module.exports.createBreadthFirstSearchContext = require('./digraph-bfs-context');
-var callBFSVisitor = require('./digraph-bfs-visitor');
 
-var normalizeRequest = require('./digraph-bfs-request');
+var colors = require('./digraph-algorithm-bft-colors');
+var callBFSVisitor = require('./digraph-algorithm-bft-visitor');
+var normalizeRequest = require('./digraph-algorithm-bft-request');
 
 /*
-
   request = {
-  digraph: reference to jsgraph.DirectedGraph container object (required)
-  visitor: reference to jsgraph BFV visitor object (required)
-  options: {
-      startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
-          Note: if ommitted, BFS uses the digraph's root vertex set as the start vertex set
-      signalStart: Boolean flag (optional - default is true if ommitted)
-          Note: By default, BFS will call startVertex on each search root vertex.
-          In advanced scenarios you may wish to override this behavior.
-      searchContext: reference to BFS search context object (optional)
-          Note: By default, BFS allocates the search context internally and returns it to
-          the caller. In advanced scenarios you may wish to provide a pre-initialized
-          (or potentially pre-colored) search context object.
+      digraph: reference to jsgraph.DirectedGraph container object (required)
+      visitor: reference to jsgraph BFV visitor object (required)
+      options: {
+          startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
+              Note: if ommitted, BFS uses the digraph's root vertex set as the start vertex set
+          signalStart: Boolean flag (optional - default is true if ommitted)
+              Note: By default, BFS will call startVertex on each search root vertex.
+              In advanced scenarios you may wish to override this behavior.
+          searchContext: reference to BFS search context object (optional)
+              Note: By default, BFS allocates the search context internally and returns it to
+              the caller. In advanced scenarios you may wish to provide a pre-initialized
+              (or potentially pre-colored) search context object.
+          }
       }
   }
 
   response = {
-      error: null indicating success or a string containing an explanation of the failure
-      result: {
-      searchCompleted: Boolean flag
-      searchContext: reference to the BFS search context object
-  } // or null to indicate a failure
-
+      error: null or string explaining why result is null
+      result: BFS search context object
+  }
+  See also: digraph-bft-request.js
 */
 
-
-module.exports.breadthFirstSearch = function (request_) {
+module.exports = function (request_) {
 
     var nrequest = null; // normalized request object
     var response = { error: null, result: null };

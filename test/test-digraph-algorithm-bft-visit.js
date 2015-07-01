@@ -1,12 +1,12 @@
-// digraph-bfv-test.js
+// test-digraph-algorithm-bft-visit.js
 
 // external
 var assert = require('chai').assert;
 
 // internal
 var DirectedGraph = require('../src/digraph');
-var testBFSV = require('./test-runner-bfsv');
-var createBreadthFirstSearchContext = require('../src/digraph-bfs-context');
+var testBFSV = require('./fixture/test-runner-digraph-algorithm-bft');
+var createBreadthFirstSearchContext = require('../src/digraph-algorithm-bft-context');
 
 describe("BFV: manual search context create (bad) missing request object.", function() {
     var response = null;
