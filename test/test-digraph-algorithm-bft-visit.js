@@ -122,7 +122,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     testBFSV({ testName: "Single vertex, starting vertex not in the graph", validConfig: false,
                request: { digraph: digraph, options: { startVector: 'orange'}},
                expectedResults: {
-                   error: 'jsgraph.directed.breadthFirst* algorithm failure: BF* request failed. Vertex \'orange\' not found in specfied directed graph container.',
+                   error: 'jsgraph.directed.breadthFirst* algorithm failure: BFT request failed. Vertex \'orange\' not found in specfied directed graph container.',
                    result: '',
                    path: ''
                }});

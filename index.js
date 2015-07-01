@@ -3,20 +3,16 @@
 
 var DirectedGraph = require('./src/digraph');
 
-// Breadth-first Traverse (BFT): Unifies breadth-first visit and search algorithms.
-var BFT = require('./src/digraph-algorithm-bft');
-var createBreadthFirstTraverseContext = require('./src/digraph-algorithm-bft-context');
+var digraphTranspose = require('./src/digraph-algorithm-transpose');
 
-// Depth-First Traverse (DFT): Unifies depth-first visit and search algorithms.
+var digraphBFT = require('./src/digraph-algorithm-bft');
+var digraphBFTContext = require('./src/digraph-algorithm-bft-context');
 
 var digraph_dfs = require('./src/digraph-dfs');
-var digraph_transpose = require('./src/digraph-algorithm-transpose');
 
 // NEW STUFF :: HOLD OFF ON DFT FOR NOW...
 // var DFT = require('./src/digraph-algorithm-dft');
 // var createDepthFirstTraverseContext = require('./src/digraph-algorithm-dft-context');
-
-var digraph_transpose = require('./src/digraph-algorithm-transpose');
 
 
 module.exports = {
@@ -28,11 +24,11 @@ module.exports = {
     directed: {
 
         // Directed graph transposition algorithm.
-        transpose: digraph_transpose,
+        transpose: digraphTranspose,
 
         // Directed graph breadth-first visit and search algorithms (unified API).
-        breadthFirstTraverse: BFT,
-        createBreadthFirstTraverseContext: createBreadthFirstTraverseContext,
+        breadthFirstTraverse: digraphBFT,
+        createBreadthFirstTraverseContext: digraphBFTContext,
 
         // Directed graph depth-first visit and search algorithms.
         createDepthFirstSearchContext: digraph_dfs.createDepthFirstSearchContext,
