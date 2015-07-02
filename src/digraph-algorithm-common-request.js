@@ -2,7 +2,7 @@
 //
 
 var helperFunctions = require('./helper-functions');
-var createBreadthFirstTraverseContext = require('./digraph-algorithm-bft-context');
+var createBreadthFirstTraverseContext = require('./digraph-algorithm-common-context');
 
 /*
   request = {
