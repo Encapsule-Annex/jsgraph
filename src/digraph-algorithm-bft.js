@@ -108,6 +108,22 @@ module.exports = function (request_) {
                 errors.unshift("BFT request failed. Vertex '" + startingVertexId + "' color map not initialized to white.");
                 break;
             }
+
+            // startVertex visitor callback.
+            if (nrequest.options.signalStart) {
+                innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'startVertex', request: { u: startingVertexId, g: nrequest.digraph }});
+                if (innerResponse.error) {
+                    errors.unshift(innerResponse.error);
+                    break;
+                }
+                continueSearch = innerResponse.result;
+            }
+            
+            // Conditionally exit the loop if discoverVertex returned false.
+            if (errors.length || !continueSearch) {
+                break;
+            }
+
             // discoverVertex visitor callback.
             innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'discoverVertex', request: { u: startingVertexId, g: nrequest.digraph }});
             if (innerResponse.error) {
@@ -119,20 +135,6 @@ module.exports = function (request_) {
             // Remove the vertex from the undiscovered vertex map.
             delete nrequest.options.traverseContext.undiscoveredMap[startingVertexId];
 
-            // Conditionally exit the loop if discoverVertex returned false.
-            if (!continueSearch) {
-                break;
-            }
-
-            // startVertex visitor callback.
-            if (nrequest.options.signalStart) {
-                innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'startVertex', request: { u: startingVertexId, g: nrequest.digraph }});
-                if (innerResponse.error) {
-                    errors.unshift(innerResponse.error);
-                    break;
-                }
-                continueSearch = innerResponse.result;
-            }
             // Add the vertex to the search
             searchQueue.push(startingVertexId);
 
