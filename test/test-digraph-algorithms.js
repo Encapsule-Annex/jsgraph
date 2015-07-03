@@ -1,5 +1,6 @@
 // Encapsule/jsgraph/test/test-jsgraph-algorithms.js
 
+require('./test-digraph-algorithm-common-context');
 require('./test-digraph-algorithm-common-request');
 
 
