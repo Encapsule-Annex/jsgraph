@@ -155,7 +155,7 @@ module.exports = function (request_) {
                             break;
                         case colors.gray:
                             // backEdge visitor callback.
-                            innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'backEdge', request: { e: { u: vertexIdV, u: adjacentVertex }, g: nrequest.digraph }});
+                            innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'backEdge', request: { e: { u: vertexIdV, v: adjacentVertex }, g: nrequest.digraph }});
                             if (innerResponse.error) {
                                 errors.unshift(innerResponse.error);
                             } else {
