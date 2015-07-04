@@ -3,37 +3,46 @@
 
 var DirectedGraph = require('./src/digraph');
 
+var createTraversalContext = require('./src/digraph-algorithm-common-context');
 var digraphTranspose = require('./src/digraph-algorithm-transpose');
+var digraphBreadthFirstTraverse = require('./src/digraph-algorithm-bft');
 
-var digraphBFT = require('./src/digraph-algorithm-bft');
-var digraphBFTContext = require('./src/digraph-algorithm-bft-context');
-
+// In flux::
 var digraph_dfs = require('./src/digraph-dfs');
-
 // NEW STUFF :: HOLD OFF ON DFT FOR NOW...
 // var DFT = require('./src/digraph-algorithm-dft');
-// var createDepthFirstTraverseContext = require('./src/digraph-algorithm-dft-context');
+
 
 
 module.exports = {
 
-    // Generic directed graph container.
+    // Generic directed graph container object.
+    //
+    // var jsgraph = require('jsgraph);
+    // var DirectedGraph = jsgraph.DirectedGraph;
+    // var digraph = new DirectedGraph(serializedDigraph /*JSON, object, or undefined*/);
+    //
     DirectedGraph: DirectedGraph, 
 
     // Directed graph algorithms and transforms.
     directed: {
 
+        // Color constant hashtable.
+        colors: require('./src/digraph-algorithm-common-colors'),
+
         // Directed graph transposition algorithm.
         transpose: digraphTranspose,
 
         // Directed graph breadth-first visit and search algorithms (unified API).
-        breadthFirstTraverse: digraphBFT,
-        createBreadthFirstTraverseContext: digraphBFTContext,
+        breadthFirstTraverse: digraphBreadthFirstTraverse,
 
         // Directed graph depth-first visit and search algorithms.
-        createDepthFirstSearchContext: digraph_dfs.createDepthFirstSearchContext,
         depthFirstVisit: digraph_dfs.depthFirstVisit,
-        depthFirstSearch: digraph_dfs.depthFirstSearch        
+        depthFirstSearch: digraph_dfs.depthFirstSearch,        
+
+        // Directed graph traversal context factory (advanced).
+        createTraversalContext: createTraversalContext
+
 
         // NEW STUFF :: 
         // depthFirstTraverse: DTF,

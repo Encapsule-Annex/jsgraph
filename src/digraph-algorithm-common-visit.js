@@ -1,5 +1,5 @@
-// Encapsule/jsgraph/src/digraph-bfs-visitor.js
-//
+// Encapsule/jsgraph/src/digraph-visit.js
+// Wraps call to DirectedGraph algorithm visitor function callbacks.
 
 var helperFunctions = require('./helper-functions');
 
