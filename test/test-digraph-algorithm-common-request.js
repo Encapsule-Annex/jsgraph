@@ -1,12 +1,12 @@
-// test-digraph-algorithm-bft-request.js
+// test-digraph-algorithm-common-request.js
 
 var DirectedGraph = require('../src/digraph');
-var createBFTContext = require('../src/digraph-algorithm-common-context');
+var createTraverseContext = require('../src/digraph-algorithm-common-context');
 
 var assert = require('chai').assert;
-var testBFTRequestNormalizer = require('./fixture/test-runner-digraph-algorithm-bft-request');
+var testTraverseRequestNormalizer = require('./fixture/test-runner-algorithm-common-request');
 
-testBFTRequestNormalizer({
+testTraverseRequestNormalizer({
     testName: "Bad input: missing request", validConfig: false,
     expectedResults: {
         error: 'Missing request object ~. Found type \'[object Undefined]\'.',
@@ -14,7 +14,7 @@ testBFTRequestNormalizer({
     }
 });
 
-testBFTRequestNormalizer({
+testTraverseRequestNormalizer({
     testName: "Bad input: empty request", validConfig: false,
     expectedResults: {
         error: 'Missing request object ~. Found type \'[object Undefined]\'.',
@@ -28,7 +28,7 @@ testBFTRequestNormalizer({
     });
     
     var nullVisitor = {};
-    testBFTRequestNormalizer({
+    testTraverseRequestNormalizer({
         testName: "Bad input: missing 'visitor'", validConfig: false,
         request: { digraph: digraph },
         expectedResults: {
@@ -37,7 +37,7 @@ testBFTRequestNormalizer({
         }
     });
     
-    testBFTRequestNormalizer({
+    testTraverseRequestNormalizer({
         testName: "Bad input: Bad options object type", validConfig: false,
         request: { digraph: digraph, visitor: nullVisitor, options: "Joe Smith" },
         expectedResults: {
@@ -46,7 +46,7 @@ testBFTRequestNormalizer({
         }
     });
 
-    testBFTRequestNormalizer({
+    testTraverseRequestNormalizer({
         testName: "Minimum viable input", validConfig: true,
         request: { digraph: digraph, visitor: nullVisitor },
         expectedResults: {
@@ -55,7 +55,7 @@ testBFTRequestNormalizer({
         }
     });
 
-    testBFTRequestNormalizer({
+    testTraverseRequestNormalizer({
         testName: "options.signalStart set explicitly true", validConfig: true,
         request: { digraph: digraph, visitor: nullVisitor, options: { signalStart: true }},
         expectedResults: {
@@ -64,7 +64,7 @@ testBFTRequestNormalizer({
         }
     });
 
-    testBFTRequestNormalizer({
+    testTraverseRequestNormalizer({
         testName: "options.signalStart set explicitly false", validConfig: true,
         request: { digraph: digraph, visitor: nullVisitor, options: { signalStart: false }},
         expectedResults: {
@@ -73,7 +73,7 @@ testBFTRequestNormalizer({
         }
     });
 
-    testBFTRequestNormalizer({
+    testTraverseRequestNormalizer({
         testName: "Bad input: options.startVector overridden with wrong type", validConfig: false,
         request: { digraph: digraph, visitor: nullVisitor, options: { startVector:{ x: "mark's the spot"}}},
         expectedResults: {
@@ -82,7 +82,7 @@ testBFTRequestNormalizer({
         }
     });
 
-    testBFTRequestNormalizer({
+    testTraverseRequestNormalizer({
         testName: "options.startVector overridden with string vertex ID", validConfig: true,
         request: { digraph: digraph, visitor: nullVisitor, options: { startVector: "someVertexMayBeInvalid"}},
         expectedResults: {
@@ -91,7 +91,7 @@ testBFTRequestNormalizer({
         }
     });
 
-    testBFTRequestNormalizer({
+    testTraverseRequestNormalizer({
         testName: "options.startVector overridden with array string vertex ID", validConfig: true,
         request: { digraph: digraph, visitor: nullVisitor, options: { startVector: [ "someVertexMayBeInvalid", "apple", "orange", "RAT" ]}},
         expectedResults: {
@@ -102,13 +102,13 @@ testBFTRequestNormalizer({
 
     
     (function() {
-        var contextResponse = createBFTContext({ digraph: digraph });
+        var contextResponse = createTraverseContext({ digraph: digraph });
         assert.isNull(contextResponse.error);
-        var bftContext = contextResponse.result;
-        bftContext.searchStatus = "TEST-VALUE";
+        var traverseContext = contextResponse.result;
+        traverseContext.searchStatus = "TEST-VALUE";
 
 
-        testBFTRequestNormalizer({
+        testTraverseRequestNormalizer({
             testName: "Bad input: options.traverseContext set explicitly to wrong type", validConfig: false,
             request: { digraph: digraph, visitor: nullVisitor, options: { traverseContext: 'Hey, man!' }} ,
             expectedResults: {
@@ -117,9 +117,9 @@ testBFTRequestNormalizer({
             }
         });
 
-        testBFTRequestNormalizer({
+        testTraverseRequestNormalizer({
             testName: "options.traverseContext overridden explicitly", validConfig: true,
-            request: { digraph: digraph, visitor: nullVisitor, options: { traverseContext: bftContext }} ,
+            request: { digraph: digraph, visitor: nullVisitor, options: { traverseContext: traverseContext }} ,
             expectedResults: {
                 error: '',
                 json: '{"digraph":"{\\"vlist\\":[],\\"elist\\":[{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"RAT\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"MOUSE\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"VOLE\\"}}]}","visitor":{},"options":{"traverseContext":{"searchStatus":"TEST-VALUE","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}},"startVector":["VARMIT"],"signalStart":true}}'
