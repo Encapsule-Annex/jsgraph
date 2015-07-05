@@ -4,7 +4,7 @@
 var helperFunctions = require('./helper-functions');
 var colors = require('./digraph-algorithm-common-colors');
 var visitorCallback = require('./digraph-algorithm-common-visit');
-var normalizeRequest = require('./dft/digraph-algorithm-dft-request');
+var normalizeRequest = require('./digraph-algorithm-common-request');
 
 
 module.exports = function (request_) {
@@ -20,11 +20,11 @@ module.exports = function (request_) {
         var index, vertexId;
 
         var innerResponse = normalizeRequest(request_);
-        if (innerRequest.error) {
-            errors.unshift(innerRequest.error);
+        if (innerResponse.error) {
+            errors.unshift(innerResponse.error);
             break;
         }
-        nrequest = innerRequest.result;
+        nrequest = innerResponse.result;
 
         // initializeVertex visitor callback.
         if (nrequest.options.traverseContext.searchStatus === 'pending') {
@@ -231,7 +231,7 @@ module.exports = function (request_) {
         if (nrequest) {
             nrequest.options.traverseContext.searchStatus = 'error';
         }
-        errors.unshift("jsgraph.directed.depthFirstTravserse algorithm failure:");
+        errors.unshift("jsgraph.directed.depthFirstTraverse algorithm failure:");
         response.error = errors.join(' ');
     } else {
         nrequest.options.traverseContext.searchStatus = continueSearch?'completed':'terminated';

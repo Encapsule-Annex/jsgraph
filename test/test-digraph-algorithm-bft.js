@@ -1,16 +1,13 @@
-// test-digraph-algorithm-bft-visit.js
+// test-digraph-algorithm-bft.js
 
-// external
 var assert = require('chai').assert;
-
-// internal
 var DirectedGraph = require('../src/digraph');
 var testBFT = require('./fixture/test-runner-digraph-algorithm-bft');
 
 
 testBFT({ testName: "Missing request", validConfig: false,
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing request object ~. Found type \'[object Undefined]\'.',
+               error: 'jsgraph.directed.breadthFirstTraverse algorithm failure: Missing request object ~. Found type \'[object Undefined]\'.',
                result: null,
                path: null
            }});
@@ -18,7 +15,7 @@ testBFT({ testName: "Missing request", validConfig: false,
 testBFT({ testName: "Bad request type", validConfig: false,
            request: "No good",
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing request object ~. Found type \'[object String]\'.',
+               error: 'jsgraph.directed.breadthFirstTraverse algorithm failure: Missing request object ~. Found type \'[object String]\'.',
                result: null,
                path: null
            }});
@@ -26,7 +23,7 @@ testBFT({ testName: "Bad request type", validConfig: false,
 testBFT({ testName: "Empty request", validConfig: false,
            request: {}, // also no good
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing required DirectedGraph reference ~.digraph. Found type \'[object Undefined]\'.',
+               error: 'jsgraph.directed.breadthFirstTraverse algorithm failure: Missing required DirectedGraph reference ~.digraph. Found type \'[object Undefined]\'.',
                result: null,
                path: null
            }});
@@ -60,7 +57,7 @@ testBFT({ testName: "Empty request", validConfig: false,
     testBFT({ testName: "Single vertex, starting vertex not in the graph", validConfig: false,
                request: { digraph: digraph, options: { startVector: 'orange'}},
                expectedResults: {
-                   error: 'jsgraph.directed.breadthFirst* algorithm failure: BFT request failed. Vertex \'orange\' not found in specfied directed graph container.',
+                   error: 'jsgraph.directed.breadthFirstTraverse algorithm failure: BFT request failed. Vertex \'orange\' not found in specfied directed graph container.',
                    result: '',
                    path: ''
                }});
