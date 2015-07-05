@@ -6,7 +6,7 @@ var assert = require('chai').assert;
 // internal
 var DirectedGraph = require('../src/digraph');
 var testBFT = require('./fixture/test-runner-digraph-algorithm-bft');
-var createBreadthFirstSearchContext = require('../src/digraph-algorithm-common-context');
+
 
 testBFT({ testName: "Missing request", validConfig: false,
            expectedResults: {
