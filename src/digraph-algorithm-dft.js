@@ -181,7 +181,7 @@ module.exports = function (request_) {
                     // change the vertex's state to black to indicate search completion
                     nrequest.options.traverseContext.colorMap[currentVertexId] = colors.black;
                     // finishVertex visitor callback.
-                    innerReponse = visitorCallback({ visitor: nrequest.visitor, method: 'finishVertex', request: { u: currentVertexId, g: nrequest.digraph }});
+                    innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'finishVertex', request: { u: currentVertexId, g: nrequest.digraph }});
                     if (innerResponse.error) {
                         errors.unshift(innerResponse.error);
                         break;

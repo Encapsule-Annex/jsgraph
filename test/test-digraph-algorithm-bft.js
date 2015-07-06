@@ -327,7 +327,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 })();
 
 (function() {
-    describe("Breadth-first visitor termination tests.", function() {
+    describe("Breadth-first traverse termination tests.", function() {
 
         var digraph = new DirectedGraph({
             vlist: [
@@ -364,7 +364,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 
         testBFT({
-            testName: "Breadth-first visit terminate on 'initializeVertex'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'initializeVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -385,7 +385,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 
         testBFT({
-            testName: "Breadth-first visit terminate on 'startVertex'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'startVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -406,7 +406,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 
         testBFT({
-            testName: "Breadth-first visit terminate on 'discoverVertex'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'discoverVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -427,7 +427,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 
         testBFT({
-            testName: "Breadth-first visit terminate on 'examineVertex'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'examineVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -447,7 +447,7 @@ testBFT({ testName: "Empty request", validConfig: false,
         });
 
         testBFT({
-            testName: "Breadth-first visit terminate on 'examineEdge'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'examineEdge'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -467,7 +467,7 @@ testBFT({ testName: "Empty request", validConfig: false,
         });
 
         testBFT({
-            testName: "Breadth-first visit terminate on 'treeEdge'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'treeEdge'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -487,7 +487,7 @@ testBFT({ testName: "Empty request", validConfig: false,
         });
 
         testBFT({
-            testName: "Breadth-first visit terminate on 'nonTreeEdge'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'nonTreeEdge'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -508,7 +508,7 @@ testBFT({ testName: "Empty request", validConfig: false,
         
 
         testBFT({
-            testName: "Breadth-first visit terminate on 'grayTarget'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'grayTarget'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -528,7 +528,7 @@ testBFT({ testName: "Empty request", validConfig: false,
         });
         
         testBFT({
-            testName: "Breadth-first visit terminate on 'blackTarget'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'blackTarget'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -548,7 +548,7 @@ testBFT({ testName: "Empty request", validConfig: false,
         });
         
         testBFT({
-            testName: "Breadth-first visit terminate on 'finishVertex'", validConfig: true,
+            testName: "Breadth-first traverse terminate on 'finishVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {

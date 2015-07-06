@@ -14,7 +14,7 @@ module.exports = SearchPathRecorder = (function() {
             initializeVertex: function(request) {
                 self.results.push(self.step++ + " initializeVertex " + request.u);
                 if (self.chainedVisitor.initializeVertex) {
-                    return self.chainedVisitor.initializeVertex(vertex);
+                    return self.chainedVisitor.initializeVertex(request);
                 }
                 return true;
             },
@@ -37,7 +37,7 @@ module.exports = SearchPathRecorder = (function() {
             },
             // request: { e: { u: VertexId, v: VertexId }, g: DirectedGraph }
             examineEdge: function(request) {
-                self.results.push(self.step++ + " examineEdge [" + request.u + "," + request.v + "]");
+                self.results.push(self.step++ + " examineEdge [" + request.e.u + "," + request.e.v + "]");
                 if (self.chainedVisitor.examineEdge) {
                     return self.chainedVisitor.examineEdge(request);
                 }
@@ -45,7 +45,7 @@ module.exports = SearchPathRecorder = (function() {
             },
             // request: { e: { u: VertexId, v: VertexId }, g: DirectedGraph }
             treeEdge: function(request) {
-                self.results.push(self.step++ + " treeEdge [" + request.u + "," + request.v + "]");
+                self.results.push(self.step++ + " treeEdge [" + request.e.u + "," + request.e.v + "]");
                 if (self.chainedVisitor.treeEdge) {
                     return self.chainedVisitor.treeEdge(request);
                 }
@@ -53,7 +53,7 @@ module.exports = SearchPathRecorder = (function() {
             },
             // request: { e: { u: VertexId, v: VertexId }, g: DirectedGraph }
             backEdge: function(request) {
-                self.results.push(self.step++ + " backEdge [" + request.u + "," + request.v + "]");
+                self.results.push(self.step++ + " backEdge [" + request.e.u + "," + request.e.v + "]");
                 if (self.chainedVisitor.backEdge) {
                     return self.chainedVisitor.backEdge(request);
                 }
@@ -61,7 +61,7 @@ module.exports = SearchPathRecorder = (function() {
             },
             // request: { e: { u: VertexId, v: VertexId }, g: DirectedGraph }
             forwardOrCrossEdge: function(request) {
-                self.results.push(self.step++ + " forwardOrCrossEdge [" + request.u + "," + request.v + "]");
+                self.results.push(self.step++ + " forwardOrCrossEdge [" + request.e.u + "," + request.e.v + "]");
                 if (self.chainedVisitor.forwardOrCrossEdge) {
                     return self.chainedVisitor.forwardOrCrossEdge(request);
                 }

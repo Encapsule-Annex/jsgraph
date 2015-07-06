@@ -6,13 +6,7 @@ var DirectedGraph = require('./src/digraph');
 var createTraversalContext = require('./src/digraph-algorithm-common-context');
 var digraphTranspose = require('./src/digraph-algorithm-transpose');
 var digraphBreadthFirstTraverse = require('./src/digraph-algorithm-bft');
-
-// In flux::
-var digraph_dfs = require('./src/digraph-dfs');
-// NEW STUFF :: HOLD OFF ON DFT FOR NOW...
-// var DFT = require('./src/digraph-algorithm-dft');
-
-
+var digraphDepthFirstTraverse = require('./src/digraph-algorithm-dft');
 
 module.exports = {
 
@@ -37,8 +31,7 @@ module.exports = {
         breadthFirstTraverse: digraphBreadthFirstTraverse,
 
         // Directed graph depth-first visit and search algorithms.
-        depthFirstVisit: digraph_dfs.depthFirstVisit,
-        depthFirstSearch: digraph_dfs.depthFirstSearch,        
+        depthFirstTraverse: digraphDepthFirstTraverse,
 
         // Directed graph traversal context factory (advanced).
         createTraversalContext: createTraversalContext
