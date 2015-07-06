@@ -40,3 +40,40 @@ testDFT({ testName: "Empty request", validConfig: false,
                    path: '[]'
                }});
 })();
+
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex("lone-wolf-vertex");
+    testDFT({ testName: "Single vertex, default starting vertex set", validConfig: true,
+               request: { digraph: digraph },
+               expectedResults: {
+                   error: '',
+                   result: '',
+                   path: ''
+               }});
+})();
+
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex("lone-wolf-vertex");
+    testDFT({ testName: "Single vertex, starting vertex not in the graph", validConfig: false,
+               request: { digraph: digraph, options: { startVector: 'orange'}},
+               expectedResults: {
+                   error: '',
+                   result: '',
+                   path: ''
+               }});
+})();
+
+(function() {
+    var digraph = new DirectedGraph();
+    digraph.addVertex("lone-wolf-vertex");
+    testDFT({ testName: "Single vertex, starting vertex specified explicity in request", validConfig: true,
+               request: { digraph: digraph, options: { startVector: 'lone-wolf-vertex'}},
+               expectedResults: {
+                   error: '',
+                   result: '',
+                   path: ''
+               }});
+})();
+

@@ -49,11 +49,10 @@ module.exports = function (request_) {
         }
 
         // Outer depth-first search loop iterates over the start vertex set.
-        for (vertexId in nrequest.options.startVector) {
+        for (index in nrequest.options.startVector) {
 
-            ////
-            // BEGIN PASTE
-
+            vertexId = nrequest.options.startVector[index];
+            
             // Ensure the starting vertex is actually in the graph.
             if (!nrequest.digraph.isVertex(vertexId)) {
                 errors.unshift("DFT request failed. Vertex '" + vertexId + "' not found in specified directed graph container.");
@@ -68,7 +67,7 @@ module.exports = function (request_) {
 
             // startVertex visitor callback
             if (nrequest.options.signalStart) {
-                innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'startVertex', request: { u: VertexId, g: nrequest.digraph }});
+                innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'startVertex', request: { u: vertexId, g: nrequest.digraph }});
                 if (innerResponse.error) {
                     errors.unshift(innerResponse.error);
                     break;
@@ -88,18 +87,18 @@ module.exports = function (request_) {
 
                 // Peek at the identifier of the vertex at the front of the queue atop the search stack.
 
-                var vertexIdV = (searchStack[searchStack.length - 1])[0];
+                var currentVertexId = (searchStack[searchStack.length - 1])[0];
 
-                switch (searchContext_.colorMap[vertexIdV]) {
+                switch (nrequest.options.traverseContext.colorMap[currentVertexId]) {
 
                 case colors.white:
 
                     // Remove the vertex from the undiscovered map.
-                    delete searchContext_.undiscoveredMap[vertexIdV];
+                    delete nrequest.options.traverseContext.undiscoveredMap[currentVertexId];
 
                     // treeEdge visitor callback.
                     if (searchStack.length > 1) {
-                        innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'treeEdge', request: { e: { u: searchStack[searchStack.length - 2][0], v: vertexIdV }, g: nrequest.digraph }});
+                        innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'treeEdge', request: { e: { u: searchStack[searchStack.length - 2][0], v: currentVertexId }, g: nrequest.digraph }});
                         if (innerResponse.error) {
                             errors.unshift(innerResponse.error);
                             break;
@@ -112,7 +111,7 @@ module.exports = function (request_) {
                     }
 
                     // discoverVertex visitor callback.
-                    innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'discoverVertex', request: { u: vertexIdV, g: nrequest.digraph }});
+                    innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'discoverVertex', request: { u: currentVertexId, g: nrequest.digraph }});
                     if (innerResponse.error) {
                         errors.unshift(innerResponse.error);
                         break;
@@ -121,22 +120,22 @@ module.exports = function (request_) {
                     continueSearch = innerResponse.result;
 
                     // Change the vertex's state to GRAY to record its discovery.
-                    nrequest.options.traversalContext.colorMap[vertexIdV] = colors.gray;
+                    nrequest.options.traverseContext.colorMap[currentVertexId] = colors.gray;
 
                     if (!continueSearch) {
                         break;
                     }
 
                     // Examine adjacent vertices
-                    var vertexOutEdges = nrequest.digraph.outEdges(vertexIdV);
+                    var vertexOutEdges = nrequest.digraph.outEdges(currentVertexId);
                     var adjacentVertices = [];
 
                     while (vertexOutEdges.length && !errors.length && continueSearch) {
 
-                        var adjacentVertex = vertexOutEdges.shift().v;
+                        var adjacentVertexId = vertexOutEdges.shift().v;
 
                         // examineEdge visitor callback.
-                        innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'examineEdge', request: { e: { u: vertexIdV, v: adjacentVertex }, g: nrequest.digraph }});
+                        innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'examineEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
                         if (innerResponse.error) {
                             errors.unshift(innerRepsonse.error);
                             break;
@@ -146,16 +145,14 @@ module.exports = function (request_) {
                             break;
                         }
 
-                        var adjacentColor = searchContext_.colorMap[adjacentVertex];
-
-                        switch (adjacentColor) {
+                        switch (nrequest.options.traverseContext.colorMap[adjacentVertexId]) {
 
                         case colors.white:
-                            adjacentVertices.push(adjacentVertex);
+                            adjacentVertices.push(adjacentVertexId);
                             break;
                         case colors.gray:
                             // backEdge visitor callback.
-                            innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'backEdge', request: { e: { u: vertexIdV, v: adjacentVertex }, g: nrequest.digraph }});
+                            innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'backEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
                             if (innerResponse.error) {
                                 errors.unshift(innerResponse.error);
                             } else {
@@ -164,7 +161,7 @@ module.exports = function (request_) {
                             break;
                         case colors.black:
                             // forwardOrCrossEdge visitor callback.
-                            innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: vertexIdV, v: adjacentVertex }, g: nrequest.digraph }});
+                            innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
                             if (innerResponse.error) {
                                 errors.unshift(innerResponse.error);
                             } else {
@@ -182,13 +179,18 @@ module.exports = function (request_) {
                 case colors.gray:
 
                     // change the vertex's state to black to indicate search completion
-                    searchContext_.colorMap[vertexIdV] = colors.black;
-
-                    if ((visitorInterface_.finishVertex !== null) && visitorInterface_.finishVertex) {
-                        continueSearch = verifyVisitorResponse(visitorInterface_.finishVertex(vertexIdV, digraph_));
+                    nrequest.options.traverseContext.colorMap[currentVertexId] = colors.black;
+                    // finishVertex visitor callback.
+                    innerReponse = visitorCallback({ visitor: nrequest.visitor, method: 'finishVertex', request: { u: currentVertexId, g: nrequest.digraph }});
+                    if (innerResponse.error) {
+                        errors.unshift(innerResponse.error);
+                        break;
                     }
-
-                    var finishedVertexId = searchStack[searchStack.length - 1].shift();
+                    continueSearch = innerResponse.result;
+                    if (!continueSearch) {
+                        break;
+                    }
+                    searchStack[searchStack.length - 1].shift();
                     if (!(searchStack[searchStack.length - 1].length)) {
                         searchStack.pop();
                     }
@@ -202,11 +204,16 @@ module.exports = function (request_) {
                     // been 'finished'. 
 
                     if (searchStack.length > 1) {
-                        if ((visitorInterface_.forwardOrCrossEdge !== null) && visitorInterface_.forwardOrCrossEdge) {
-                            continueSearch = verifyVisitorResponse(visitorInterface_.forwardOrCrossEdge((searchStack[searchStack.length - 2])[0], vertexIdV, digraph_));
+                        innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: (searchStack[searchStack.length - 2])[0], v: currentVertexId }, g: nrequest.digraph }});
+                        if (innerResponse.error) {
+                            errors.unshift(innerResponse.error);
+                            break;
+                        }
+                        continueSearch = innerResponse.result;
+                        if (!continueSearch) {
+                            break;
                         }
                     }
-
                     searchStack[searchStack.length - 1].shift();
                     if (!searchStack[searchStack.length - 1].length) {
                         searchStack.pop();
@@ -214,7 +221,7 @@ module.exports = function (request_) {
                     break;
 
                 default:
-                    errors.unshift("DFT failure: An invalid color value was found in the color map for vertex '" + vertexIdV + "'.");
+                    errors.unshift("DFT failure: An invalid color value was found in the color map for vertex '" + currentVertexId + "'.");
                     break;
                 }
             } // while search stack is not empty
