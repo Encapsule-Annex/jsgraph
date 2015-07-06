@@ -283,7 +283,7 @@ module.exports = function (request_) {
         if (nrequest) {
             nrequest.options.traverseContext.searchStatus = 'error';
         }
-        errors.unshift("jsgraph.directed.breadthFirst* algorithm failure:");
+        errors.unshift("jsgraph.directed.breadthFirstTraverse algorithm failure:");
         response.error = errors.join(' ');
     } else {
         nrequest.options.traverseContext.searchStatus = continueSearch?'completed':'terminated';

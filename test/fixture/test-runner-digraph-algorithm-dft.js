@@ -1,9 +1,9 @@
-// Encapsule/jsgraph/test/fixture/test-runner-digraph-algorithm-bft.js
+// Encapsule/jsgraph/test/fixture/test-runner-digraph-algorithm-dft.js
 //
 
 var assert = require('chai').assert;
-var BFT = require('../../src/digraph-algorithm-bft');
-var SearchPathRecorder = require('./bfv-results-recorder');
+var DFT = require('../../src/digraph-algorithm-dft');
+var SearchPathRecorder = require('./dfv-results-recorder');
 
 /*
   request = {
@@ -19,7 +19,7 @@ var SearchPathRecorder = require('./bfv-results-recorder');
 
 module.exports = function (testVector_) {
 
-    var testName = "BFT test case: " + testVector_.testName + ":";
+    var testName = "DFT test case: " + testVector_.testName + ":";
 
     describe(testName, function() {
 
@@ -32,17 +32,17 @@ module.exports = function (testVector_) {
                 visitor = testVector_.request.visitor;
             }
             searchPathRecorder = new SearchPathRecorder(visitor);
-            var bftRequest = testVector_.request;
-            if (bftRequest) {
-                bftRequest.visitor = searchPathRecorder.visitorInterface;
+            var dftRequest = testVector_.request;
+            if (dftRequest) {
+                dftRequest.visitor = searchPathRecorder.visitorInterface;
             }
-            var executeRequestedBFT = function() {
-                searchResponse = BFT(bftRequest);
+            var executeRequestedDFT = function() {
+                searchResponse = DFT(dftRequest);
             };
-            assert.doesNotThrow(executeRequestedBFT);
+            assert.doesNotThrow(executeRequestedDFT);
         });
 
-        it("The call to BFT should have returned a response object.", function() {
+        it("The call to DFT should have returned a response object.", function() {
             assert.isDefined(searchResponse);
             assert.isNotNull(searchResponse);
             assert.isObject(searchResponse);
