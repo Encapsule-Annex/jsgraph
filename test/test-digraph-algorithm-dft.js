@@ -33,12 +33,12 @@ testDFT({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     testDFT({ testName: "Empty digraph", validConfig: true,
-               request: { digraph: digraph },
-               expectedResults: {
-                   error: '',
-                   result: '{"searchStatus":"completed","colorMap":{},"undiscoveredMap":{}}',
-                   path: '[]'
-               }});
+              request: { digraph: digraph, options: { allowEmptyStartVector: true }},
+              expectedResults: {
+                  error: '',
+                  result: '{"searchStatus":"completed","colorMap":{},"undiscoveredMap":{}}',
+                  path: '[]'
+              }});
 })();
 
 (function() {
@@ -99,7 +99,7 @@ testDFT({ testName: "Empty request", validConfig: false,
         ]
     });
     testDFT({ testName: "Two inter-connected vertices, (no starting vertex set)", validConfig: true,
-              request: { digraph: digraph },
+              request: { digraph: digraph, options: { allowEmptyStartVector: true }},
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{"A":0,"B":0},"undiscoveredMap":{"A":true,"B":true}}',

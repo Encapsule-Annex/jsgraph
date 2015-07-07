@@ -50,7 +50,6 @@ module.exports = function (request_) {
         return nrequest.digraph.getRootVertices();
     };
         
-
     while (!inBreakScope) {
         inBreakScope = true;
 
@@ -100,6 +99,15 @@ module.exports = function (request_) {
                 break;
             }
 
+            innerResponse = helperFunctions.JSType(request_.options.allowEmptyStartVector);
+            if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Boolean]')) {
+                errors.unshift("Options object property ~.options.allowEmptyStartVector is the wrong type. Expected either '[object Boolean]' or '[object Undefined]. Found type '" + innerResponse + "'.");
+                break;
+            }
+            if (innerResponse == '[object Boolean]') {
+                nrequest.options.allowEmptyStartVector = request_.options.allowEmptyStartVector;
+            }
+
             innerResponse = helperFunctions.JSType(request_.options.signalStart);
             if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Boolean]')) {
                 errors.unshift("Options object property ~.options.signalStart is the wrong type. Expected either '[object Boolean]' or '[object Undefined]'. Found type '" + innerResponse + "'.");
@@ -108,6 +116,7 @@ module.exports = function (request_) {
             if (innerResponse === '[object Boolean]') {
                 nrequest.options.signalStart = request_.options.signalStart;
             }
+
 
             innerResponse = helperFunctions.JSType(request_.options.traverseContext);
             if ((innerResponse !== '[object Undefined]') && (innerResponse !== '[object Object]')) {
@@ -121,8 +130,15 @@ module.exports = function (request_) {
         } // end if options object specified
         
         helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'startVector', getRootVertices);
+        helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'allowEmptyStartVector', false);
         helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'signalStart', true);
         helperFunctions.setPropertyValueIfUndefined(nrequest.options, 'traverseContext', createTraverseContext);
+
+        // Ensure that the starting vertex set is not empty (unless allowed).
+        if (!nrequest.options.startVector.length && !nrequest.options.allowEmptyStartVector) {
+            errors.unshift("You have specified an empty starting vertex set for this traversal. This is allowed only if you set request.options.allowEmptyStartVector === true.");
+            break;
+        }
 
         response.result = nrequest;
 

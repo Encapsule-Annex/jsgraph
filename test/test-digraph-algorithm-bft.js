@@ -31,7 +31,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     testBFT({ testName: "Empty digraph", validConfig: true,
-               request: { digraph: digraph },
+              request: { digraph: digraph, options: { allowEmptyStartVector: true}},
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{},"undiscoveredMap":{}}',
@@ -156,7 +156,7 @@ testBFT({ testName: "Empty request", validConfig: false,
     digraph.addEdge('islandA', 'islandB', 'bridge');
     digraph.addVertex('islandC');
     testBFT({ testName: "Two connected vertices + a disconnected vertex w/default starting vertex set", validConfig: true,
-               request: { digraph: digraph },
+              request: { digraph: digraph, options: { allowEmptyStartVector: true }},
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{"islandA":2,"islandB":2,"islandC":2},"undiscoveredMap":{}}',
@@ -194,7 +194,7 @@ testBFT({ testName: "Empty request", validConfig: false,
     digraph.addEdge("B", "A");
     testBFT({
         testName: 'Two vertices with a cycle w/default starting vertex set (which is the root vertex set of the digraph)', validConfig: true,
-        request: { digraph: digraph },
+        request: { digraph: digraph, options: { allowEmptyStartVector: true }},
         expectedResults: {
             error: '',
             result: '{"searchStatus":"completed","colorMap":{"A":0,"B":0},"undiscoveredMap":{"A":true,"B":true}}',
