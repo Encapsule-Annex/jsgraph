@@ -1,22 +1,7 @@
 // Encapsule/jsgraph/index.js
 // Public package exports for jsgraph module.
 
-var DirectedGraph = require('./src/digraph');
-
-var createTraversalContext = require('./src/digraph-algorithm-common-context');
-var digraphTranspose = require('./src/digraph-algorithm-transpose');
-var digraphBreadthFirstTraverse = require('./src/digraph-algorithm-bft');
-var digraphDepthFirstTraverse = require('./src/digraph-algorithm-dft');
-
-module.exports = {
-
-    // Generic directed graph container object.
-    //
-    // var jsgraph = require('jsgraph);
-    // var DirectedGraph = jsgraph.DirectedGraph;
-    // var digraph = new DirectedGraph(serializedDigraph /*JSON, object, or undefined*/);
-    //
-    DirectedGraph: DirectedGraph, 
+var jsgraph = module.exports = {
 
     // Directed graph algorithms and transforms.
     directed: {
@@ -24,32 +9,40 @@ module.exports = {
         // Color constant hashtable.
         colors: require('./src/digraph-algorithm-common-colors'),
 
+        ////
+        // Create a DirectedGraph container object.
+        //
+        // var response = jsgraph.directed.create(request);
+        //
+        // request = Undefined, JSON string, or data object [1]
+        //
+        // response = {
+        //     error: null or string explaining why result is null
+        //     result: DirectedGraph container object or null if error
+        // }
+        //
+        // [1] see DirectedGraph.toJSON/toObject methods.
+        ////
+        create: require('./src/digraph').createDirectedGraph,
+
         // Directed graph transposition algorithm.
-        transpose: digraphTranspose,
+        // Creates a new DirectedGraph container object that's identical
+        // to a caller-specified digraph except that the direction of the
+        // the edges are reverese in the result digraph. Note that if present,
+        // vertex and edge properties in the source digraph are copied by
+        // reference to the result digraph.
+        transpose: require('./src/digraph-algorithm-transpose'),
 
-        // Directed graph breadth-first visit and search algorithms (unified API).
-        breadthFirstTraverse: digraphBreadthFirstTraverse,
+        // Directed graph breadth-first traversal visitor algorithm.
+        breadthFirstTraverse: require('./src/digraph-algorithm-bft'),
 
-        // Directed graph depth-first visit and search algorithms.
-        depthFirstTraverse: digraphDepthFirstTraverse,
+        // Directed graph depth-first traversal visitor algorithm.
+        depthFirstTraverse: require('./src/digraph-algorithm-dft'),
 
         // Directed graph traversal context factory (advanced).
-        createTraversalContext: createTraversalContext
+        createTraversalContext: require('./src/digraph-algorithm-common-context')
 
-
-        // NEW STUFF :: 
-        // depthFirstTraverse: DTF,
-        // createDepthFirstSearchContext: createDepthFirstTraverseContext
-
-    },
-
-    // Someday this too will be available.
-    // 
-    // Generic undirected graph container.
-    // UndirectedGraph: ugraph
-    // Undirected graph-specific algorithms and transforms.
-    // undirected: {}
-
+    }
 };
 
 

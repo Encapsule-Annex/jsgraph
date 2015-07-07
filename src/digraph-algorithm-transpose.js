@@ -5,7 +5,7 @@
 // More info on directed graph transposition:
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/transpose_graph.html
 
-var DirectedGraph = require('../src/digraph');
+var DirectedGraph = require('../src/digraph').DirectedGraph;
 
 module.exports = function (digraphIn_) {
 

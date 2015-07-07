@@ -1,7 +1,7 @@
 // test-digraph-algorithm-bft.js
 
 var assert = require('chai').assert;
-var DirectedGraph = require('../src/digraph');
+var DirectedGraph = require('../src/digraph').DirectedGraph;
 var testBFT = require('./fixture/test-runner-digraph-algorithm-bft');
 
 
