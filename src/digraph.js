@@ -41,8 +41,12 @@ var digraphExport = require('./digraph-json-export');
             this.rootMap = {};
             this.leafMap = {};
             this.edgeCount = 0;
+            this.constructionError = null;
             if ((jsonOrObject_ !== null) && jsonOrObject_) {
-                digraphImport(this, jsonOrObject_);
+                var innerResponse = digraphImport(this, jsonOrObject_);
+                if (innerResponse.error) {
+                    this.constructionError = innerResponse.error;
+                }
             }
         }
 
@@ -276,6 +280,34 @@ var digraphExport = require('./digraph-json-export');
 
     })();
 
-    module.exports = DirectedGraph;
+
+    var createDirectedGraph = function (jsonOrObject_) {
+        var response = { error: null, result: null };
+        var digraph = new DirectedGraph(jsonOrObject_);
+        if (digraph.constructionError) {
+            response.error = digraph.constructionError;
+        } else {
+            response.result = digraph;
+        }
+        return response;
+    };
+
+    module.exports = {
+        /*
+          createDirectedGraph is a wrapper around JavaScript operator new jsgraph.DirectedGraph(...)
+          that returns an error/result response object. This is the preferred mechanism by which
+          jsgraph-derived client code should construct DirectedGraph container object instance(s).
+        */
+        createDirectedGraph: createDirectedGraph,
+
+        /*
+          DirectedGraph is constructed with JavaScript operator new but may fail during construction
+          if an error is encountered parsing the constructor's optional JSON/data object in-paramter.
+          After contruction, clients should check DirectedGraph.constructionError === null to ensure
+          that construction was successful. If a construction error occurred, constructionError is the
+          response.error string returned by DirectedGraph's data import subroutine.
+        */
+        DirectedGraph: DirectedGraph
+    };
 
 }).call(this);

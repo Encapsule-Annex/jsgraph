@@ -10,16 +10,16 @@ describe("Module export tests", function() {
 
     describe("Directed graph container API", function() {
 
-        it("module export 'jsgraph.DirectedGraph' should be a constructor function", function() {
-            assert.isFunction(jsgraph.DirectedGraph);
-        });
-
         it("module export 'jsgraph.directed' should be an object", function() {
             assert.isObject(jsgraph.directed);
         });
 
         it("module export 'jsgraph.directed.colors' should be an object", function() {
             assert.isObject(jsgraph.directed.colors);
+        });
+
+        it("module export 'jsgraph.directed.create' should be a function", function() {
+            assert.isFunction(jsgraph.directed.create);
         });
 
         it("module export 'jsgraph.directed.transpose' should be a function", function() {
