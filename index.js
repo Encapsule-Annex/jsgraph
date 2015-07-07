@@ -1,13 +1,6 @@
 // Encapsule/jsgraph/index.js
 // Public package exports for jsgraph module.
 
-//var DirectedGraphContainer = require('./src/digraph');
-//var createTraversalContext = require('./src/digraph-algorithm-common-context');
-//var digraphTranspose = require('./src/digraph-algorithm-transpose');
-//var digraphBreadthFirstTraverse = require('./src/digraph-algorithm-bft');
-//var digraphDepthFirstTraverse = require('./src/digraph-algorithm-dft');
-
-
 var jsgraph = module.exports = {
 
     // Directed graph algorithms and transforms.
@@ -33,12 +26,17 @@ var jsgraph = module.exports = {
         create: require('./src/digraph').createDirectedGraph,
 
         // Directed graph transposition algorithm.
+        // Creates a new DirectedGraph container object that's identical
+        // to a caller-specified digraph except that the direction of the
+        // the edges are reverese in the result digraph. Note that if present,
+        // vertex and edge properties in the source digraph are copied by
+        // reference to the result digraph.
         transpose: require('./src/digraph-algorithm-transpose'),
 
-        // Directed graph breadth-first visit and search algorithms (unified API).
+        // Directed graph breadth-first traversal visitor algorithm.
         breadthFirstTraverse: require('./src/digraph-algorithm-bft'),
 
-        // Directed graph depth-first visit and search algorithms.
+        // Directed graph depth-first traversal visitor algorithm.
         depthFirstTraverse: require('./src/digraph-algorithm-dft'),
 
         // Directed graph traversal context factory (advanced).
