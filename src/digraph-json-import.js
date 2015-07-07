@@ -12,7 +12,7 @@ module.exports = function (digraph_, jsonOrObject_) {
     var processVertex = function(vertexDescriptor_) {
         type = getType(vertexDescriptor_);
         if (type !== '[object Object]') {
-            errors.unshift("JSON semantics error: Expected vertex descriptor object in 'v' array but found '" + type + "' instead.");
+            errors.unshift("JSON semantics error: Expected vertex descriptor object in 'vlist' array but found '" + type + "' instead.");
         } else {
             type = getType(vertexDescriptor_.u);
             if (type !== '[object String]') {
@@ -30,7 +30,7 @@ module.exports = function (digraph_, jsonOrObject_) {
         } else {
             type = getType(edgeDescriptor_.e);
             if (type !== '[object Object]') {
-                errors.unshift("JSON semantics error: 'elist' array should contain object(s) but but found '" + type + "' instead.");
+                errors.unshift("JSON semantics error: Edge record in 'elist' should define edge descriptor object 'e' but but found '" + type + "' instead.");
             } else {
                 type = getType(edgeDescriptor_.e.u);
                 if (type !== '[object String]') {
@@ -56,7 +56,7 @@ module.exports = function (digraph_, jsonOrObject_) {
             try {
                 jsonParse = JSON.parse(jsonOrObject_);
             } catch (exception_) {
-                errors.unshift("Exception occurred while parsing JSON:" + exception_.msg);
+                errors.unshift("Exception occurred while parsing JSON: " + exception_.message);
             }
             break;
         case '[object Object]':
@@ -100,7 +100,7 @@ module.exports = function (digraph_, jsonOrObject_) {
             // do nothing
             break;
         default:
-            errors.unshift("JSON semantics error: Expected 'e' (edges) to be an array but found '" + type + "'.");
+            errors.unshift("JSON semantics error: Expected 'elist' (edges) to be an array but found '" + type + "'.");
         }
         if (errors.length) {
             break;

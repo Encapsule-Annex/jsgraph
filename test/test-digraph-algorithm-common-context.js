@@ -4,7 +4,7 @@
 var assert = require('chai').assert;
 
 // internal
-var DirectedGraph = require('../src/digraph');
+var DirectedGraph = require('../src/digraph').DirectedGraph;
 var createTraverseContext = require('../src/digraph-algorithm-common-context');
 
 
