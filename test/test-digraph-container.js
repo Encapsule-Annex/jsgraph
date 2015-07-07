@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 var should = require('chai').should;
 var uuid = require('node-uuid');
 
-var DirectedGraph = require('../src/digraph');
+var DirectedGraph = require('../src/digraph').DirectedGraph;
 
 describe("DirectedGraph container object tests", function() {
 
