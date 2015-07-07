@@ -1,40 +1,37 @@
-// test-digraph-algorithm-bft-visit.js
+// test-digraph-algorithm-bft.js
 
-// external
 var assert = require('chai').assert;
-
-// internal
 var DirectedGraph = require('../src/digraph');
-var testBFSV = require('./fixture/test-runner-digraph-algorithm-bft');
-var createBreadthFirstSearchContext = require('../src/digraph-algorithm-common-context');
+var testBFT = require('./fixture/test-runner-digraph-algorithm-bft');
 
-testBFSV({ testName: "Missing request", validConfig: false,
+
+testBFT({ testName: "Missing request", validConfig: false,
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing request object ~. Found type \'[object Undefined]\'.',
+               error: 'jsgraph.directed.breadthFirstTraverse algorithm failure: Missing request object ~. Found type \'[object Undefined]\'.',
                result: null,
                path: null
            }});
 
-testBFSV({ testName: "Bad request type", validConfig: false,
+testBFT({ testName: "Bad request type", validConfig: false,
            request: "No good",
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing request object ~. Found type \'[object String]\'.',
+               error: 'jsgraph.directed.breadthFirstTraverse algorithm failure: Missing request object ~. Found type \'[object String]\'.',
                result: null,
                path: null
            }});
 
-testBFSV({ testName: "Empty request", validConfig: false,
+testBFT({ testName: "Empty request", validConfig: false,
            request: {}, // also no good
            expectedResults: {
-               error: 'jsgraph.directed.breadthFirst* algorithm failure: Missing required DirectedGraph reference ~.digraph. Found type \'[object Undefined]\'.',
+               error: 'jsgraph.directed.breadthFirstTraverse algorithm failure: Missing required DirectedGraph reference ~.digraph. Found type \'[object Undefined]\'.',
                result: null,
                path: null
            }});
 
 (function() {
     var digraph = new DirectedGraph();
-    testBFSV({ testName: "Empty digraph", validConfig: true,
-               request: { digraph: digraph },
+    testBFT({ testName: "Empty digraph", validConfig: true,
+              request: { digraph: digraph, options: { allowEmptyStartVector: true}},
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{},"undiscoveredMap":{}}',
@@ -45,7 +42,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     digraph.addVertex("lone-wolf-vertex");
-    testBFSV({ testName: "Single vertex, default starting vertex set", validConfig: true,
+    testBFT({ testName: "Single vertex, default starting vertex set", validConfig: true,
                request: { digraph: digraph },
                expectedResults: {
                    error: '',
@@ -57,10 +54,10 @@ testBFSV({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     digraph.addVertex("lone-wolf-vertex");
-    testBFSV({ testName: "Single vertex, starting vertex not in the graph", validConfig: false,
+    testBFT({ testName: "Single vertex, starting vertex not in the graph", validConfig: false,
                request: { digraph: digraph, options: { startVector: 'orange'}},
                expectedResults: {
-                   error: 'jsgraph.directed.breadthFirst* algorithm failure: BFT request failed. Vertex \'orange\' not found in specfied directed graph container.',
+                   error: 'jsgraph.directed.breadthFirstTraverse algorithm failure: BFT request failed. Vertex \'orange\' not found in specfied directed graph container.',
                    result: '',
                    path: ''
                }});
@@ -69,7 +66,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     digraph.addVertex("lone-wolf-vertex");
-    testBFSV({ testName: "Single vertex, starting vertex specified explicity in request", validConfig: true,
+    testBFT({ testName: "Single vertex, starting vertex specified explicity in request", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'lone-wolf-vertex'}},
                expectedResults: {
                    error: '',
@@ -82,7 +79,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     var digraph = new DirectedGraph();
     digraph.addVertex('islandA');
     digraph.addVertex('islandB');
-    testBFSV({ testName: "Two disconnected vertices, default starting vertex set", validConfig: true,
+    testBFT({ testName: "Two disconnected vertices, default starting vertex set", validConfig: true,
                request: { digraph: digraph },
                expectedResults: {
                    error: '',
@@ -96,7 +93,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     var digraph = new DirectedGraph();
     digraph.addVertex('islandA');
     digraph.addVertex('islandB');
-    testBFSV({ testName: "Two disconnected vertices, starting vertex set set to 'islandA'", validConfig: true,
+    testBFT({ testName: "Two disconnected vertices, starting vertex set set to 'islandA'", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'islandA' }},
                expectedResults: {
                    error: '',
@@ -109,7 +106,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     var digraph = new DirectedGraph();
     digraph.addVertex('islandA');
     digraph.addVertex('islandB');
-    testBFSV({ testName: "Two disconnected vertices, starting vertex set set to 'islandB'", validConfig: true,
+    testBFT({ testName: "Two disconnected vertices, starting vertex set set to 'islandB'", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'islandB' }},
                expectedResults: {
                    error: '',
@@ -121,7 +118,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     digraph.addEdge('islandA', 'islandB', 'bridge');
-    testBFSV({ testName: "Two connected vertices, default starting vertex set'", validConfig: true,
+    testBFT({ testName: "Two connected vertices, default starting vertex set'", validConfig: true,
                request: { digraph: digraph },
                expectedResults: {
                    error: '',
@@ -133,7 +130,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     digraph.addEdge('islandA', 'islandB', 'bridge');
-    testBFSV({ testName: "Two connected vertices, starting vertex set set to 'islandA'", validConfig: true,
+    testBFT({ testName: "Two connected vertices, starting vertex set set to 'islandA'", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'islandA' }},
                expectedResults: {
                    error: '',
@@ -145,7 +142,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     digraph.addEdge('islandA', 'islandB', 'bridge');
-    testBFSV({ testName: "Two connected vertices, starting vertex set set to 'islandB'", validConfig: true,
+    testBFT({ testName: "Two connected vertices, starting vertex set set to 'islandB'", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'islandB' }},
                expectedResults: {
                    error: '',
@@ -158,8 +155,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
     var digraph = new DirectedGraph();
     digraph.addEdge('islandA', 'islandB', 'bridge');
     digraph.addVertex('islandC');
-    testBFSV({ testName: "Two connected vertices + a disconnected vertex w/default starting vertex set", validConfig: true,
-               request: { digraph: digraph },
+    testBFT({ testName: "Two connected vertices + a disconnected vertex w/default starting vertex set", validConfig: true,
+              request: { digraph: digraph, options: { allowEmptyStartVector: true }},
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{"islandA":2,"islandB":2,"islandC":2},"undiscoveredMap":{}}',
@@ -182,7 +179,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     digraph.addEdge("AC", "ACA");
     digraph.addEdge("AC", "ACB");
     digraph.addEdge("AC", "ACC");
-    testBFSV({ testName: "Two connected vertices + a disconnected vertex w/default starting vertex set", validConfig: true,
+    testBFT({ testName: "Two connected vertices + a disconnected vertex w/default starting vertex set", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'A' }},
                expectedResults: {
                    error: '',
@@ -195,9 +192,9 @@ testBFSV({ testName: "Empty request", validConfig: false,
     var digraph = new DirectedGraph();
     digraph.addEdge("A", "B");
     digraph.addEdge("B", "A");
-    testBFSV({
+    testBFT({
         testName: 'Two vertices with a cycle w/default starting vertex set (which is the root vertex set of the digraph)', validConfig: true,
-        request: { digraph: digraph },
+        request: { digraph: digraph, options: { allowEmptyStartVector: true }},
         expectedResults: {
             error: '',
             result: '{"searchStatus":"completed","colorMap":{"A":0,"B":0},"undiscoveredMap":{"A":true,"B":true}}',
@@ -211,7 +208,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     var digraph = new DirectedGraph();
     digraph.addEdge("A", "B");
     digraph.addEdge("B", "A");
-    testBFSV({
+    testBFT({
         testName: "Two vertices with a cycle w/default starting vertex set to 'A'", validConfig: true,
         request: { digraph: digraph, options: { startVector: 'A' }},
         expectedResults: {
@@ -234,7 +231,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     digraph.addEdge("C", "E");
     digraph.addEdge("D", "F");
     digraph.addEdge("E", "F");
-    testBFSV({
+    testBFT({
         testName: "Branch and then converge gray target tests", validConfig: true,
         request: { digraph: digraph },
         expectedResults: {
@@ -252,7 +249,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     digraph.addEdge("C", "D");
     digraph.addEdge("A", "D");
     digraph.addEdge("D", "A");
-    testBFSV({
+    testBFT({
         testName: "Branch and then converge black target tests", validConfig: true,
         request: { digraph: digraph, options: { startVector: 'A' }},
         expectedResults: {
@@ -279,7 +276,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     digraph.addEdge("automobiles", "Porsche");
     digraph.addEdge("Porsche", "911 Turbo S");
     digraph.addEdge("Porsche", "918 Spyder");
-    testBFSV({
+    testBFT({
         testName: "Hierarchy graph test A", validConfig: true,
         request: { digraph: digraph },
         expectedResults: {
@@ -289,7 +286,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
         }
     });
 
-    testBFSV({
+    testBFT({
         testName: "Hiearchical graph test B (no start signal)", validConfig: true,
         request: { digraph: digraph, options: { signalStart: false }},
         expectedResults: {
@@ -318,7 +315,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
     digraph.addEdge("2B", "2D");
     digraph.addEdge("2B", "2E");
     digraph.addEdge("2E", "1B");
-    testBFSV({
+    testBFT({
         testName: "Simple breadth-first search test w/default starting vertex set", validConfig: true,
         request: { digraph: digraph },
         expectedResults: {
@@ -330,7 +327,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
 })();
 
 (function() {
-    describe("Breadth-first visitor termination tests.", function() {
+    describe("Breadth-first traverse termination tests.", function() {
 
         var digraph = new DirectedGraph({
             vlist: [
@@ -349,7 +346,7 @@ testBFSV({ testName: "Empty request", validConfig: false,
             ]
         });
 
-        testBFSV({
+        testBFT({
             testName: "Breadth-first visit terminate baseline (search not terminated)", validConfig: true,
             request: {
                 digraph: digraph,
@@ -366,8 +363,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
         });
 
 
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'initializeVertex'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'initializeVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -387,8 +384,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
         });
 
 
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'startVertex'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'startVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -408,8 +405,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
         });
 
 
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'discoverVertex'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'discoverVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -429,8 +426,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
         });
 
 
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'examineVertex'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'examineVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -449,8 +446,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
             }
         });
 
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'examineEdge'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'examineEdge'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -469,8 +466,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
             }
         });
 
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'treeEdge'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'treeEdge'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -489,8 +486,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
             }
         });
 
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'nonTreeEdge'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'nonTreeEdge'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -510,8 +507,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
         });
         
 
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'grayTarget'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'grayTarget'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -530,8 +527,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
             }
         });
         
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'blackTarget'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'blackTarget'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {
@@ -550,8 +547,8 @@ testBFSV({ testName: "Empty request", validConfig: false,
             }
         });
         
-        testBFSV({
-            testName: "Breadth-first visit terminate on 'finishVertex'", validConfig: true,
+        testBFT({
+            testName: "Breadth-first traverse terminate on 'finishVertex'", validConfig: true,
             request: {
                 digraph: digraph,
                 visitor: {

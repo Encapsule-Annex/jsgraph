@@ -30,14 +30,8 @@ describe("Module export tests", function() {
             assert.isFunction(jsgraph.directed.breadthFirstTraverse);
         });
 
-        // DEPRECATED
-        it("module export 'jsgraph.directed.depthFirstVisit' should be a function", function() {
-            assert.isFunction(jsgraph.directed.depthFirstVisit);
-        });
-
-        // DEPRECATED
-        it("module export 'jsgraph.directed.depthFirstSearch' should be a function", function() {
-            assert.isFunction(jsgraph.directed.depthFirstSearch);
+        it("module export 'jsgraph.directed.depthFirstTraverse' should be a function", function() {
+            assert.isFunction(jsgraph.directed.depthFirstTraverse);
         });
 
         it("module export 'jsgraph.directed.createTraveralContext' should be a function", function() {
