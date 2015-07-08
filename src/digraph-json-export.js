@@ -22,16 +22,13 @@ DigraphDataExporter.exportObject = function (digraph_) {
 
 
     var processEdge = function(edge_) {
-        var edgeProps = digraph_.getEdgeProperty(edge_.u, edge_.v);
-        digraphState.elist.push({ e: { u: edge_.u, v: edge_.v}, p: edgeProps });
+        var edgeProps = digraph_.getEdgeProperty(edge_);
+        digraphState.elist.push({ e: edge_, p: edgeProps });
         vertexMentionedMap[edge_.u] = true;
         vertexMentionedMap[edge_.v] = true;
     };
 
     for (vertexId in vertexMap) {
-        // var vertexDescriptor = vertexMap[vertexId];
-        // digraphState.vlist.push({ u: vertexId, p: vertexDescriptor.properties });
-        
         var outEdges = digraph_.outEdges(vertexId);
         outEdges.forEach(processEdge);
     }

@@ -40,13 +40,12 @@ describe("DirectedGraph container object tests", function() {
         var json = null;
         
         before(function(){
-            vertices.forEach(function(v){
-                digraph.addVertex(v, { k: v });
+            vertices.forEach(function(u){
+                digraph.addVertex({ u: u, p: { k: u }});
             });
-
             vertices.forEach(function(u){
                 vertices.forEach(function(v){
-                    if(u !== v) digraph.addEdge(u, v);
+                    if(u !== v) digraph.addEdge({ e: { u: u, v: v}});
                 });
             });
         });
@@ -197,11 +196,11 @@ describe("DirectedGraph container object tests", function() {
         };
 
         describe("addVertex", function() {
-            before(function() { digraph.addVertex("apple"); });
+            before(function() { digraph.addVertex({ u: "apple"}); });
             addVertexTest();
         });
         describe("addVertex (idempotency)", function() {
-            before(function() { digraph.addVertex("apple"); });
+            before(function() { digraph.addVertex({ u: "apple"}); });
             addVertexTest();
         });
         describe("removeVertex", function() {
@@ -322,28 +321,36 @@ describe("DirectedGraph container object tests", function() {
         };
 
         describe("addEdge(apple,orange)", function() {
-            before(function() { digraph.addEdge("apple", "orange"); });
+            before(function() {
+                digraph.addEdge({ e: { u: "apple", v: "orange"}});
+            });
             addEdgeTest();
         });
 
         describe("addEdge(apple,orange) (idempotency)", function() {
-            before(function() { digraph.addEdge("apple", "orange"); });
+            before(function() {
+                digraph.addEdge({ e: { u: "apple", v: "orange"}});
+            });
             addEdgeTest();
         });
 
         describe("removeEdge(apple,orange)", function() {
-            before(function() { digraph.removeEdge("apple", "orange"); });
+            before(function() {
+                digraph.removeEdge({u: "apple", v: "orange"});
+            });
             removeEdgeTest();
         });
 
         describe("removeEdge(apple,orange) idempotency", function() {
-            before(function() { digraph.removeEdge("apple", "orange"); });
+            before(function() {
+                digraph.removeEdge({u:"apple",v:"orange"});
+            });
             removeEdgeTest();
         });
 
         describe("addEdge(apple,orange), removeVertex(orange)", function() {
             before(function() {
-                digraph.addEdge("apple", "orange");
+                digraph.addEdge({e:{u:"apple",v:"orange"}});
                 digraph.removeVertex("orange");
             });
 
@@ -387,9 +394,9 @@ describe("DirectedGraph container object tests", function() {
 
         // create a triangle.
         var digraph = new DirectedGraph();
-        digraph.addEdge("white", "blue");
-        digraph.addEdge("blue", "green");
-        digraph.addEdge("green", "white");
+        digraph.addEdge({e: { u: "white", v: "blue"}});
+        digraph.addEdge({e: { u: "blue",  v: "green"}});
+        digraph.addEdge({e:{ u: "green", v: "white"}});
 
         it("graph should have three vertices", function() {
             assert.lengthOf(Object.keys(digraph.vertexMap), 3);
@@ -433,20 +440,20 @@ describe("DirectedGraph container object tests", function() {
 
             before(function() {
 
-                digraph.addEdge("north1","east1");
-                digraph.addEdge("east1","south1");
-                digraph.addEdge("south1","west1");
-                digraph.addEdge("west1","north1");
+                digraph.addEdge({e:{ u: "north1", v: "east1"}});
+                digraph.addEdge({e:{ u: "east1", v: "south1"}});
+                digraph.addEdge({ e: { u: "south1", v: "west1"}});
+                digraph.addEdge({ e: { u: "west1", v: "north1"}});
 
-                digraph.addEdge("north2","east2");
-                digraph.addEdge("east2","south2");
-                digraph.addEdge("south2","west2");
-                digraph.addEdge("west2","north2");
+                digraph.addEdge({ e: { u: "north2", v: "east2"}});
+                digraph.addEdge({ e: { u: "east2", v: "south2"}});
+                digraph.addEdge({ e: { u: "south2", v: "west2"}});
+                digraph.addEdge({ e: { u: "west2", v: "north2"}});
 
-                digraph.addEdge("north1","north2");
-                digraph.addEdge("east1","east2");
-                digraph.addEdge("south1","south2");
-                digraph.addEdge("west1","west2");
+                digraph.addEdge({ e: { u: "north1", v: "north2"}});
+                digraph.addEdge({ e: { u: "east1", v: "east2"}});
+                digraph.addEdge({ e: { u: "south1", v: "south2"}});
+                digraph.addEdge({ e: { u: "west1", v: "west2"}});
 
             });
 
@@ -531,7 +538,7 @@ describe("DirectedGraph container object tests", function() {
         var digraph = new DirectedGraph();
         var x;
         for (x = 0; x < verticesToAllocate; x++) {
-            digraph.addVertex("" + x + "");
+            digraph.addVertex({ u: "" + x + ""});
         }
 
         it("graph should have " + verticesToAllocate + " vertices", function() {

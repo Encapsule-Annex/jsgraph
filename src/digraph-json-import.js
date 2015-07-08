@@ -18,7 +18,7 @@ module.exports = function (digraph_, jsonOrObject_) {
             if (type !== '[object String]') {
                 errors.unshift("JSON semantics error: Expected vertex descriptor property 'u' to be a string but found '" + type + "' instead.");
             } else {
-                digraph_.addVertex(vertexDescriptor_.u, vertexDescriptor_.p);
+                digraph_.addVertex({ u: vertexDescriptor_.u, p: vertexDescriptor_.p});
             }
         }
     };
@@ -40,7 +40,7 @@ module.exports = function (digraph_, jsonOrObject_) {
                     if (type !== '[object String]') {
                         errors.unshift("JSON semantics error: Expected edge descriptor property 'e.v' to be a string but found '" + type + "' instead.");
                     } else {
-                        digraph_.addEdge(edgeDescriptor_.e.u, edgeDescriptor_.e.v, edgeDescriptor_.p);
+                        digraph_.addEdge({ e: edgeDescriptor_.e, p: edgeDescriptor_.p});
                     }
                 }
             }
