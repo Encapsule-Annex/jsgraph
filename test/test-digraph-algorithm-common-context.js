@@ -52,7 +52,7 @@ describe("Traverse context: constructed for a specific digraph", function() {
 
     before(function() {
         digraph = new DirectedGraph();
-        digraph.addVertex('island');
+        digraph.addVertex({ u: 'island'});
         response = createTraverseContext({ digraph: digraph });
     });
 
