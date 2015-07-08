@@ -11,6 +11,7 @@ var createBreadthFirstTraverseContext = require('./digraph-algorithm-common-cont
       options: {
           startVector: reference to a vertex ID string, or an array of vertex ID strings (optional)
               Note: if ommitted, BFT uses the digraph's root vertex set as the start vertex set
+          allowEmptyStartVector: Boolean flag (optional - default is false is omitted)
           signalStart: Boolean flag (optional - default is true if ommitted)
               Note: By default, BFT will call startVertex on each search root vertex.
               In advanced scenarios you may wish to override this behavior.
@@ -24,7 +25,7 @@ var createBreadthFirstTraverseContext = require('./digraph-algorithm-common-cont
 
   response = {
       error: null or string explaining why result is null
-      result: BFS search context object
+      result: Traversal context object or null if error
   }
 */
 

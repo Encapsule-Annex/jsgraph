@@ -3,6 +3,7 @@
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
 // http://en.wikipedia.org/wiki/Directed_graph
 
+var helperFunctions = require('./helper-functions');
 var digraphImport = require('./digraph-json-import');
 var digraphExport = require('./digraph-json-export');
 
@@ -45,7 +46,7 @@ var digraphExport = require('./digraph-json-export');
             if ((jsonOrObject_ !== null) && jsonOrObject_) {
                 var innerResponse = digraphImport(this, jsonOrObject_);
                 if (innerResponse.error) {
-                    this.constructionError = innerResponse.error;
+                    this.constructionError = "DirectedGraph constructor failed: " + innerResponse.error;
                 }
             }
         }
@@ -74,36 +75,71 @@ var digraphExport = require('./digraph-json-export');
             return leafVertices;
         };
 
-        DirectedGraph.prototype.addVertex = function (vertexId_, properties_) {
-            if ((vertexId_ === null) || !vertexId_) {
-                throw new Error("Missing required input parameter.");
+        /*
+          request = {
+              u: vertex ID string
+              p: optional property (must be serializable to JSON)
+          }
+          response = {
+              error: null or error string
+              result: vertex ID string or null if error
+          }
+         */
+        DirectedGraph.prototype.addVertex = function (request_) {
+            var response = { error: null, result: null };
+            var errors = [];
+            var inBreakScope = false;
+            while (!inBreakScope) {
+                inBreakScope = true;
+                var jstype = helperFunctions.JSType(request_);
+                if (jstype !== '[object Object]') {
+                    errors.unshift("Missing request object. Found type '" + jstype + "'.");
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.u);
+                if (jstype !== '[object String]') {
+                    errors.unshift("Expected request.u to be a string but found '" + jstype + "'.");
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.p);
+                if (jstype === '[object Function]') {
+                    errors.unshift("Expected request.p to be serializable to JSON. Function references should be stored in an external hash table (e.g. indexed by vertex ID string).");
+                    break;
+                }
+                var vertex = this.vertexMap[request_.u];
+                if ((vertex === null) || !vertex) {
+                    vertex = this.vertexMap[request_.u] = {};
+                    vertex.edges = {};
+                    vertex.edges.in = {};
+                    vertex.edges.out = {};
+                    this.rootMap[request_.u] = {};
+                    this.leafMap[request_.u] = {};
+                }
+                if (jstype !== '[object Undefined]') {
+                    vertex.properties = request_.p;
+                }
+                response.result = request_.u;
+            } // end while !inBreakScope
+            if (errors.length) {
+                errors.unshift("DirectedGraph.addVertex failed:");
+                response.error = errors.join(' ');
             }
-            var vertex = this.vertexMap[vertexId_];
-            if ((vertex === null) || !vertex) {
-                vertex = this.vertexMap[vertexId_] = {};
-                vertex.edges = {};
-                vertex.edges.in = {};
-                vertex.edges.out = {};
-                this.rootMap[vertexId_] = {};
-                this.leafMap[vertexId_] = {};
-            }
-            if ((properties_ !== null) && properties_) {
-                vertex.properties = properties_;
-            }
-            return vertexId_;
+            return response;
         };
 
         DirectedGraph.prototype.isVertex = function (vertexId_) {
-            if ((vertexId_ === null) || !vertexId_) {
-                throw new Error("Missing required input parameter.");
+            var jstype = helperFunctions.JSType(vertexId_);
+            if (jstype !== '[object String]') {
+                return false;
             }
             var vertex = this.vertexMap[vertexId_];
             return (vertex !== null) && vertex && true || false;
         };
             
         DirectedGraph.prototype.removeVertex = function (vertexId_) {
-            if ((vertexId_ === null) || !vertexId_) {
-                throw new Error("Missing required input parameter.");
+            var jstype = helperFunctions.JSType(vertexId_);
+            if (jstype !== '[object String]') {
+                return false;
             }
             var vertexU = this.vertexMap[vertexId_];
             if ((vertexU === null) || !vertexU) {
@@ -111,10 +147,10 @@ var digraphExport = require('./digraph-json-export');
             }
             var vertexIdX;
             for (vertexIdX in vertexU.edges.out) {
-                this.removeEdge(vertexId_, vertexIdX);
+                this.removeEdge({ u: vertexId_, v: vertexIdX});
             }
             for (vertexIdX in vertexU.edges.in) {
-                this.removeEdge(vertexIdX, vertexId_);
+                this.removeEdge({ u: vertexIdX, v: vertexId_});
             }
             delete this.vertexMap[vertexId_];
             delete this.rootMap[vertexId_];
@@ -122,60 +158,179 @@ var digraphExport = require('./digraph-json-export');
             return true;
         };
 
-        DirectedGraph.prototype.addEdge = function (vertexIdU_, vertexIdV_, properties_) {
-            this.addVertex(vertexIdU_);
-            this.addVertex(vertexIdV_);
-            var outEdge = this.vertexMap[vertexIdU_].edges.out[vertexIdV_];
-            if ((outEdge === null) || !outEdge) {
-                outEdge = this.vertexMap[vertexIdU_].edges.out[vertexIdV_] = {};
-                delete this.leafMap[vertexIdU_];
+        /*
+          request = {
+              e: { u: string, v: string },
+              p: (optional) property serializable to JSON
+          }
+          response = {
+              error: error string or null
+              result: edge descriptor object or null iff error
+          }
+         */
+        DirectedGraph.prototype.addEdge = function (request_) {
+            var response = { error: null, result: null };
+            var errors = [];
+            var inBreakScope = false;
+            while (!inBreakScope) {
+                inBreakScope = true;
+                var jstype = helperFunctions.JSType(request_);
+                if (jstype !== '[object Object]') {
+                    errors.unshift("Missing request object ~. Found type '" + jstype + "'.");
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.e);
+                if (jstype !== '[object Object]') {
+                    errors.unshift("Expected request.e to be an object. Found type '" + jstype + "'.");
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.e.u);
+                if (jstype !== '[object String]') {
+                    errors.unshift("Expected request.e.u to be a string. Found type '" + innerResposne + "'.");
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.e.v);
+                if (jstype !== '[object String]') {
+                    errors.unshift("Expected request.e.v to be a string. Found type '" + jstype + "'.");
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.p);
+                if (jstype === '[object Function]') {
+                    errors.unshift("Expected request.p to be serializable to JSON. Function references should be stored in an external hash table (e.g. indexed by vertex ID string).");
+                    break;
+                }
+
+                var innerResponse = this.addVertex({ u: request_.e.u });
+                if (innerResponse.error) {
+                    errors.unshift(innerResponse.error);
+                    break;
+                }
+                innerResponse = this.addVertex({ u: request_.e.v });
+                if (innerResponse.error) {
+                    errors.unshift(innerResponse.error);
+                    break;
+                }
+                var outEdge = this.vertexMap[request_.e.u].edges.out[request_.e.v];
+                if ((outEdge === null) || !outEdge) {
+                    outEdge = this.vertexMap[request_.e.u].edges.out[request_.e.v] = {};
+                    delete this.leafMap[request_.e.u];
+                }
+                var inEdge = this.vertexMap[request_.e.v].edges.in[request_.e.u];
+                if ((inEdge === null) || !inEdge) {
+                    inEdge = this.vertexMap[request_.e.v].edges.in[request_.e.u] = {};
+                    this.edgeCount++;
+                    delete this.rootMap[request_.e.v];
+                }
+                if (jstype !== '[object Undefined]') {
+                    outEdge.properties = request_.p;
+                }
+                response.result = request_.e;
+            } // end while !inBreakScope
+            if (errors.length) {
+                errors.unshift("DirectedGraph.addEdge failed:");
+                response.error = errors.join(' ');
             }
-            var inEdge = this.vertexMap[vertexIdV_].edges.in[vertexIdU_];
-            if ((inEdge === null) || !inEdge) {
-                inEdge = this.vertexMap[vertexIdV_].edges.in[vertexIdU_] = {};
-                this.edgeCount++;
-                delete this.rootMap[vertexIdV_];
-            }
-            if ((properties_ !== null) && properties_) {
-                outEdge.properties = properties_;
-            }
-            return { u: vertexIdU_, v: vertexIdV_ };
+            return response;
         };
 
-        DirectedGraph.prototype.removeEdge = function(vertexIdU_, vertexIdV_) {
-            var vertexU = this.vertexMap[vertexIdU_];
-            var vertexV = this.vertexMap[vertexIdV_];
-            if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
-                return false;
+        /*
+          request = {
+              u: string,
+              v: string,
+          }
+          response = {
+              error: null or error string explaining why result is null
+              result: Boolean true if successful. False if edge doesn't exist.
+          }
+        */
+        DirectedGraph.prototype.removeEdge = function(request_) {
+            var response = { error: null, result: null };
+            var errors = [];
+            var inBreakScope = false;
+            while (!inBreakScope) {
+                inBreakScope = true;
+                var jstype = helperFunctions.JSType(request_);
+                if (jstype !== '[object Object]') {
+                    errors.unshift("Missing request object. Found type '" + jstype + "'.");
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.u);
+                if (jstype !== '[object String]') {
+                    errors.unshift("Expected request.u to be a string. Found type '" + jstype + "'.");
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.v);
+                if (jstype !== '[object String]') {
+                    errors.unshift("Expected request.v to be a string. Found type '" + type + "'.");
+                    break;
+                }
+                var vertexU = this.vertexMap[request_.u];
+                var vertexV = this.vertexMap[request_.v];
+                if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
+                    response.result = false;
+                    break;
+                }
+                var outEdgeMap = vertexU.edges.out;
+                var edge = outEdgeMap[request_.v];
+                if (!((edge !== null) && edge)) {
+                    response.result = false;
+                    break;
+                }
+                delete outEdgeMap[request_.v];
+                if (!Object.keys(outEdgeMap).length) {
+                    this.leafMap[request_.u] = {};
+                }
+                var inEdgeMap = vertexV.edges.in;
+                delete inEdgeMap[request_.u];
+                if (!Object.keys(inEdgeMap).length) {
+                    this.rootMap[request_.v] = {};
+                }
+                if (this.edgeCount) {
+                    this.edgeCount--;
+                }
+                response.result = true;
+            } // while !inBreakScope
+            if (errors.length) {
+                errors.unshift("DirectedGraph.removeEdge failed:");
+                response.error = errors.join(' ');
             }
-            var outEdgeMap = vertexU.edges.out;
-            var edge = outEdgeMap[vertexIdV_];
-            if (!((edge !== null) && edge)) {
-                return false;
-            }
-            delete outEdgeMap[vertexIdV_];
-            if (!Object.keys(outEdgeMap).length) {
-                this.leafMap[vertexIdU_] = {};
-            }
-            var inEdgeMap = vertexV.edges.in;
-            delete inEdgeMap[vertexIdU_];
-            if (!Object.keys(inEdgeMap).length) {
-                this.rootMap[vertexIdV_] = {};
-            }
-            if (this.edgeCount) {
-                this.edgeCount--;
-            }
-            return true;
+            return response;
         };
 
-        DirectedGraph.prototype.isEdge = function(vertexIdU_, vertexIdV_) {
-            var vertexU = this.vertexMap[vertexIdU_];
-            var vertexV = this.vertexMap[vertexIdV_];
-            if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
-                return false;
+        /*
+          request = {
+              u: string,
+              v: string,
+          }
+          response = Boolean true if edge exists. Otherwise, false.
+          Note that invalid requests are coalesced as negative responses.
+        */
+        DirectedGraph.prototype.isEdge = function(request_) {
+            var response = false;
+            var jstype = helperFunctions.JSType(request_);
+            var inBreakScope = false;
+            while (!inBreakScope) {
+                inBreakScope = true;
+                if (jstype !== '[object Object]') {
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.u);
+                if (jstype !== '[object String]') {
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.v);
+                if (jstype !== '[object String]') {
+                    break;
+                }
+                var vertexU = this.vertexMap[request_.u];
+                var vertexV = this.vertexMap[request_.v];
+                if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
+                    break;
+                }
+                var edge = vertexU.edges.out[vertexIdV_];
+                response = (edge !== null) && edge && true || false;
             }
-            var edge = vertexU.edges.out[vertexIdV_];
-            return (edge !== null) && edge && true || false;
+            return response;
         };
 
         DirectedGraph.prototype.verticesCount = function() {
@@ -187,7 +342,6 @@ var digraphExport = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.getEdges = function() {
-            var self = this;
             var edges = [];
             var vertices = this.getVertices();
             var processVertexOutEdges = function(outEdges_) {
@@ -195,6 +349,7 @@ var digraphExport = require('./digraph-json-export');
                     edges.push(outEdge_);
                 });
             };
+            var self = this;
             vertices.forEach(function(vertexId_) {
                 processVertexOutEdges(self.outEdges(vertexId_));
             });
@@ -203,36 +358,30 @@ var digraphExport = require('./digraph-json-export');
                              
         DirectedGraph.prototype.inEdges = function(vertexId_) {
             var result = [];
-            var vertexIdV;
-            for (vertexIdV in this.vertexMap[vertexId_].edges.in) {
-                result.push({ u: vertexIdV, v: vertexId_});
+            if (this.isVertex(vertexId_)) {
+                for (var vertexIdV in this.vertexMap[vertexId_].edges.in) {
+                    result.push({ u: vertexIdV, v: vertexId_});
+                }
             }
             return result;
         };
 
         DirectedGraph.prototype.outEdges = function(vertexId_) {
             var result = [];
-            var vertexIdV;
-            for (vertexIdV in this.vertexMap[vertexId_].edges.out) {
-                result.push({ u: vertexId_, v: vertexIdV});
+            if (this.isVertex(vertexId_)) {
+                for (var vertexIdV in this.vertexMap[vertexId_].edges.out) {
+                    result.push({ u: vertexId_, v: vertexIdV});
+                }
             }
             return result;
         };
 
         DirectedGraph.prototype.inDegree = function (vertexId_) {
-            var vertexV = this.vertexMap[vertexId_];
-            if (!((vertexV !== null) && vertexV)) {
-                return -1;
-            }
-            return Object.keys(vertexV.edges.in).length;
+            return this.isVertex(vertexId_)?Object.keys(this.vertexMap[vertexId_].edges.in).length:-1;
         };
 
         DirectedGraph.prototype.outDegree = function (vertexId_) {
-            var vertexV = this.vertexMap[vertexId_];
-            if (!((vertexV !== null) && vertexV)) {
-                return -1;
-            }
-            return Object.keys(this.vertexMap[vertexId_].edges.out).length;
+            return this.isVertex(vertexId_)?Object.keys(this.vertexMap[vertexId_].edges.out).length:-1;
         };
 
         DirectedGraph.prototype.getVertexProperty = function(vertexId_) {
@@ -243,21 +392,68 @@ var digraphExport = require('./digraph-json-export');
             return this.vertexMap[vertexId_].properties;
         };
 
-        DirectedGraph.prototype.setVertexProperty = function(vertexId_, ref_) {
-            return this.addVertex(vertexId_, ref_);
+        /*
+          request = {
+              u: vertex ID string
+              p: optional property (must be serializable to JSON)
+          }
+          response = {
+              error: null or error string
+              result: vertex ID string or null if error
+          }
+         */
+        DirectedGraph.prototype.setVertexProperty = function(request_) {
+            return this.addVertex(request_);
         };
 
-        DirectedGraph.prototype.getEdgeProperty = function(vertexIdU_, vertexIdV_) {
-            var vertexU = this.vertexMap[vertexIdU_];
-            var vertexV = this.vertexMap[vertexIdV_];
-            if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
-                return void 0;
+        /*
+          request = {
+              u: string,
+              v: string
+          }
+          response = void 0 or whatever property is assigned to the edge
+          Note that build requests are coalesced to void 0 responses.
+         */
+
+        DirectedGraph.prototype.getEdgeProperty = function(request_) {
+            var response = void 0;
+            var inBreakScope = false;
+            while (!inBreakScope) {
+                inBreakScope = true;
+                var jstype = helperFunctions.JSType(request_);
+                if (jstype !== '[object Object]') {
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.u);
+                if (jstype !== '[object String]') {
+                    break;
+                }
+                jstype = helperFunctions.JSType(request_.v);
+                if (jstype !== '[object String]') {
+                    break;
+                }
+                var vertexU = this.vertexMap[request_.u];
+                var vertexV = this.vertexMap[request_.v];
+                if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
+                    break;
+                }
+                response = vertexU.edges.out[request_.v].properties;
             }
-            return vertexU.edges.out[vertexIdV_].properties;
+            return response;
         };
 
-        DirectedGraph.prototype.setEdgeProperty = function(vertexIdU_, vertexIdV_, ref_) {
-            return this.addEdge(vertexIdU_, vertexIdV_, ref_);
+        /*
+          request = {
+              e: { u: string, v: string },
+              p: (optional) property serializable to JSON
+          }
+          response = {
+              error: error string or null
+              result: edge descriptor object or null iff error
+          }
+         */
+        DirectedGraph.prototype.setEdgeProperty = function(request_) {
+            return this.addEdge(request_);
         };
 
         DirectedGraph.prototype.toObject = function () {

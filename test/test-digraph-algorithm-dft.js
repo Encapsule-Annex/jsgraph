@@ -43,7 +43,7 @@ testDFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("lone-wolf-vertex");
+    digraph.addVertex({ u: "lone-wolf-vertex" });
     testDFT({ testName: "Single vertex, default starting vertex set (initializeVertex, startVertex, discoverVertex, finishVertex test)", validConfig: true,
                request: { digraph: digraph },
                expectedResults: {
@@ -55,7 +55,7 @@ testDFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("lone-wolf-vertex");
+    digraph.addVertex({ u: "lone-wolf-vertex" });
     testDFT({ testName: "Single vertex, starting vertex not in the graph", validConfig: false,
                request: { digraph: digraph, options: { startVector: 'orange'}},
                expectedResults: {
@@ -67,7 +67,7 @@ testDFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("lone-wolf-vertex");
+    digraph.addVertex({ u: "lone-wolf-vertex" });
     testDFT({ testName: "Single vertex, starting vertex specified explicity in request", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'lone-wolf-vertex'}},
                expectedResults: {

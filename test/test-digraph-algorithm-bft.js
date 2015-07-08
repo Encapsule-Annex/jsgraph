@@ -41,7 +41,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("lone-wolf-vertex");
+    digraph.addVertex({ u: "lone-wolf-vertex" });
     testBFT({ testName: "Single vertex, default starting vertex set", validConfig: true,
                request: { digraph: digraph },
                expectedResults: {
@@ -53,7 +53,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("lone-wolf-vertex");
+    digraph.addVertex({ u: "lone-wolf-vertex" });
     testBFT({ testName: "Single vertex, starting vertex not in the graph", validConfig: false,
                request: { digraph: digraph, options: { startVector: 'orange'}},
                expectedResults: {
@@ -65,7 +65,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("lone-wolf-vertex");
+    digraph.addVertex({ u: "lone-wolf-vertex"});
     testBFT({ testName: "Single vertex, starting vertex specified explicity in request", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'lone-wolf-vertex'}},
                expectedResults: {
@@ -77,8 +77,8 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex('islandA');
-    digraph.addVertex('islandB');
+    digraph.addVertex({ u: 'islandA' });
+    digraph.addVertex({ u: 'islandB' });
     testBFT({ testName: "Two disconnected vertices, default starting vertex set", validConfig: true,
                request: { digraph: digraph },
                expectedResults: {
@@ -91,8 +91,8 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex('islandA');
-    digraph.addVertex('islandB');
+    digraph.addVertex({ u: 'islandA' });
+    digraph.addVertex({ u: 'islandB' });
     testBFT({ testName: "Two disconnected vertices, starting vertex set set to 'islandA'", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'islandA' }},
                expectedResults: {
@@ -104,8 +104,8 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex('islandA');
-    digraph.addVertex('islandB');
+    digraph.addVertex({ u: 'islandA' });
+    digraph.addVertex({ u: 'islandB' });
     testBFT({ testName: "Two disconnected vertices, starting vertex set set to 'islandB'", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'islandB' }},
                expectedResults: {
@@ -117,7 +117,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addEdge('islandA', 'islandB', 'bridge');
+    digraph.addEdge({ e: { u: 'islandA', v: 'islandB'} , p: 'bridge'});
     testBFT({ testName: "Two connected vertices, default starting vertex set'", validConfig: true,
                request: { digraph: digraph },
                expectedResults: {
@@ -129,7 +129,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addEdge('islandA', 'islandB', 'bridge');
+    digraph.addEdge({ e: { u: 'islandA', v: 'islandB'} , p: 'bridge'});
     testBFT({ testName: "Two connected vertices, starting vertex set set to 'islandA'", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'islandA' }},
                expectedResults: {
@@ -141,7 +141,7 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addEdge('islandA', 'islandB', 'bridge');
+    digraph.addEdge({ e: { u: 'islandA', v: 'islandB'} , p: 'bridge'});
     testBFT({ testName: "Two connected vertices, starting vertex set set to 'islandB'", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'islandB' }},
                expectedResults: {
@@ -154,7 +154,8 @@ testBFT({ testName: "Empty request", validConfig: false,
 (function() {
     var digraph = new DirectedGraph();
     digraph.addEdge('islandA', 'islandB', 'bridge');
-    digraph.addVertex('islandC');
+    digraph.addEdge({ e: { u: 'islandA', v: 'islandB'} , p: 'bridge'});
+    digraph.addVertex({ u: 'islandC' });
     testBFT({ testName: "Two connected vertices + a disconnected vertex w/default starting vertex set", validConfig: true,
               request: { digraph: digraph, options: { allowEmptyStartVector: true }},
                expectedResults: {
@@ -166,19 +167,19 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("A");
-    digraph.addEdge("A", "AA");
-    digraph.addEdge("AA", "AAA");
-    digraph.addEdge("AA", "AAB");
-    digraph.addEdge("AA", "AAC");
-    digraph.addEdge("A", "AB");
-    digraph.addEdge("AB", "ABA");
-    digraph.addEdge("AB", "ABB");
-    digraph.addEdge("AB", "ABC");
-    digraph.addEdge("A", "AC");
-    digraph.addEdge("AC", "ACA");
-    digraph.addEdge("AC", "ACB");
-    digraph.addEdge("AC", "ACC");
+    digraph.addVertex({ u: "A" });
+    digraph.addEdge({ e: { u: "A", v: "AA"}});
+    digraph.addEdge({ e: { u: "AA", v: "AAA" }});
+    digraph.addEdge({ e: { u: "AA", v: "AAB" }});
+    digraph.addEdge({ e: { u: "AA", v: "AAC" }});
+    digraph.addEdge({ e: { u: "A", v: "AB" }});
+    digraph.addEdge({ e: { u: "AB", v: "ABA" }});
+    digraph.addEdge({ e: { u: "AB", v: "ABB" }});
+    digraph.addEdge({ e: { u: "AB", v: "ABC" }});
+    digraph.addEdge({ e: { u: "A", v: "AC" }});
+    digraph.addEdge({ e: { u: "AC", v: "ACA" }});
+    digraph.addEdge({ e: { u: "AC", v: "ACB" }});
+    digraph.addEdge({ e: { u: "AC", v: "ACC" }});
     testBFT({ testName: "Two connected vertices + a disconnected vertex w/default starting vertex set", validConfig: true,
                request: { digraph: digraph, options: { startVector: 'A' }},
                expectedResults: {
@@ -190,8 +191,8 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addEdge("A", "B");
-    digraph.addEdge("B", "A");
+    digraph.addEdge({ e: { u: "A", v: "B" }});
+    digraph.addEdge({ e: { u: "B", v: "A" }});
     testBFT({
         testName: 'Two vertices with a cycle w/default starting vertex set (which is the root vertex set of the digraph)', validConfig: true,
         request: { digraph: digraph, options: { allowEmptyStartVector: true }},
@@ -206,8 +207,8 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addEdge("A", "B");
-    digraph.addEdge("B", "A");
+    digraph.addEdge({ e: { u: "A", v: "B" }});
+    digraph.addEdge({ e: { u: "B", v: "A" }});
     testBFT({
         testName: "Two vertices with a cycle w/default starting vertex set to 'A'", validConfig: true,
         request: { digraph: digraph, options: { startVector: 'A' }},
@@ -223,14 +224,14 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addEdge("root", "A");
-    digraph.addEdge("root", "B");
-    digraph.addEdge("A", "C");
-    digraph.addEdge("B", "C");
-    digraph.addEdge("C", "D");
-    digraph.addEdge("C", "E");
-    digraph.addEdge("D", "F");
-    digraph.addEdge("E", "F");
+    digraph.addEdge({ e: { u: "root", v: "A" }});
+    digraph.addEdge({ e: { u: "root", v: "B" }});
+    digraph.addEdge({ e: { u: "A", v: "C" }});
+    digraph.addEdge({ e: { u: "B", v: "C" }});
+    digraph.addEdge({ e: { u: "C", v: "D" }});
+    digraph.addEdge({ e: { u: "C", v: "E" }});
+    digraph.addEdge({ e: { u: "D", v: "F" }});
+    digraph.addEdge({ e: { u: "E", v: "F" }});
     testBFT({
         testName: "Branch and then converge gray target tests", validConfig: true,
         request: { digraph: digraph },
@@ -244,11 +245,11 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addEdge("A", "B");
-    digraph.addEdge("B", "C");
-    digraph.addEdge("C", "D");
-    digraph.addEdge("A", "D");
-    digraph.addEdge("D", "A");
+    digraph.addEdge({ e: { u: "A", v: "B" }});
+    digraph.addEdge({ e: { u: "B", v: "C" }});
+    digraph.addEdge({ e: { u: "C", v: "D" }});
+    digraph.addEdge({ e: { u: "A", v: "D" }});
+    digraph.addEdge({ e: { u: "D", v: "A" }});
     testBFT({
         testName: "Branch and then converge black target tests", validConfig: true,
         request: { digraph: digraph, options: { startVector: 'A' }},
@@ -263,19 +264,19 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addEdge("transportation", "planes");
-    digraph.addEdge("transportation", "trains");
-    digraph.addEdge("transportation", "automobiles");
-    digraph.addEdge("automobiles", "Audi");
-    digraph.addEdge("Audi", "TT RS");
-    digraph.addEdge("Audi", "RS 5");
-    digraph.addEdge("Audi", "R8");
-    digraph.addEdge("automobiles", "BMW");
-    digraph.addEdge("BMW", "Z4");
-    digraph.addEdge("BMW", "M3");
-    digraph.addEdge("automobiles", "Porsche");
-    digraph.addEdge("Porsche", "911 Turbo S");
-    digraph.addEdge("Porsche", "918 Spyder");
+    digraph.addEdge({ e: { u: "transportation", v: "planes" }});
+    digraph.addEdge({ e: { u: "transportation", v: "trains" }});
+    digraph.addEdge({ e: { u: "transportation", v: "automobiles" }});
+    digraph.addEdge({ e: { u: "automobiles", v: "Audi" }});
+    digraph.addEdge({ e: { u: "Audi", v: "TT RS" }});
+    digraph.addEdge({ e: { u: "Audi", v: "RS 5" }});
+    digraph.addEdge({ e: { u: "Audi", v: "R8" }});
+    digraph.addEdge({ e: { u: "automobiles", v: "BMW" }});
+    digraph.addEdge({ e: { u: "BMW", v: "Z4" }});
+    digraph.addEdge({ e: { u: "BMW", v: "M3" }});
+    digraph.addEdge({ e: { u: "automobiles", v: "Porsche" }});
+    digraph.addEdge({ e: { u: "Porsche", v: "911 Turbo S" }});
+    digraph.addEdge({ e: { u: "Porsche", v: "918 Spyder" }});
     testBFT({
         testName: "Hierarchy graph test A", validConfig: true,
         request: { digraph: digraph },
@@ -302,19 +303,19 @@ testBFT({ testName: "Empty request", validConfig: false,
 
 (function() {
     var digraph = new DirectedGraph();
-    digraph.addVertex("root1");
-    digraph.addVertex("root2");
-    digraph.addEdge("root1", "1A");
-    digraph.addEdge("root1", "1B");
-    digraph.addEdge("1B", "1C");
-    digraph.addEdge("1C", "1D");
-    digraph.addEdge("1C", "1D");
-    digraph.addEdge("root2", "2A");
-    digraph.addEdge("2A", "2B");
-    digraph.addEdge("2B", "2C");
-    digraph.addEdge("2B", "2D");
-    digraph.addEdge("2B", "2E");
-    digraph.addEdge("2E", "1B");
+    digraph.addVertex({ u: "root1" });
+    digraph.addVertex({ u: "root2" });
+    digraph.addEdge({ e: { u: "root1", v: "1A" }});
+    digraph.addEdge({ e: { u: "root1", v: "1B" }});
+    digraph.addEdge({ e: { u: "1B", v: "1C" }});
+    digraph.addEdge({ e: { u: "1C", v: "1D" }});
+    digraph.addEdge({ e: { u: "1C", v: "1D" }});
+    digraph.addEdge({ e: { u: "root2", v: "2A" }});
+    digraph.addEdge({ e: { u: "2A", v: "2B" }});
+    digraph.addEdge({ e: { u: "2B", v: "2C" }});
+    digraph.addEdge({ e: { u: "2B", v: "2D" }});
+    digraph.addEdge({ e: { u: "2B", v: "2E" }});
+    digraph.addEdge({ e: { u: "2E", v: "1B" }});
     testBFT({
         testName: "Simple breadth-first search test w/default starting vertex set", validConfig: true,
         request: { digraph: digraph },
