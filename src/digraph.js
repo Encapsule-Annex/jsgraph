@@ -349,8 +349,9 @@ var digraphExport = require('./digraph-json-export');
                     edges.push(outEdge_);
                 });
             };
+            var self = this;
             vertices.forEach(function(vertexId_) {
-                processVertexOutEdges(this.outEdges(vertexId_));
+                processVertexOutEdges(self.outEdges(vertexId_));
             });
             return edges;
         };
