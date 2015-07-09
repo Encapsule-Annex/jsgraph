@@ -1,5 +1,5 @@
-// Encapsule/jsgraph/src/digraph-algorithm-common-context.js
-
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
 
 var helperFunctions = require('./helper-functions');
 var colors = require('./digraph-algorithm-common-colors');

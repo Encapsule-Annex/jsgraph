@@ -1,12 +1,11 @@
-// digraph-json-export.js
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
 //
-
 // Export the topology and attached vertex and edge properties
 // of a DirectedGraph container object as a JSON-format UTF8 
 // string. This canonical format can be passed as an optional
 // constructor parameter to restore container state across
 // execution contexts.
-
 
 var DigraphDataExporter = module.exports = {};
 

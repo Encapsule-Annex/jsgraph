@@ -1,4 +1,6 @@
-// Encapsule/jsgraph/src/digraph-visit.js
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
+//
 // Wraps call to DirectedGraph algorithm visitor function callbacks.
 
 var helperFunctions = require('./helper-functions');

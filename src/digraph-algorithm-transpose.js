@@ -1,5 +1,6 @@
-// digraph-transpose.js
-
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
+//
 // transposeDirectedGraph computes the transpose of input digraph_,
 // returns the the result as a new DirectedGraph instance.
 // More info on directed graph transposition:

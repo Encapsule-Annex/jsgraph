@@ -1,5 +1,5 @@
-// Encapsule/jsgraph/src/helper-functions.js
-//
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
 
 var JSType = function(reference_) {
     return Object.prototype.toString.call(reference_);
