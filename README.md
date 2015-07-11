@@ -4,7 +4,7 @@
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
-Encapsule/jsgraph is a functional port of directed graph container and algorithm suport from the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) to JavaScript that greatly simplifies the task of working with complex, in-memory, N-relational data structures on Node.js and HTML 5.
+Encapsule/jsgraph is a functional port of directed graph container and algorithm suport from the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) to JavaScript that greatly simplifies the task of working with complex in-memory N-relational data structures on Node.js and HTML 5.
 
 ## Features
 
@@ -12,7 +12,7 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Directed graph tranposition algorithm (i.e. flip the edges).
 - Breadth-first visit and search algorithms (full, non-recursive implementation with edge classification).
 - Depth-first visit and search algorithms (full, non-recursive implementation with edge classicication).
-- Core algorithms leverage the  for easy use and extension.
+- Core algorithms leverage the [visitor patter](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
 - Implementation backed by 470 tests and Travis CI.
@@ -33,28 +33,25 @@ v0.5 jsgraph has the following public export object:
             }
         }
 
-### `DirectedGraph` container object
+### DirectedGraph container object
 
-_Swiss Army Knife of data containers._
+jsgraph's core directed graph container object, **DirectedGraph**, is constructed by a calling library export function `jsgraph.directed.create`:
 
         var jsgraph = require('jsgraph');
-        var response = jsgraph.directed.create();
         var digraph = null;
+        var response = jsgraph.directed.create(/*data or JSON*/);
         if (response.error) {
-            // never hit on default construction path
-            console.log("hmm... this _should_ never happen: " + response.error);
+            console.log(response.error);
         } else {
             digraph = response.result;
             console.log(digraph.toJSON());
         }
+        
+        '{"vlist":[],"elist":[]}'
+        
+The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections.
             
-Note that the `jsgraph.directed.create` function accepts an optional in-parameter that is either a JavaScript data object or equivalent JSON string (jsgraph export format).
-
-### The `DirectedGraph` API
-
-jsgraph's `DirectedGraph` container object exposes the following methods:
-
-#### Vertex methods
+#### DirectedGraph vertex methods
 
 - addVertex({u: vertexId, p: ?}) - add a vertex and optional property data to the digraph
 - isVertex(vertexId) - query the existence of a specific vertex in the graph
@@ -66,7 +63,7 @@ jsgraph's `DirectedGraph` container object exposes the following methods:
 - outDegree(vertexId) - determine how many edges are directed away from a specific vertex
 - outEdges(vertexId) - get the list of edges directed away from a specific vertex
 
-#### Edge methods
+#### DirectedGraph edge methods
 
 - addEdge({ e: { u: vertexId, v: vertexId }, p: ?}) - add edge and optional property data from vertex u to vertex v 
 - isEdge({ u: vertexId, v: vertexId }) - query the existence of a specific edge in the graph
@@ -74,30 +71,21 @@ jsgraph's `DirectedGraph` container object exposes the following methods:
 - getEdgeProperty({ u: vertexId, v: vertexId }) - get the properties data associated with a specific edge
 - setEdgeProperty({ e: { u: vertexId, v: vertexId }, p: ?}) - set the properties data associated with a specific edge
 
-#### Object-level methods
+#### DirectedGraph graph-scope methods
 
-- verticesCount()
-- getVertices()
-- edgesCount()
-- getEdges()
-- getRootVertices()
-- getLeafVertices()
-- toObject()
-- toJSON(replacer, space)
-- fromObject(dataObject)
-- fromJSON(jsonString)
+- verticesCount() - obtain the count of vertices in the container
+- getVertices() - retrieve an array of ID strings for all vertices in the container
+- edgesCount() - obtain the count of edges in the container
+- getEdges() - retrieve an array of edge descriptor objects for all edges in the container
+- getRootVertices() - retrieve an array of ID strings for all vertices that have in-degree zero
+- getLeafVertices() - retrieve an array of ID strings for all vertices that have out-degree zero
+- toObject() - serialize the DirectedGraph container to a JavaScript data object
+- toJSON(replacer, space) - serialize the DirectedGraph container to a JSON string
+- fromObject(dataObject) - import a jsgraph-format JavaScript data object into the container
+- fromJSON(jsonString) - import jsgraph-format JSON string into the container
 
-#### Private state
+### jsgraph.directed.transpose
 
-The following runtime properties are visible under the runtime debugger but should be considered _private state_ of the DirectedGraph implementation that may change without notice.
-
-To avoid problems with future jsgraph releases, never access `DirectedGraph` private state directly. Instead, rely on the API methods documented above to insulate your derived client code from the specific storage representation used by jsgraph vX.Y.Z. 
-  
-- vertexMap: {},
-- rootMap: {},
-- leafMap: {},
-- edgeCount: 0,
-- constructionError: null 
 
 
 <hr>
