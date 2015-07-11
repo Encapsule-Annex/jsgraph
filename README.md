@@ -3,9 +3,11 @@ Encapsule/jsgraph v0.5
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
-Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs.
+_Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
-jsgraph is a _generic_ mathematical graph library inspired by the architecture and design of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) written by [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf) that makes it simple to leverage mathematical graph models and algorithms _inline_ in your Node.js and HTML 5 applications.
+jsgraph provides _generic_ mathematical graph container object for directed graph datasets inspired by the architecture and design of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html).
+
+The library additional bundles a small collection of simple-to-use but extremely powerful and extensible graph coloring algorithms that can be leveraged _inline_ in your Node.js and HTML 5 applications to solve tricky problems in many domains. 
 
 ## Feature summary
 
@@ -34,9 +36,9 @@ v0.5 jsgraph has the following public export object:
             }
         }
 
-## Create an in-memory DirectedGraph container object
+## `DirectedGraph` container object
 
-... because you need a simple way to normalize access to your in-memory data and you're not precisely sure what shape you'll end up needing.
+_Swiss Army Knife of data containers._
 
         var jsgraph = require('jsgraph');
         var response = jsgraph.directed.create();
@@ -57,23 +59,23 @@ jsgraph's `DirectedGraph` container object exposes the following methods:
 
 ### Vertex methods
 
-- addVertex({u: vertexId, p: ?})
-- isVertex(vertexId)
-- removeVertex(vertexId)
-- getVertexProperty(vertexId)
-- setVertexProperty({u: vertexId, p: ?})
-- inDegree(vertexId)
-- inEdges(vertexId)
-- outDegree(vertexId)
-- outEdges(vertexId)
+- addVertex({u: vertexId, p: ?}) - add a vertex and optional property data to the digraph
+- isVertex(vertexId) - query the existence of a specific vertex in the graph
+- removeVertex(vertexId) - remove a specific vertex and its properties from the graph
+- getVertexProperty(vertexId) - get the properties data associated with a specific vertex
+- setVertexProperty({u: vertexId, p: ?}) - set the properties data associated with a specific vertex
+- inDegree(vertexId) - determine how many edges are directed at a specific vertex
+- inEdges(vertexId) - get the list of edges directed at a specific vertex
+- outDegree(vertexId) - determine how many edges are directed away from a specific vertex
+- outEdges(vertexId) - get the list of edges directed away from a specific vertex
 
 ### Edge methods
 
-- addEdge
-- isEdge
-- removeEdge
-- getEdgeProperty
-- setEdgeProperty
+- addEdge({ e: { u: vertexId, v: vertexId }, p: ?}) - add edge and optional property data from vertex u to vertex v 
+- isEdge({ u: vertexId, v: vertexId }) - query the existence of a specific edge in the graph
+- removeEdge({ u: vertexId, v: vertexId }) - remove a specific edge and its properties from the graph
+- getEdgeProperty({ u: vertexId, v: vertexId }) - get the properties data associated with a specific edge
+- setEdgeProperty({ e: { u: vertexId, v: vertexId }, p: ?}) - set the properties data associated with a specific edge
 
 ### Object-level methods
 
@@ -92,11 +94,11 @@ jsgraph's `DirectedGraph` container object exposes the following methods:
 
 The following properties are additionally visible on DirectedGraph objects under the debugger at runtime. These should be considered _private state_ of DirectedGraph that may change without notice. To avoid problems, please use only the provided API methods and never access DirectedGraph private state directly in your client code.
   
-  vertexMap: {},
-  rootMap: {},
-  leafMap: {},
-  edgeCount: 0,
-  constructionError: null 
+- vertexMap: {},
+- rootMap: {},
+- leafMap: {},
+- edgeCount: 0,
+- constructionError: null 
 
 
 ## Algorithms
