@@ -1,21 +1,18 @@
-Encapsule/jsgraph v0.5
-=======
+# Encapsule/jsgraph v0.5
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
-jsgraph provides _generic_ mathematical graph container object for directed graph datasets inspired by the architecture and design of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html).
+Encapsule/jsgraph is a functional port of directed graph container and algorithm suport from the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) to JavaScript that greatly simplifies the task of working with complex, in-memory, N-relational data structures on Node.js and HTML 5.
 
-The library additional bundles a small collection of simple-to-use but extremely powerful and extensible graph coloring algorithms that can be leveraged _inline_ in your Node.js and HTML 5 applications to solve tricky problems in many domains. 
-
-## Feature summary
+## Features
 
 - Generic in-memory container for directed mathematical graph data and property sets.
 - Directed graph tranposition algorithm (i.e. flip the edges).
 - Breadth-first visit and search algorithms (full, non-recursive implementation with edge classification).
 - Depth-first visit and search algorithms (full, non-recursive implementation with edge classicication).
-- Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
+- Core algorithms leverage the  for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
 - Implementation backed by 470 tests and Travis CI.
@@ -36,7 +33,7 @@ v0.5 jsgraph has the following public export object:
             }
         }
 
-## `DirectedGraph` container object
+### `DirectedGraph` container object
 
 _Swiss Army Knife of data containers._
 
@@ -53,11 +50,11 @@ _Swiss Army Knife of data containers._
             
 Note that the `jsgraph.directed.create` function accepts an optional in-parameter that is either a JavaScript data object or equivalent JSON string (jsgraph export format).
 
-## The `DirectedGraph` API
+### The `DirectedGraph` API
 
 jsgraph's `DirectedGraph` container object exposes the following methods:
 
-### Vertex methods
+#### Vertex methods
 
 - addVertex({u: vertexId, p: ?}) - add a vertex and optional property data to the digraph
 - isVertex(vertexId) - query the existence of a specific vertex in the graph
@@ -69,7 +66,7 @@ jsgraph's `DirectedGraph` container object exposes the following methods:
 - outDegree(vertexId) - determine how many edges are directed away from a specific vertex
 - outEdges(vertexId) - get the list of edges directed away from a specific vertex
 
-### Edge methods
+#### Edge methods
 
 - addEdge({ e: { u: vertexId, v: vertexId }, p: ?}) - add edge and optional property data from vertex u to vertex v 
 - isEdge({ u: vertexId, v: vertexId }) - query the existence of a specific edge in the graph
@@ -77,7 +74,7 @@ jsgraph's `DirectedGraph` container object exposes the following methods:
 - getEdgeProperty({ u: vertexId, v: vertexId }) - get the properties data associated with a specific edge
 - setEdgeProperty({ e: { u: vertexId, v: vertexId }, p: ?}) - set the properties data associated with a specific edge
 
-### Object-level methods
+#### Object-level methods
 
 - verticesCount()
 - getVertices()
@@ -90,9 +87,11 @@ jsgraph's `DirectedGraph` container object exposes the following methods:
 - fromObject(dataObject)
 - fromJSON(jsonString)
 
-### Private state
+#### Private state
 
-The following properties are additionally visible on DirectedGraph objects under the debugger at runtime. These should be considered _private state_ of DirectedGraph that may change without notice. To avoid problems, please use only the provided API methods and never access DirectedGraph private state directly in your client code.
+The following runtime properties are visible under the runtime debugger but should be considered _private state_ of the DirectedGraph implementation that may change without notice.
+
+To avoid problems with future jsgraph releases, never access `DirectedGraph` private state directly. Instead, rely on the API methods documented above to insulate your derived client code from the specific storage representation used by jsgraph vX.Y.Z. 
   
 - vertexMap: {},
 - rootMap: {},
@@ -100,6 +99,8 @@ The following properties are additionally visible on DirectedGraph objects under
 - edgeCount: 0,
 - constructionError: null 
 
+
+<hr>
 
 ## Algorithms
 
