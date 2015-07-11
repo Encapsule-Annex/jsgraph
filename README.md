@@ -12,7 +12,7 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Directed graph tranposition algorithm (i.e. flip the edges).
 - Breadth-first visit and search algorithms (full, non-recursive implementation with edge classification).
 - Depth-first visit and search algorithms (full, non-recursive implementation with edge classicication).
-- Core algorithms leverage the [visitor patter](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
+- Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
 - Implementation backed by 470 tests and Travis CI.
@@ -34,6 +34,8 @@ v0.5 jsgraph has the following public export object:
         }
 
 ### DirectedGraph container object
+
+**See also: [Object Reference: DirectedGraph](./docs/object-DirectedGraph.md)**
 
 jsgraph's core directed graph container object, **DirectedGraph**, is constructed by a calling library export function `jsgraph.directed.create`:
 
@@ -84,23 +86,49 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - fromObject(dataObject) - import a jsgraph-format JavaScript data object into the container
 - fromJSON(jsonString) - import jsgraph-format JSON string into the container
 
-### jsgraph.directed.transpose
+### Bundled Transforms & Algorithms
 
+jsgraph bundles a small collection of powerful functions that operate on the data contained in a `DirectedGraph` container in useful ways.
+
+Transform functions generate new `DirectedGraph` containers from existing container(s) applying some presribed filter, or transformation to the vertex and/or edge lists.
+
+Algorithm functions are miniature agent processes that traverse the topology of a `DirectedGraph` container issuing callbacks to your derived client code at specified event points.
+
+jsgraph algorithms use names and conventions documented in Chapter 23 of the Holy Book ([Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms)). The reader is encouraged to review this material for a detailed discussion of the specific graph coloring algorithms, semantics of event callbacks, applications, and ideas for extensing the algorithms provided.
+
+#### jsgraph.directed.transpose Transform
+
+**See also: [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)**
+
+jsgraph currently provides a single 'transform' function, `jsgraph.directed.transpose` that constructs a new `DirectedGraph` that is a copy of an existing `DirectedGraph` with the edge direction reversed.
+
+        var response = jsgraph.directed.transpose(digraph);
+        if (response.error) {
+            console.log(response.error);
+        } else {
+            console.log("Transposed digraph JSON: '" + response.result.toJSON() + "'.");
+        }
+
+#### jsgraph.directed.breadthFirstTraverse Algorithm
+
+**See also: [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)**
+
+jsgraph function export `jsgraph.directed.breadthFirstTraverse` is a non-recursive imlementation of the classic breadth-first search and visit vertex discovery and edge classification protocols.
+
+
+
+
+#### jsgraph.directed.depthFirstTraverse Algorithm
+
+** See also: [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)**
+
+jsgraph function export `jsgraph.directed.depthFirstTraverse` is a non-recursive implementation of the classic depth-first search and visit vertex discovery and edge classification protocols.
 
 
 <hr>
+EDIT POINT
+<hr>
 
-## Algorithms
-
-jsgraph currently provides the following algorithms for working with DirectedGraph container object datasets:
-
-* **transpose** - create a copy of a DirectedGraph container object with direction of all the edges reversed
-* **breadth-first-visit** and **breadth-first-search**
-  * non-recursive, generic visitor pattern implementations
-  * callbacks: initializeVertex, discoverVertex, startVertex, examineVertex, examineEdge, treeEdge, nonTreeEdge, grayTarget, blackTarget, finishVertex
-* **generic depth-first-visit** and **depth-first-search**
-  * non-recursive, generic visitor pattern implementations
-  * callbacks: initializeVertex, startVertex, discoverVertex, examineEdge, treeEdge, backEdge, forwardOrCrossEdge, finishVertex
 
 # Example
 
