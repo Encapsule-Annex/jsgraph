@@ -1,144 +1,103 @@
-jsgraph
+Encapsule/jsgraph v0.5
 =======
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
-jsgraph implements an in-memory container abstraction for directed mathematical graph data sets. Vertices in the container are represented by user-assigned unique string identifiers. Edges in the container are represented by pairs of vertex identifier strings. The container supports the attachment of arbitrary application-specific meta-data to vertices and edges. 
+Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs.
 
-jsgraph's bundled breadth-first, and depth-first visitor algorithms leverage the container API and an external state store (color table) to affect the desired traversal firing synchronous callbacks to your code at specific stages of the traversal. 
+jsgraph is a _generic_ mathematical graph library inspired by the architecture and design of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) written by [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf) that makes it simple to leverage mathematical graph models and algorithms _inline_ in your Node.js and HTML 5 applications.
 
-jsgraph is inspired by the design of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) that leverages C++ templates to affect a complete separation of concerns between (a) data storage and access (read you can adapt your own data source as necessary) (b) data semantics (BYO semantics) (c) re-usable algorithms that rely on generic protocols for (a) and (b) and thus just work by superposition.
+## Feature summary
 
-There's some work planned on JSON import export planned in the very near future. As well, I anticipate a few minor API changes to support the next wave of Encapsule Project libraries.
+- Generic in-memory container for directed mathematical graph data and property sets.
+- Directed graph tranposition algorithm (i.e. flip the edges).
+- Breadth-first visit and search algorithms (full, non-recursive implementation with edge classification).
+- Depth-first visit and search algorithms (full, non-recursive implementation with edge classicication).
+- Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
+- Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
+- Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
+- Implementation backed by 470 tests and Travis CI.
 
-Let's get going and create our first jsgraph `DirectedGraph` container. It's not too difficult.
+## API Overview
 
-        $ npm install jsgraph
-        jsgraph@0.1.5 node_modules/jsgraph
-        $ node
-        > var jsgraph = require('jsgraph');
-        undefined
-        > var directed = jsgraph.directed
-        undefined
-        > var digraph = new directed.DirectedGraph();
-        undefined
-        > JSON.stringify(digraph);
-        '{"vertexMap":{},"rootMap":{},"leafMap":{},"edgeCount":0}'
-
-`digraph` is an in-memory container with no ascribed semantics at this point.
-
-To imbue `digraph` with meaning, we add data.
-
-        > digraph.addVertex("start");
-        'start'
-        > digraph.addVertex("step1");
-        'step1'
-        > digraph.addVertex("step2");
-        'step2'
-        > digraph.addVertex("end");
-        'end'
-        > digraph.toJSON();
-
-Vertices are unique objects, identified with an ID string (e.g. 'start'), that represent an instance of some concept. 
-
-Let's create some associations between our concepts by adding directed edges from source to sink vertex.
-
-        > digraph.addEdge("start", "step1", { type: "link" });
-        { u: 'start', v: 'step1' }
-        > digraph.addEdge("step1", "step2", { type: "link" });
-        { u: 'step1', v: 'step2' }
-        > digraph.addEdge("step2", "end", { type: "link" });
-        { u: 'step2', v: 'end' }
-        > digraph.toJSON();
-
-
-You now have (a) topological information (b) labels (i.e. application-specific semantics) stored in-memory.
-
-We can ask about relationships...
-
-        > digraph.inEdges("step2");
-        [ { u: 'step1', v: 'step2' } ]
-
-... or query properties...
-
-        > digraph.edgePropertyObject("start", "step1");
-        { type: 'link' }
-
-... or implement a visitor interface and call one of jsgraph's algorithms on your dataset to affect whatever you want.
-
-        > var dfsVisitor = { finishVertex: function(vertex, digraph) { console.log(vertex); } };
-        undefined
-        > var dfsContext = jsgraph.directed.createDepthFirstSearchContext(digraph, dfsVisitor);
-        undefined
-        > jsgraph.directed.depthFirstSearch(digraph, dfsVisitor);
-        end
-        step2
-        step1
-        start
-        true
-
-# Get the code
-
-        npm install jsgraph
-
-_Use browserify or similar utility to leverage jsgraph in the client instead of Node.js._
-
-# Tests
-
-jsgraph is tested using Mocha/Chai. If you find a bug, please file an issue.
-
-To execute the ~170 test vectors, clone the repo, npm install, and run the Grunt script:
-
-        git clone git@github.com:Encapsule/jsgraph.git
-        cd jsgraph
-        npm install
-        grunt
-
-**All tests should pass.**
-
-# API Overview
-
-The jsgraph API is patterned after the design of the Boost C++ Graph Library (BGL) API. The method names and semantics of the `DirectedGraph` generic directed graph container object, the use of the visitor design pattern to decouple the graph data from the graph algorithms, and the callback function signatures and semantics that codify the BFS and DFS algorithm extension protocol for developers are all copied directly from the BGL.  
-
-The current release of jsgraph contains support only for directed graph datasets. Support for undirected graph datasets and algorithms is planned in a future release.
-
-## DirectedGraph Generic Container
-
-### Construction
+v0.5 jsgraph has the following public export object:
 
         var jsgraph = require('jsgraph');
-        var digraph = new jsgraph.DirectedGraph(JSON); // JSON is optional
+        jsgraph === {
+            directed: {
+                create: [Function],
+                transpose: [Function],
+                breadthFirstTraverse: [Function],
+                depthFirstTraverse: [Function],
+                colors: { white: 0, gray: 1, black: 2 },
+                createTraversalContext: [Function]
+            }
+        }
 
-### JSON I/O:
+## Create an in-memory DirectedGraph container object
 
-* **toJSON** - export the contents of the directed graph container to JSON
-* **importJSON** - import the contents of a serialized DirectedGraph container into the current graph
+... because you need a simple way to normalize access to your in-memory data and you're not precisely sure what shape you'll end up needing.
 
-### Vertices
+        var jsgraph = require('jsgraph');
+        var response = jsgraph.directed.create();
+        var digraph = null;
+        if (response.error) {
+            // never hit on default construction path
+            console.log("hmm... this _should_ never happen: " + response.error);
+        } else {
+            digraph = response.result;
+            console.log(digraph.toJSON());
+        }
+            
+Note that the `jsgraph.directed.create` function accepts an optional in-parameter that is either a JavaScript data object or equivalent JSON string (jsgraph export format).
 
-* **addVertex** - add a vertex to the digraph w/optional property object
-* **removeVertex** - remove a vertex, and adjacent in-edges from the digraph
-* **isVertex** - determine if a vertex is in the graph or not
-* **verticesCount** - retrieve the count of vertices in the digraph
-* **getVertices** - retrive the set of vertices
-* **getRootVertices** - retrieve the set of vertices with in-degree zero
-* **getLeafVertices** - retrieve the set of vertices with out-degree zero
-* **getVertexProperty** - get a property object reference for a specific vertex
-* **setVertexProperty** - set a property object reference for a specific vertex
-* **inEdges** - retrieve the set of adjacent in-edges of a specific vertex
-* **outEdges** - retrieve the set of adjacent out-edges of a specific vertex
-* **inDegree** - retrieve the count of adjacent in-edges of a specific vertex
-* **outDegree** - retrieve the count of adjacent out-edges of a specific vertex
+## The `DirectedGraph` API
 
-### Edges
+jsgraph's `DirectedGraph` container object exposes the following methods:
 
-* **addEdge** - add an edge w/optional property object to the digraph
-* **removeEdge** - remove an edge from the digraph
-* **isEdge** - determine if an edge is in the graph or not
-* **edgesCount** - retrieve the count of edges in the digraph
-* **getEdges** - retrieve the set of out-edges in the entire graph
-* **getEdgeProperty** - get a property object reference for a specific edge
-* **setEdgeProperty** - set a property object reference for a specific edge
+### Vertex methods
+
+- addVertex({u: vertexId, p: ?})
+- isVertex(vertexId)
+- removeVertex(vertexId)
+- getVertexProperty(vertexId)
+- setVertexProperty({u: vertexId, p: ?})
+- inDegree(vertexId)
+- inEdges(vertexId)
+- outDegree(vertexId)
+- outEdges(vertexId)
+
+### Edge methods
+
+- addEdge
+- isEdge
+- removeEdge
+- getEdgeProperty
+- setEdgeProperty
+
+### Object-level methods
+
+- verticesCount()
+- getVertices()
+- edgesCount()
+- getEdges()
+- getRootVertices()
+- getLeafVertices()
+- toObject()
+- toJSON(replacer, space)
+- fromObject(dataObject)
+- fromJSON(jsonString)
+
+### Private state
+
+The following properties are additionally visible on DirectedGraph objects under the debugger at runtime. These should be considered _private state_ of DirectedGraph that may change without notice. To avoid problems, please use only the provided API methods and never access DirectedGraph private state directly in your client code.
+  
+  vertexMap: {},
+  rootMap: {},
+  leafMap: {},
+  edgeCount: 0,
+  constructionError: null 
+
 
 ## Algorithms
 
@@ -746,6 +705,8 @@ The `vertices` array contains vertex descriptor objects that look like this:
 
 Thanks to [Jeremy Seik](http://wphomes.soic.indiana.edu/jsiek/) for writing the BGL.
 
-Copyright &copy; 2015 [Encapsule Project](https://github.com/encapsule) / [ChrisRus](https://github.com/ChrisRus)
+<hr>
+
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus) / [Encapsule Project](https://github.com/encapsule)
 
 
