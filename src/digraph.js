@@ -36,7 +36,9 @@ var digraphExport = require('./digraph-json-export');
 
             // Bind digraph-scope methods
             this.getVertices = __bind(this.getVertices, this);
+            this.rootVerticesCount = __bind(this.rootVerticesCount, this);
             this.getRootVertices = __bind(this.getRootVertices, this);
+            this.leafVerticesCount = __bind(this.leafVerticesCount, this);
             this.getLeafVertices = __bind(this.getLeafVertices, this);
             this.verticesCount = __bind(this.verticesCount, this);
             this.edgesCount = __bind(this.edgesCount, this);
@@ -47,7 +49,7 @@ var digraphExport = require('./digraph-json-export');
             this.fromJSON = __bind(this.fromJSON, this);
 
             // DirectedGraph container private runtime state.
-            this.containerState = {
+            this._private = {
                 vertexMap: {},
                 rootMap: {},
                 leafMap: {},
@@ -58,14 +60,14 @@ var digraphExport = require('./digraph-json-export');
             if ((jsonOrObject_ !== null) && jsonOrObject_) {
                 var innerResponse = digraphImport(this, jsonOrObject_);
                 if (innerResponse.error) {
-                    this.containerState.constructionError = "DirectedGraph constructor failed: " + innerResponse.error;
+                    this._private.constructionError = "DirectedGraph constructor failed: " + innerResponse.error;
                 }
             }
         }
 
         DirectedGraph.prototype.getVertices = function() {
             var vertices = [];
-            for (var vertexId in this.containerState.vertexMap) {
+            for (var vertexId in this._private.vertexMap) {
                 vertices.push(vertexId);
             }
             return vertices;
@@ -73,18 +75,26 @@ var digraphExport = require('./digraph-json-export');
 
         DirectedGraph.prototype.getRootVertices = function() {
             var rootVertices = [];
-            for (var vertexId in this.containerState.rootMap) {
+            for (var vertexId in this._private.rootMap) {
                 rootVertices.push(vertexId);
             }
             return rootVertices;
         };
 
+        DirectedGraph.prototype.rootVerticesCount = function() {
+            return Object.keys(this._private.rootMap).length;
+        };
+
         DirectedGraph.prototype.getLeafVertices = function() {
             var leafVertices = [];
-            for (var vertexId in this.containerState.leafMap) {
+            for (var vertexId in this._private.leafMap) {
                 leafVertices.push(vertexId);
             }
             return leafVertices;
+        };
+
+        DirectedGraph.prototype.leafVerticesCount = function() {
+            return Object.keys(this._private.leafMap).length;
         };
 
         /*
@@ -118,14 +128,14 @@ var digraphExport = require('./digraph-json-export');
                     errors.unshift("Expected request.p to be serializable to JSON. Function references should be stored in an external hash table (e.g. indexed by vertex ID string).");
                     break;
                 }
-                var vertex = this.containerState.vertexMap[request_.u];
+                var vertex = this._private.vertexMap[request_.u];
                 if ((vertex === null) || !vertex) {
-                    vertex = this.containerState.vertexMap[request_.u] = {};
+                    vertex = this._private.vertexMap[request_.u] = {};
                     vertex.edges = {};
                     vertex.edges.in = {};
                     vertex.edges.out = {};
-                    this.containerState.rootMap[request_.u] = {};
-                    this.containerState.leafMap[request_.u] = {};
+                    this._private.rootMap[request_.u] = {};
+                    this._private.leafMap[request_.u] = {};
                 }
                 if (jstype !== '[object Undefined]') {
                     vertex.properties = request_.p;
@@ -144,7 +154,7 @@ var digraphExport = require('./digraph-json-export');
             if (jstype !== '[object String]') {
                 return false;
             }
-            var vertex = this.containerState.vertexMap[vertexId_];
+            var vertex = this._private.vertexMap[vertexId_];
             return (vertex !== null) && vertex && true || false;
         };
             
@@ -153,7 +163,7 @@ var digraphExport = require('./digraph-json-export');
             if (jstype !== '[object String]') {
                 return false;
             }
-            var vertexU = this.containerState.vertexMap[vertexId_];
+            var vertexU = this._private.vertexMap[vertexId_];
             if ((vertexU === null) || !vertexU) {
                 return false;
             }
@@ -164,9 +174,9 @@ var digraphExport = require('./digraph-json-export');
             for (vertexIdX in vertexU.edges.in) {
                 this.removeEdge({ u: vertexIdX, v: vertexId_});
             }
-            delete this.containerState.vertexMap[vertexId_];
-            delete this.containerState.rootMap[vertexId_];
-            delete this.containerState.leafMap[vertexId_];
+            delete this._private.vertexMap[vertexId_];
+            delete this._private.rootMap[vertexId_];
+            delete this._private.leafMap[vertexId_];
             return true;
         };
 
@@ -222,16 +232,16 @@ var digraphExport = require('./digraph-json-export');
                     errors.unshift(innerResponse.error);
                     break;
                 }
-                var outEdge = this.containerState.vertexMap[request_.e.u].edges.out[request_.e.v];
+                var outEdge = this._private.vertexMap[request_.e.u].edges.out[request_.e.v];
                 if ((outEdge === null) || !outEdge) {
-                    outEdge = this.containerState.vertexMap[request_.e.u].edges.out[request_.e.v] = {};
-                    delete this.containerState.leafMap[request_.e.u];
+                    outEdge = this._private.vertexMap[request_.e.u].edges.out[request_.e.v] = {};
+                    delete this._private.leafMap[request_.e.u];
                 }
-                var inEdge = this.containerState.vertexMap[request_.e.v].edges.in[request_.e.u];
+                var inEdge = this._private.vertexMap[request_.e.v].edges.in[request_.e.u];
                 if ((inEdge === null) || !inEdge) {
-                    inEdge = this.containerState.vertexMap[request_.e.v].edges.in[request_.e.u] = {};
-                    this.containerState.edgeCount++;
-                    delete this.containerState.rootMap[request_.e.v];
+                    inEdge = this._private.vertexMap[request_.e.v].edges.in[request_.e.u] = {};
+                    this._private.edgeCount++;
+                    delete this._private.rootMap[request_.e.v];
                 }
                 if (jstype !== '[object Undefined]') {
                     outEdge.properties = request_.p;
@@ -276,8 +286,8 @@ var digraphExport = require('./digraph-json-export');
                     errors.unshift("Expected request.v to be a string. Found type '" + type + "'.");
                     break;
                 }
-                var vertexU = this.containerState.vertexMap[request_.u];
-                var vertexV = this.containerState.vertexMap[request_.v];
+                var vertexU = this._private.vertexMap[request_.u];
+                var vertexV = this._private.vertexMap[request_.v];
                 if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
                     response.result = false;
                     break;
@@ -290,15 +300,15 @@ var digraphExport = require('./digraph-json-export');
                 }
                 delete outEdgeMap[request_.v];
                 if (!Object.keys(outEdgeMap).length) {
-                    this.containerState.leafMap[request_.u] = {};
+                    this._private.leafMap[request_.u] = {};
                 }
                 var inEdgeMap = vertexV.edges.in;
                 delete inEdgeMap[request_.u];
                 if (!Object.keys(inEdgeMap).length) {
-                    this.containerState.rootMap[request_.v] = {};
+                    this._private.rootMap[request_.v] = {};
                 }
-                if (this.containerState.edgeCount) {
-                    this.containerState.edgeCount--;
+                if (this._private.edgeCount) {
+                    this._private.edgeCount--;
                 }
                 response.result = true;
             } // while !inBreakScope
@@ -334,8 +344,8 @@ var digraphExport = require('./digraph-json-export');
                 if (jstype !== '[object String]') {
                     break;
                 }
-                var vertexU = this.containerState.vertexMap[request_.u];
-                var vertexV = this.containerState.vertexMap[request_.v];
+                var vertexU = this._private.vertexMap[request_.u];
+                var vertexV = this._private.vertexMap[request_.v];
                 if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
                     break;
                 }
@@ -346,11 +356,11 @@ var digraphExport = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.verticesCount = function() {
-            return Object.keys(this.containerState.vertexMap).length;
+            return Object.keys(this._private.vertexMap).length;
         };
 
         DirectedGraph.prototype.edgesCount = function() {
-            return this.containerState.edgeCount;
+            return this._private.edgeCount;
         };
 
         DirectedGraph.prototype.getEdges = function() {
@@ -371,7 +381,7 @@ var digraphExport = require('./digraph-json-export');
         DirectedGraph.prototype.inEdges = function(vertexId_) {
             var result = [];
             if (this.isVertex(vertexId_)) {
-                for (var vertexIdV in this.containerState.vertexMap[vertexId_].edges.in) {
+                for (var vertexIdV in this._private.vertexMap[vertexId_].edges.in) {
                     result.push({ u: vertexIdV, v: vertexId_});
                 }
             }
@@ -381,7 +391,7 @@ var digraphExport = require('./digraph-json-export');
         DirectedGraph.prototype.outEdges = function(vertexId_) {
             var result = [];
             if (this.isVertex(vertexId_)) {
-                for (var vertexIdV in this.containerState.vertexMap[vertexId_].edges.out) {
+                for (var vertexIdV in this._private.vertexMap[vertexId_].edges.out) {
                     result.push({ u: vertexId_, v: vertexIdV});
                 }
             }
@@ -389,19 +399,19 @@ var digraphExport = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.inDegree = function (vertexId_) {
-            return this.isVertex(vertexId_)?Object.keys(this.containerState.vertexMap[vertexId_].edges.in).length:-1;
+            return this.isVertex(vertexId_)?Object.keys(this._private.vertexMap[vertexId_].edges.in).length:-1;
         };
 
         DirectedGraph.prototype.outDegree = function (vertexId_) {
-            return this.isVertex(vertexId_)?Object.keys(this.containerState.vertexMap[vertexId_].edges.out).length:-1;
+            return this.isVertex(vertexId_)?Object.keys(this._private.vertexMap[vertexId_].edges.out).length:-1;
         };
 
         DirectedGraph.prototype.getVertexProperty = function(vertexId_) {
-            var vertexDescriptor = this.containerState.vertexMap[vertexId_];
+            var vertexDescriptor = this._private.vertexMap[vertexId_];
             if (!((vertexDescriptor !== null) && vertexDescriptor)) {
                 return void 0;
             }
-            return this.containerState.vertexMap[vertexId_].properties;
+            return this._private.vertexMap[vertexId_].properties;
         };
 
         /*
@@ -444,8 +454,8 @@ var digraphExport = require('./digraph-json-export');
                 if (jstype !== '[object String]') {
                     break;
                 }
-                var vertexU = this.containerState.vertexMap[request_.u];
-                var vertexV = this.containerState.vertexMap[request_.v];
+                var vertexU = this._private.vertexMap[request_.u];
+                var vertexV = this._private.vertexMap[request_.v];
                 if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
                     break;
                 }
@@ -492,8 +502,8 @@ var digraphExport = require('./digraph-json-export');
     var createDirectedGraph = function (jsonOrObject_) {
         var response = { error: null, result: null };
         var digraph = new DirectedGraph(jsonOrObject_);
-        if (digraph.containerState.constructionError) {
-            response.error = digraph.containerState.constructionError;
+        if (digraph._private.constructionError) {
+            response.error = digraph._private.constructionError;
         } else {
             response.result = digraph;
         }
