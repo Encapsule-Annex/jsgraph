@@ -86,7 +86,7 @@ var digraphExport = require('./digraph-json-export');
                 response.error = "Invalid value type '" + jstype + "' found looking for edge descriptor object 'e' in edge write request object.";
                 break;
             }
-            jstype = helperFunctions.JSType(request_e.u);
+            jstype = helperFunctions.JSType(request_.e.u);
             if (jstype !== '[object String]') {
                 response.error = "Invalid value type '" + jstype + "' found looking for vertex ID string property 'e.u' in edge write request object.";
                 break;
@@ -201,19 +201,9 @@ var digraphExport = require('./digraph-json-export');
             var inBreakScope = false;
             while (!inBreakScope) {
                 inBreakScope = true;
-                var jstype = helperFunctions.JSType(request_);
-                if (jstype !== '[object Object]') {
-                    errors.unshift("Missing request object. Found type '" + jstype + "'.");
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.u);
-                if (jstype !== '[object String]') {
-                    errors.unshift("Expected request.u to be a string but found '" + jstype + "'.");
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.p);
-                if (jstype === '[object Function]') {
-                    errors.unshift("Expected request.p to be serializable to JSON. Function references should be stored in an external hash table (e.g. indexed by vertex ID string).");
+                var innerResponse = verifyVertexWriteRequest(request_);
+                if (innerResponse.error) {
+                    errors.unshift(innerResponse.error);
                     break;
                 }
                 var vertex = this._private.vertexMap[request_.u];
@@ -225,7 +215,7 @@ var digraphExport = require('./digraph-json-export');
                     this._private.rootMap[request_.u] = {};
                     this._private.leafMap[request_.u] = {};
                 }
-                if (jstype !== '[object Undefined]') {
+                if (helperFunctions.JSType(request_.p) !== '[object Undefined]') {
                     vertex.properties = request_.p;
                 }
                 response.result = request_.u;
@@ -238,8 +228,8 @@ var digraphExport = require('./digraph-json-export');
         };
 
         DirectedGraph.prototype.isVertex = function (vertexId_) {
-            var jstype = helperFunctions.JSType(vertexId_);
-            if (jstype !== '[object String]') {
+            var innerResponse = verifyVertexReadRequest(vertexId_);
+            if (innerResponse.error) {
                 return false;
             }
             var vertex = this._private.vertexMap[vertexId_];
@@ -247,8 +237,8 @@ var digraphExport = require('./digraph-json-export');
         };
             
         DirectedGraph.prototype.removeVertex = function (vertexId_) {
-            var jstype = helperFunctions.JSType(vertexId_);
-            if (jstype !== '[object String]') {
+            var innerResponse = verifyVertexReadRequest(vertexId_);
+            if (innerResponse.error) {
                 return false;
             }
             var vertexU = this._private.vertexMap[vertexId_];
@@ -284,33 +274,12 @@ var digraphExport = require('./digraph-json-export');
             var inBreakScope = false;
             while (!inBreakScope) {
                 inBreakScope = true;
-                var jstype = helperFunctions.JSType(request_);
-                if (jstype !== '[object Object]') {
-                    errors.unshift("Missing request object ~. Found type '" + jstype + "'.");
+                var innerResponse = verifyEdgeWriteRequest(request_);
+                if (innerResponse.error) {
+                    errors.unshift(innerResponse.error);
                     break;
                 }
-                jstype = helperFunctions.JSType(request_.e);
-                if (jstype !== '[object Object]') {
-                    errors.unshift("Expected request.e to be an object. Found type '" + jstype + "'.");
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.e.u);
-                if (jstype !== '[object String]') {
-                    errors.unshift("Expected request.e.u to be a string. Found type '" + innerResposne + "'.");
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.e.v);
-                if (jstype !== '[object String]') {
-                    errors.unshift("Expected request.e.v to be a string. Found type '" + jstype + "'.");
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.p);
-                if (jstype === '[object Function]') {
-                    errors.unshift("Expected request.p to be serializable to JSON. Function references should be stored in an external hash table (e.g. indexed by vertex ID string).");
-                    break;
-                }
-
-                var innerResponse = this.addVertex({ u: request_.e.u });
+                innerResponse = this.addVertex({ u: request_.e.u });
                 if (innerResponse.error) {
                     errors.unshift(innerResponse.error);
                     break;
@@ -331,7 +300,7 @@ var digraphExport = require('./digraph-json-export');
                     this._private.edgeCount++;
                     delete this._private.rootMap[request_.e.v];
                 }
-                if (jstype !== '[object Undefined]') {
+                if (helperFunctions.JSType(request_.p) !== '[object Undefined]') {
                     outEdge.properties = request_.p;
                 }
                 response.result = request_.e;
@@ -359,19 +328,9 @@ var digraphExport = require('./digraph-json-export');
             var inBreakScope = false;
             while (!inBreakScope) {
                 inBreakScope = true;
-                var jstype = helperFunctions.JSType(request_);
-                if (jstype !== '[object Object]') {
-                    errors.unshift("Missing request object. Found type '" + jstype + "'.");
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.u);
-                if (jstype !== '[object String]') {
-                    errors.unshift("Expected request.u to be a string. Found type '" + jstype + "'.");
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.v);
-                if (jstype !== '[object String]') {
-                    errors.unshift("Expected request.v to be a string. Found type '" + type + "'.");
+                var innerResponse = verifyEdgeReadRequest(request_);
+                if (innerResponse.error) {
+                    errors.unshift(innerResponse.error);
                     break;
                 }
                 var vertexU = this._private.vertexMap[request_.u];
@@ -417,19 +376,10 @@ var digraphExport = require('./digraph-json-export');
         */
         DirectedGraph.prototype.isEdge = function(request_) {
             var response = false;
-            var jstype = helperFunctions.JSType(request_);
             var inBreakScope = false;
             while (!inBreakScope) {
                 inBreakScope = true;
-                if (jstype !== '[object Object]') {
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.u);
-                if (jstype !== '[object String]') {
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.v);
-                if (jstype !== '[object String]') {
+                if (verifyEdgeReadRequest(request_).error) {
                     break;
                 }
                 var vertexU = this._private.vertexMap[request_.u];
@@ -530,16 +480,7 @@ var digraphExport = require('./digraph-json-export');
             var inBreakScope = false;
             while (!inBreakScope) {
                 inBreakScope = true;
-                var jstype = helperFunctions.JSType(request_);
-                if (jstype !== '[object Object]') {
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.u);
-                if (jstype !== '[object String]') {
-                    break;
-                }
-                jstype = helperFunctions.JSType(request_.v);
-                if (jstype !== '[object String]') {
+                if (verifyEdgeReadRequest(request_).error) {
                     break;
                 }
                 var vertexU = this._private.vertexMap[request_.u];
