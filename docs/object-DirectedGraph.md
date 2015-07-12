@@ -46,6 +46,10 @@ Call returns a JavaScript response object with the following properties:
 
 If the vertex already exists in the container and property data was specified, then `addVertex` updates the vertex's property data in the container. If the vertex already exists and no property data is specified, `addVertex` does nothing. If your intention is to clear the property data associated with a vertex in the container, use `setVertexProperty` 
 
+<hr>
+EDIT MARK
+<hr>
+
 
 ## DirectedGraph.removeVertex
 
