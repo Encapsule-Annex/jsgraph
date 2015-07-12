@@ -1,1 +1,5 @@
-# jsgraph.directed.breadthFirstTraverse algorithm reference
+# Encapsule/jsgraph algorithm reference
+
+## jsgraph.directed.breadthFirstTraverse
+
+

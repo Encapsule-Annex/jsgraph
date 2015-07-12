@@ -1,3 +1,5 @@
-# DirectedGraph container API reference
+# Encapsule/jsgraph object reference
+
+## DirectedGraph container
 
 
