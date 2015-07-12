@@ -8,13 +8,107 @@ var digraphImport = require('./digraph-json-import');
 var digraphExport = require('./digraph-json-export');
 
 (function() {
-
     var __bind = function(method, scope){ return function(){ return method.apply(scope, arguments); }; };
 
-    var DirectedGraph = (function() {
+    var verifyVertexReadRequest = function(request_) {
+        var response = { error: null, result: false };
+        var jstype = helperFunctions.JSType(request_);
+        if (jstype !== '[object String]') {
+            response.error = "Invalid value type '" + jstype + "' found vertex read request. Expected '[object String]'.";
+        } else {
+            response.result = true;
+        }
+        return response;
+    };
 
+    var verifyVertexWriteRequest = function(request_) {
+        var response = { error: null, result: false };
+        var inBreakScope = false;
+        while (!inBreakScope) {
+            inBreakScope = true;
+            var jstype = helperFunctions.JSType(request_);
+            if (jstype !== '[object Object]') {
+                response.error = "Invalid value type '" + jstype + "' found when expecting a vertex write request object.";
+                break;
+            }
+            jstype = helperFunctions.JSType(request_.u);
+            if (jstype !== '[object String]') {
+                response.error = "Invalid value type '" + jstype + "' found looking for vertex ID string property 'u' in vertex write request object.";
+                break;
+            }
+            jstype = helperFunctions.JSType(request_.p);
+            if (jstype === '[object Function]') {
+                response.error = "Invalid value type '" + jstype + " found while inspecting vertex property 'p' in vertex write request object. Must be serializable to JSON!";
+                break;
+            }
+            response.result = true;
+        }
+        return response;
+    };
+
+    var verifyEdgeReadRequest = function(request_) {
+        var response = { error: null, result: false };
+        var inBreakScope = false;
+        while (!inBreakScope) {
+            inBreakScope = true;
+            var jstype = helperFunctions.JSType(request_);
+            if (jstype !== '[object Object]') {
+                response.error = "Invalid value type '" + jstype + "' found when expecting edge read request object.";
+                break;
+            }
+            jstype = helperFunctions.JSType(request_.u);
+            if (jstype !== '[object String]') {
+                response.error = "Invalid value type '" + jstype + "' found looking for vertex ID string property 'u' in edge read request object.";
+                break;
+            }
+            jstype = helperFunctions.JSType(request_.v);
+            if (jstype !== '[object String]') {
+                response.error = "Invalid value type '" + jstype + "' found looking for vertex ID string property 'v' in edge read request object.";
+                break;
+            }
+            response.result = true;
+        }
+        return response;
+    };
+
+    var verifyEdgeWriteRequest = function(request_) {
+        var response = { error: null, result: false };
+        var inBreakScope = false;
+        while (!inBreakScope) {
+            inBreakScope = true;
+            var jstype = helperFunctions.JSType(request_);
+            if (jstype !== '[object Object]') {
+                response.error = "Invalid value type '" + jstype + "' found when expecting edge write request object.";
+                break;
+            }
+            jstype = helperFunctions.JSType(request_.e);
+            if (jstype !== '[object Object]') {
+                response.error = "Invalid value type '" + jstype + "' found looking for edge descriptor object 'e' in edge write request object.";
+                break;
+            }
+            jstype = helperFunctions.JSType(request_e.u);
+            if (jstype !== '[object String]') {
+                response.error = "Invalid value type '" + jstype + "' found looking for vertex ID string property 'e.u' in edge write request object.";
+                break;
+            }
+            jstype = helperFunctions.JSType(request_.e.v);
+            if (jstype !== '[object String]') {
+                response.error = "Invalid value type '" + jstype + "' found looking for vertex ID string property 'e.v' in edge write request object.";
+                break;
+            }
+            jstype = helperFunctions.JSType(request_.p);
+            if (jstype === '[object Function]') {
+                response.error = "Invalid value type '" + jstype + "' found while insecting edge property 'p' in edge write request object. Must be serializable to JSON!";
+            }
+            response.result = true;
+        }
+        return response;
+    };
+    
+
+    var DirectedGraph = (function() {
         function DirectedGraph(jsonOrObject_) {
-            // Bind vertex-scope methods
+            // Vertex-scope methods
             this.addVertex = __bind(this.addVertex, this);
             this.isVertex = __bind(this.isVertex, this);
             this.removeVertex = __bind(this.removeVertex, this);
@@ -24,17 +118,13 @@ var digraphExport = require('./digraph-json-export');
             this.outDegree = __bind(this.outDegree, this);
             this.getVertexProperty = __bind(this.getVertexProperty, this);
             this.setVertexProperty = __bind(this.setVertexProperty, this);
-
-
-
-            // Bind edge-scope methods
+            // Edge-scope methods
             this.addEdge = __bind(this.addEdge, this);
             this.removeEdge = __bind(this.removeEdge, this);
             this.isEdge = __bind(this.isEdge, this);
             this.getEdgeProperty = __bind(this.getEdgeProperty, this);
             this.setEdgeProperty = __bind(this.setEdgeProperty, this);
-
-            // Bind digraph-scope methods
+            // Digraph-scope methods
             this.getVertices = __bind(this.getVertices, this);
             this.rootVerticesCount = __bind(this.rootVerticesCount, this);
             this.getRootVertices = __bind(this.getRootVertices, this);
@@ -47,7 +137,6 @@ var digraphExport = require('./digraph-json-export');
             this.toJSON = __bind(this.toJSON, this);
             this.fromObject = __bind(this.fromObject, this);
             this.fromJSON = __bind(this.fromJSON, this);
-
             // DirectedGraph container private runtime state.
             this._private = {
                 vertexMap: {},
@@ -56,7 +145,6 @@ var digraphExport = require('./digraph-json-export');
                 edgeCount: 0,
                 constructionError: null
             };
-
             if ((jsonOrObject_ !== null) && jsonOrObject_) {
                 var innerResponse = digraphImport(this, jsonOrObject_);
                 if (innerResponse.error) {
