@@ -94,7 +94,7 @@ Transform functions generate new `DirectedGraph` containers from existing contai
 
 Algorithm functions are miniature agent processes that traverse the topology of a `DirectedGraph` container issuing callbacks to your derived client code at specified event points.
 
-jsgraph algorithms use names and conventions documented in Chapter 23 of the Holy Book ([Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms)). The reader is encouraged to review this material for a detailed discussion of the specific graph coloring algorithms, semantics of event callbacks, applications, and ideas for extensing the algorithms provided.
+jsgraph algorithms use names and conventions documented in Chapter 23 of the Holy Book ([Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms)). Readers are encouraged to review this section for relevant review of the theory and application of the transforms and algorithms provided by jsgraph.
 
 #### jsgraph.directed.transpose Transform
 
