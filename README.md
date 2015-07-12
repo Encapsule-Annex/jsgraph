@@ -4,6 +4,8 @@
 
 Updates and information: [Twitter @Encapsule](https://twitter.com/Encapsule) : [Encapsule Project Blog](http://blog.encapsule.org) : [Encapsule Project on GitHub](https://github.com/encapsule/)
 
+## About
+
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
 Encapsule/jsgraph is a functional port of directed graph container and algorithm suport from the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) to JavaScript that greatly simplifies the task of working with complex in-memory graph data structures on Node.js and HTML 5.
@@ -136,8 +138,6 @@ Supported visitor interface callbacks for breadth-first traversal: `initializeVe
 
 A breadth-first traversal concludes when all reachable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
 
-
-
 #### jsgraph.directed.depthFirstTraverse Algorithm
 
 **See also: [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)**
@@ -149,6 +149,10 @@ The algorithm starts at a vertex (visit) or set of vertices (search) and proceed
 Supported visitor interface callbacks for depth-first traversal: `initializeVertex`, `startVertex`, `discoverVertex`, `examineEdge`, `treeEdge`, `backEdge`, `forwardOrCrossEdge`, `finishEdge`, and `finishVertex`.
 
 A depth-first traversal concludes when all reacable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
+
+## Examples
+
+The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts.
 
 ## Acknowledgements
 
