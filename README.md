@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
-Updates: [@Encapsule](https://twitter.com/Encapsule) // Sources: [https://github.com/encapsule/jsgraph](https://github.com/encapsule/jsgraph)
+Updates: [@Encapsule](https://twitter.com/Encapsule) // Info: [Encapsule Project Blog](http://blog.encapsule.org)
+Sources: [https://github.com/encapsule/jsgraph](https://github.com/encapsule/jsgraph)
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
