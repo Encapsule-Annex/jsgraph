@@ -1,1 +1,3 @@
-# jsgraph.directed.transpose algorithm reference
+# Encapsule/jsgraph tranform reference
+
+## jsgraph.directed.transpose

@@ -1,1 +1,3 @@
-# jsgraph.directed.depthFirstTraverse algorithm reference
+# Encapsule/jsgraph algorithm reference
+
+## jsgraph.directed.depthFirstTraverse
