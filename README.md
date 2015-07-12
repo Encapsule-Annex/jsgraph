@@ -127,7 +127,7 @@ See documentation link above for additional discussion and examples.
 
 #### jsgraph.directed.depthFirstTraverse Algorithm
 
-** See also: [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)**
+**See also: [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)**
 
 jsgraph function export `jsgraph.directed.depthFirstTraverse` is a non-recursive visitor implementation of the classic depth-first search and visit vertex discovery and edge classification algorithms.
 
