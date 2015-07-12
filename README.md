@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
-Updates and information: [Twitter @Encapsule](https://twitter.com/Encapsule) : [Encapsule Project Blog](http://blog.encapsule.org) : [Encapsule Project on GitHub](https://github.com/encapsule/)
+**Encapsule Project: [news](https://twitter.com/Encapsule) / [info](http://blog.encapsule.org) / [source code](https://github.com/encapsule/)**
 
-## About
+## About jsgraph
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
@@ -21,7 +21,7 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
 - Implementation backed by [470 tests and Travis CI](https://travis-ci.org/Encapsule/jsgraph).
 
-## Release v0.5 highlights
+## Release
 
 v0.5 is a breaking upgrade for users of v0.4:
 
@@ -34,7 +34,7 @@ v0.5 is a breaking upgrade for users of v0.4:
 - ~300 new tests added for v0.5 release.
 - Documentation brought current.
 
-## API Overview
+## API
 
 v0.5 jsgraph has the following public export object:
 
@@ -68,7 +68,7 @@ jsgraph's core directed graph container object, **DirectedGraph**, is constructe
         
         '{"vlist":[],"elist":[]}'
         
-The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. See [Object reference: JSON I/O](./docs/object-JSON.md) for more information.
+The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. See **[Object reference: JSON I/O](./docs/object-JSON.md)** for more information.
             
 #### DirectedGraph vertex methods
 
@@ -103,7 +103,7 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `fromObject(dataObject)` - import a jsgraph-format JavaScript data object into the container (addative)
 - `fromJSON(jsonString)` - import jsgraph-format JSON string into the container (addative)
 
-### Bundled Transforms & Algorithms
+### Transforms & Algorithms
 
 jsgraph bundles a small collection of powerful functions that operate on the data contained in a `DirectedGraph` container in useful ways.
 

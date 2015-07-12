@@ -2,33 +2,52 @@
 
 ## DirectedGraph container
 
+jsgraph's directed graph container, `DirectedGraph`, is constructed with optional initialization data via the `jsgraph.directed.create` function export. 
 
+`jsgraph.directed.create` returns an error/result response object that typically looks like this:
 
-# DirectedGraph Generic Container
+        `{ error: null, result: DirectedGraph }`
 
-jsgraph is inspired by the design and implementation of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) that applies the C++ Standard Template Library concepts of generic containers and algorithms to mathematical graph datasets. 
+If you pass invalid input data however the call will fail and the response will look like this:
+
+        '{ error: "Some error string explaining what went wrong.", result: null }`.
+
+It is important that your derived code check `response.error` for construction error:
 
         var jsgraph = require('jsgraph');
-        var digraph = new jsgraph.DirectedGraph(JSON); // JSON is optional
+        var response = jsgraph.directed.create();
+        if (!response.error) {
+            var digraph = response.result;
+            // container is ready for use
+            console.log("digraph JSON = '" + digraph.toJSON() + "'");
+        } else {
+            console.error(response.error);
+        }         
 
 ## DirectedGraph.addVertex
 
-        var vertex = digraph.addVertex(vertexId_, properties_);
+        var response = digraph.addVertex(request);                
 
-**Parameters:**
+**Request**
 
-- vertexId_ (required): a unique string identifying the vertex to add to the graph.
-- properties_ (optional): reference to a property object to attach to the new vertex.
+Request is a JavaScript object with the following properties:
 
-**Return:**
+- **u** (required): unique string identifier of the vertex
+- **p** (optional): undefined or any value serializable to JSON
 
-Returns a copy of the `vertexId_` in-parameter. If the vertex already exists, its properties are replaced if specified.
+**Response**
+
+Call returns a JavaScript response object with the following properties:
+
+- **error**: null or a string explaining what went wrong
+- **result**: the unique string identifier of the vertex added to the container or null if an error occurred
 
 **Remarks:**
 
-If a vertex with identifier `vertexId_` already exists in the graph, the call to `addVertex` is ignored.
+If the vertex already exists in the container and property data was specified, then `addVertex` updates the vertex's property data in the container. If the vertex already exists and no property data is specified, `addVertex` does nothing. If your intention is to clear the property data associated with a vertex in the container, use `setVertexProperty` 
 
-## jsgraph.DirectedGraph.removeVertex
+
+## DirectedGraph.removeVertex
 
         digraph.removeVertex(vertexId_);
 
