@@ -1,3 +1,3 @@
-# Object reference: `DirectedGraph`
+# DirectedGraph container API reference
 
-Hello.
+
