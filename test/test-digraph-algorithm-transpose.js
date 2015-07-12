@@ -41,11 +41,11 @@ describe("Directed graph tranposition test", function() {
         });
 
         it("input digraph should have two root vertices", function() {
-            assert.lengthOf(Object.keys(digraphInput.rootMap), 2);
+            assert.lengthOf(Object.keys(digraphInput.containerState.rootMap), 2);
         });
 
         it("input digraph should have three leaf vertices", function() {
-            assert.lengthOf(Object.keys(digraphInput.leafMap), 3);
+            assert.lengthOf(Object.keys(digraphInput.containerState.leafMap), 3);
         });
 
         it("output digraph should contain six vertices", function() {
@@ -57,11 +57,11 @@ describe("Directed graph tranposition test", function() {
         });
 
         it("output digraph should have three root vertices", function() {
-            assert.lengthOf(Object.keys(digraphOutput.rootMap), 3);
+            assert.lengthOf(Object.keys(digraphOutput.containerState.rootMap), 3);
         });
 
         it("output digraph should have two leaf vertices", function() {
-            assert.lengthOf(Object.keys(digraphOutput.leafMap), 2);
+            assert.lengthOf(Object.keys(digraphOutput.containerState.leafMap), 2);
         });
     });
 

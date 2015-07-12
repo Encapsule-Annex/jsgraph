@@ -7,6 +7,7 @@
 // constructor parameter to restore container state across
 // execution contexts.
 
+var helperFunctions = require('./helper-functions');
 var DigraphDataExporter = module.exports = {};
 
 DigraphDataExporter.exportObject = function (digraph_) {
@@ -14,32 +15,27 @@ DigraphDataExporter.exportObject = function (digraph_) {
         vlist: [],
         elist: []
     };
-    var vertexMentionedMap = {};
-    
-    var vertexMap = digraph_.vertexMap;
-    var vertexId;
-
-
-    var processEdge = function(edge_) {
-        var edgeProps = digraph_.getEdgeProperty(edge_);
-        digraphState.elist.push({ e: edge_, p: edgeProps });
-        vertexMentionedMap[edge_.u] = true;
-        vertexMentionedMap[edge_.v] = true;
-    };
-
-    for (vertexId in vertexMap) {
-        var outEdges = digraph_.outEdges(vertexId);
-        outEdges.forEach(processEdge);
-    }
-    for (vertexId in vertexMap) {
-        var vertexDescriptor = vertexMap[vertexId];
-        var vertexMentioned = (vertexMentionedMap[vertexId] !== null) && vertexMentionedMap[vertexId] || false;
-        
-        if (!vertexMentioned || ((vertexDescriptor.properties !== null) && vertexDescriptor.properties)) {
-            digraphState.vlist.push({ u: vertexId, p: vertexDescriptor.properties });
+    var vertexSerialized = {}; // Keep track of the vertices referenced in the edge list.
+    var edgeList = digraph_.getEdges();
+    var vertexList = digraph_.getVertices();
+    digraph_.getEdges().forEach(function(edge_) {
+        var edgeProperty = digraph_.getEdgeProperty(edge_);
+        digraphState.elist.push({ e: edge_, p: edgeProperty });
+        vertexSerialized[edge_.u] = vertexSerialized[edge_.v] = true;
+    });
+    digraph_.getVertices().forEach(function(vertexId_) {
+        var vertexProperty = digraph_.getVertexProperty(vertexId_);
+        var jstype = helperFunctions.JSType(vertexProperty);
+        // If the vertex has an attached property, serialize it to the vlist.
+        if (jstype !== '[object Undefined]') {
+            digraphState.vlist.push({ u: vertexId_, p: vertexProperty });
+        } else {
+            // If the vertex wasn't mentioned in the elist, we need to serialize, sans property, to the vlist.
+            if (vertexSerialized[vertexId_] !== true) {
+                digraphState.vlist.push({ u: vertexId_ });
+            }
         }
-    }
-
+    });
     return digraphState;
 };
 

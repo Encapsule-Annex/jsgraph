@@ -15,7 +15,7 @@ describe("DirectedGraph container object tests", function() {
         });
 
         it ("graph should have zero vertices", function() {
-            assert.lengthOf(Object.keys(digraph.vertexMap), 0);
+            assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 0);
             assert.equal(digraph.verticesCount(), 0);
         });
 
@@ -142,7 +142,7 @@ describe("DirectedGraph container object tests", function() {
         var addVertexTest = function() {
 
             it("graph should have a single vertex", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 1);
+                assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 1);
                 assert.equal(digraph.verticesCount(), 1);
             });
 
@@ -178,7 +178,7 @@ describe("DirectedGraph container object tests", function() {
         var removeVertexTest = function() {
 
             it("graph should have zero vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 0);
+                assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 0);
                 assert.equal(digraph.verticesCount(), 0);
             });
 
@@ -220,7 +220,7 @@ describe("DirectedGraph container object tests", function() {
         var addEdgeTest = function() {
 
             it("graph should have two vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 2);
+                assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 2);
                 assert.equal(digraph.verticesCount(), 2);
             });
 
@@ -271,7 +271,7 @@ describe("DirectedGraph container object tests", function() {
 
         var removeEdgeTest = function() {
             it("graph should have two vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 2);
+                assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 2);
                 assert.equal(digraph.verticesCount(), 2);
             });
 
@@ -355,7 +355,7 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it("graph should have one vertex", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 1);
+                assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 1);
                 assert.equal(digraph.verticesCount(), 1);
             });
 
@@ -399,7 +399,7 @@ describe("DirectedGraph container object tests", function() {
         digraph.addEdge({e:{ u: "green", v: "white"}});
 
         it("graph should have three vertices", function() {
-            assert.lengthOf(Object.keys(digraph.vertexMap), 3);
+            assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 3);
             assert.equal(digraph.verticesCount(), 3);
         });
 
@@ -458,7 +458,7 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it("graph should have eigth vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 8);
+                assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 8);
                 assert.equal(digraph.verticesCount(), 8);
             });
 
@@ -498,7 +498,7 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it("graph should have seven vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 7);
+                assert.lengthOf(Object.keys(digraph.containerState.vertexMap), 7);
                 assert.equal(digraph.verticesCount(), 7);
             });
 
@@ -542,7 +542,7 @@ describe("DirectedGraph container object tests", function() {
         }
 
         it("graph should have " + verticesToAllocate + " vertices", function() {
-            assert.lengthOf(Object.keys(digraph.vertexMap), verticesToAllocate);
+            assert.lengthOf(Object.keys(digraph.containerState.vertexMap), verticesToAllocate);
             assert.equal(digraph.verticesCount(), verticesToAllocate);
         });
     });
