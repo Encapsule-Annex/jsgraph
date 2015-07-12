@@ -1,4 +1,4 @@
-# Encapsule/jsgraph v0.5
+# Encapsule/jsgraph
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
@@ -18,6 +18,20 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
 - Implementation backed by [470 tests and Travis CI](https://travis-ci.org/Encapsule/jsgraph).
+
+## Release v0.5 highlights
+
+v0.5 is a collection of breaking changes to the library intended to better align it with the evolving coding style I'm using in my other Node.js libraries (many of which derive from jsgraph). And, to integrate a number of long overdue performance enhancements and test enhancements.
+
+- Clients of v0.4 jsgraph will need to make 
+- v0.5 API is not backwards compatible. Upgrade port from v0.4 should be simple however.
+- No more exceptions. Functions/methods that might reasonably fail now return an error/result response object.
+- Breadth-first visit and search algorithms have been coalesced into the new function export `breadthFirstTraverse`.
+- Depth-first visit and search algorithms have been coalesced into the new function export `depthFirstTraverse`.
+- All visitor interface methods are now required to return a Boolean flag that indicates if the traversal should continue or terminate.
+- Significant investment in error handling and reporting to improve developer experience and simplify diagnosis of production failures.
+- ~300 new tests added for v0.5 release.
+- Update the docs.
 
 ## API Overview
 
@@ -135,7 +149,7 @@ The algorithm starts at a vertex (visit) or set of vertices (search) and proceed
 
 A depth-first traversal concludes when all reacable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
 
-Supported visitor interface callbacks for depth-first traversal: `initializeVertex`, 'startVertex`, `discoverVertex`, `examineEdge`, `treeEdge`, `backEdge`, `forwardOrCrossEdge`, `finishEdge`, and `finishVertex`.
+Supported visitor interface callbacks for depth-first traversal: `initializeVertex`, `startVertex`, `discoverVertex`, `examineEdge`, `treeEdge`, `backEdge`, `forwardOrCrossEdge`, `finishEdge`, and `finishVertex`.
 
 See documentation link above for additional discussion and examples.
 
