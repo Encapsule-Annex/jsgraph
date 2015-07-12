@@ -2,8 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
-Updates: [@Encapsule](https://twitter.com/Encapsule) // Info: [Encapsule Project Blog](http://blog.encapsule.org)
-Sources: [https://github.com/encapsule/jsgraph](https://github.com/encapsule/jsgraph)
+Updates and information: [Twitter @Encapsule](https://twitter.com/Encapsule) : [Encapsule Project Blog](http://blog.encapsule.org) : [Encapsule Project on GitHub](https://github.com/encapsule/)
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
@@ -22,17 +21,16 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 
 ## Release v0.5 highlights
 
-v0.5 is a collection of breaking changes to the library intended to better align it with the evolving coding style I'm using in my other Node.js libraries (many of which derive from jsgraph). And, to integrate a number of long overdue performance enhancements and test enhancements.
+v0.5 is a breaking upgrade for users of v0.4:
 
-- Clients of v0.4 jsgraph will need to make 
-- v0.5 API is not backwards compatible. Upgrade port from v0.4 should be simple however.
+- Clients of v0.4 jsgraph will need to make some minor changes to their derived code to upgrade to v0.5.
 - No more exceptions. Functions/methods that might reasonably fail now return an error/result response object.
 - Breadth-first visit and search algorithms have been coalesced into the new function export `breadthFirstTraverse`.
 - Depth-first visit and search algorithms have been coalesced into the new function export `depthFirstTraverse`.
 - All visitor interface methods are now required to return a Boolean flag that indicates if the traversal should continue or terminate.
 - Significant investment in error handling and reporting to improve developer experience and simplify diagnosis of production failures.
 - ~300 new tests added for v0.5 release.
-- Update the docs.
+- Documentation brought current.
 
 ## API Overview
 
@@ -134,11 +132,11 @@ jsgraph function export `jsgraph.directed.breadthFirstTraverse` is a non-recursi
 
 The algorithm starts at a vertex (visit) or set of vertices (search) and proceeds breadth-first providing your client code with a series of progress callbacks to _visitor interface_ functions you register when initiating the traversal.
 
-A breadth-first traversal concludes when all reachable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
-
 Supported visitor interface callbacks for breadth-first traversal: `initializeVertex`, `startVertex`, `discoverVertex`, `examineVertex`, `examineEdge`, `treeEdge`, `nonTreeEdge`, `grayTarget`, `blackTarget`, and `finishVertex`.
 
-See documentation link above for additional discussion and examples.      
+A breadth-first traversal concludes when all reachable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
+
+
 
 #### jsgraph.directed.depthFirstTraverse Algorithm
 
@@ -148,11 +146,9 @@ jsgraph function export `jsgraph.directed.depthFirstTraverse` is a non-recursive
 
 The algorithm starts at a vertex (visit) or set of vertices (search) and proceeds depth-first providing your client code with a series of progress callbacks to _visitor interface_ functions you register when initiating the traversal.
 
-A depth-first traversal concludes when all reacable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
-
 Supported visitor interface callbacks for depth-first traversal: `initializeVertex`, `startVertex`, `discoverVertex`, `examineEdge`, `treeEdge`, `backEdge`, `forwardOrCrossEdge`, `finishEdge`, and `finishVertex`.
 
-See documentation link above for additional discussion and examples.
+A depth-first traversal concludes when all reacable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
 
 ## Acknowledgements
 
