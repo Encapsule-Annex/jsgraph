@@ -2,9 +2,11 @@
 
 [![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
 
+Updates: [@Encapsule](https://twitter.com/Encapsule) // Sources: [https://github.com/encapsule/jsgraph](https://github.com/encapsule/jsgraph)
+
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
-Encapsule/jsgraph is a functional port of directed graph container and algorithm suport from the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) to JavaScript that greatly simplifies the task of working with complex in-memory N-relational data structures on Node.js and HTML 5.
+Encapsule/jsgraph is a functional port of directed graph container and algorithm suport from the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) to JavaScript that greatly simplifies the task of working with complex in-memory graph data structures on Node.js and HTML 5.
 
 ## Features
 
@@ -15,7 +17,7 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
-- Implementation backed by 470 tests and Travis CI.
+- Implementation backed by [470 tests and Travis CI](https://travis-ci.org/Encapsule/jsgraph).
 
 ## API Overview
 
@@ -94,13 +96,13 @@ Transform functions generate new `DirectedGraph` containers from existing contai
 
 Algorithm functions are miniature agent processes that traverse the topology of a `DirectedGraph` container issuing callbacks to your derived client code at specified event points.
 
-jsgraph algorithms use names and conventions documented in Chapter 23 of the Holy Book ([Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms)). Readers are encouraged to review this section for relevant review of the theory and application of the transforms and algorithms provided by jsgraph.
+jsgraph uses names and conventions documented in Chapter 23 **Elementary Graph Algorithms** of [Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) (MIT Press).
 
 #### jsgraph.directed.transpose Transform
 
 **See also: [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)**
 
-jsgraph currently provides a single 'transform' function, `jsgraph.directed.transpose` that constructs a new `DirectedGraph` that is a copy of an existing `DirectedGraph` with the edge direction reversed.
+jsgraph currently provides a single 'transform' function, `jsgraph.directed.transpose` that constructs a new `DirectedGraph` that that is equivalent to an existing `DirectedGraph` except that the direction of all the edges is reversed. Note that vertex and edge properties (if any) are copied by reference to the transposed digraph as a deep copy is seldom desirable. 
 
         var response = jsgraph.directed.transpose(digraph);
         if (response.error) {
@@ -113,17 +115,29 @@ jsgraph currently provides a single 'transform' function, `jsgraph.directed.tran
 
 **See also: [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)**
 
-jsgraph function export `jsgraph.directed.breadthFirstTraverse` is a non-recursive imlementation of the classic breadth-first search and visit vertex discovery and edge classification protocols.
+jsgraph function export `jsgraph.directed.breadthFirstTraverse` is a non-recursive visitor imlementation of the classic breadth-first search and visit vertex discovery and edge classification algorithms.
 
+The algorithm starts at a vertex (visit) or set of vertices (search) and proceeds breadth-first providing your client code with a series of progress callbacks to _visitor interface_ functions you register when initiating the traversal.
 
+A breadth-first traversal concludes when all reachable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
 
+Supported visitor interface callbacks for breadth-first traversal: `initializeVertex`, `startVertex`, `discoverVertex`, `examineVertex`, `examineEdge`, `treeEdge`, `nonTreeEdge`, `grayTarget`, `blackTarget`, and `finishVertex`.
+
+See documentation link above for additional discussion and examples.      
 
 #### jsgraph.directed.depthFirstTraverse Algorithm
 
 ** See also: [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)**
 
-jsgraph function export `jsgraph.directed.depthFirstTraverse` is a non-recursive implementation of the classic depth-first search and visit vertex discovery and edge classification protocols.
+jsgraph function export `jsgraph.directed.depthFirstTraverse` is a non-recursive visitor implementation of the classic depth-first search and visit vertex discovery and edge classification algorithms.
 
+The algorithm starts at a vertex (visit) or set of vertices (search) and proceeds depth-first providing your client code with a series of progress callbacks to _visitor interface_ functions you register when initiating the traversal.
+
+A depth-first traversal concludes when all reacable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
+
+Supported visitor interface callbacks for depth-first traversal: `initializeVertex`, 'startVertex`, `discoverVertex`, `examineEdge`, `treeEdge`, `backEdge`, `forwardOrCrossEdge`, `finishEdge`, and `finishVertex`.
+
+See documentation link above for additional discussion and examples.
 
 <hr>
 EDIT POINT
@@ -720,12 +734,12 @@ The `vertices` array contains vertex descriptor objects that look like this:
         '{"u":"apple","v":"orange","props":"not the same"}'
 
 
-# Acknowledgements
+## Acknowledgements
 
 Thanks to [Jeremy Seik](http://wphomes.soic.indiana.edu/jsiek/) for writing the BGL.
 
 <hr>
 
-Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus) / [Encapsule Project](https://github.com/encapsule)
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus) 
 
 
