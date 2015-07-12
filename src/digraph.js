@@ -9,7 +9,7 @@ var digraphExport = require('./digraph-json-export');
 
 (function() {
 
-    var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    var __bind = function(method, scope){ return function(){ return method.apply(scope, arguments); }; };
 
     var DirectedGraph = (function() {
 
