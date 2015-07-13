@@ -65,38 +65,17 @@ var digraphExport = require('./digraph-json-export');
             }
         }
 
-        DirectedGraph.prototype.getVertices = function() {
-            var vertices = [];
-            for (var vertexId in this._private.vertexMap) {
-                vertices.push(vertexId);
+        // VERTEX-SCOPE METHODS
+
+        DirectedGraph.prototype.isVertex = function (vertexId_) {
+            var innerResponse = digraphParams.verifyVertexReadRequest(vertexId_);
+            if (innerResponse.error) {
+                return false;
             }
-            return vertices;
+            var vertex = this._private.vertexMap[vertexId_];
+            return (vertex !== null) && vertex && true || false;
         };
-
-        DirectedGraph.prototype.getRootVertices = function() {
-            var rootVertices = [];
-            for (var vertexId in this._private.rootMap) {
-                rootVertices.push(vertexId);
-            }
-            return rootVertices;
-        };
-
-        DirectedGraph.prototype.rootVerticesCount = function() {
-            return Object.keys(this._private.rootMap).length;
-        };
-
-        DirectedGraph.prototype.getLeafVertices = function() {
-            var leafVertices = [];
-            for (var vertexId in this._private.leafMap) {
-                leafVertices.push(vertexId);
-            }
-            return leafVertices;
-        };
-
-        DirectedGraph.prototype.leafVerticesCount = function() {
-            return Object.keys(this._private.leafMap).length;
-        };
-
+            
         /*
           request = {
               u: vertex ID string
@@ -139,15 +118,6 @@ var digraphExport = require('./digraph-json-export');
             return response;
         };
 
-        DirectedGraph.prototype.isVertex = function (vertexId_) {
-            var innerResponse = digraphParams.verifyVertexReadRequest(vertexId_);
-            if (innerResponse.error) {
-                return false;
-            }
-            var vertex = this._private.vertexMap[vertexId_];
-            return (vertex !== null) && vertex && true || false;
-        };
-            
         DirectedGraph.prototype.removeVertex = function (vertexId_) {
             var innerResponse = digraphParams.verifyVertexReadRequest(vertexId_);
             if (innerResponse.error) {
@@ -168,6 +138,102 @@ var digraphExport = require('./digraph-json-export');
             delete this._private.rootMap[vertexId_];
             delete this._private.leafMap[vertexId_];
             return true;
+        };
+
+        DirectedGraph.prototype.getVertexProperty = function(vertexId_) {
+            if (!this.isVertex(vertexId_)) {
+                return void 0;
+            }
+            return this._private.vertexMap[vertexId_].properties;
+        };
+
+        /*
+          request = {
+              u: vertex ID string
+              p: optional property (must be serializable to JSON)
+          }
+          response = {
+              error: null or error string
+              result: vertex ID string or null if error
+          }
+         */
+        DirectedGraph.prototype.setVertexProperty = function(request_) {
+            return this.addVertex(request_);
+        };
+
+        DirectedGraph.prototype.hasVertexProperty = function(vertexId_) {
+            if (!this.isVertex(vertexId_)) {
+                return false;
+            }
+            if (helperFunctions.JSType(this._private.vertexMap[vertexId_].properties) === '[object Undefined]') {
+                return false;
+            }
+            return true;
+        };
+
+        DirectedGraph.prototype.clearVertexProperty = function(vertexId_) {
+            if (!this.isVertex(vertexId_)) {
+                return false;
+            }
+            delete this._private.vertexMap[vertexId_].properties;
+            return true;
+        };
+
+        DirectedGraph.prototype.inDegree = function (vertexId_) {
+            return this.isVertex(vertexId_)?Object.keys(this._private.vertexMap[vertexId_].edges.in).length:-1;
+        };
+
+        DirectedGraph.prototype.inEdges = function(vertexId_) {
+            var result = [];
+            if (this.isVertex(vertexId_)) {
+                for (var vertexIdV in this._private.vertexMap[vertexId_].edges.in) {
+                    result.push({ u: vertexIdV, v: vertexId_});
+                }
+            }
+            return result;
+        };
+
+        DirectedGraph.prototype.outDegree = function (vertexId_) {
+            return this.isVertex(vertexId_)?Object.keys(this._private.vertexMap[vertexId_].edges.out).length:-1;
+        };
+
+        DirectedGraph.prototype.outEdges = function(vertexId_) {
+            var result = [];
+            if (this.isVertex(vertexId_)) {
+                for (var vertexIdV in this._private.vertexMap[vertexId_].edges.out) {
+                    result.push({ u: vertexId_, v: vertexIdV});
+                }
+            }
+            return result;
+        };
+
+        // EDGE-SCOPE METHODS
+
+        /*
+          request = {
+              u: string,
+              v: string,
+          }
+          response = Boolean true if edge exists. Otherwise, false.
+          Note that invalid requests are coalesced as negative responses.
+        */
+        DirectedGraph.prototype.isEdge = function(request_) {
+            var response = false;
+            var inBreakScope = false;
+            while (!inBreakScope) {
+                inBreakScope = true;
+                if (digraphParams.verifyEdgeReadRequest(request_).error) {
+                    break;
+                }
+                var vertexU = this._private.vertexMap[request_.u];
+                var vertexV = this._private.vertexMap[request_.v];
+                if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
+                    break;
+                }
+                var edge = vertexU.edges.out[request_.v];
+                response = (edge !== null) && edge && true || false;
+            }
+            return response;
         };
 
         /*
@@ -281,142 +347,6 @@ var digraphExport = require('./digraph-json-export');
         /*
           request = {
               u: string,
-              v: string,
-          }
-          response = Boolean true if edge exists. Otherwise, false.
-          Note that invalid requests are coalesced as negative responses.
-        */
-        DirectedGraph.prototype.isEdge = function(request_) {
-            var response = false;
-            var inBreakScope = false;
-            while (!inBreakScope) {
-                inBreakScope = true;
-                if (digraphParams.verifyEdgeReadRequest(request_).error) {
-                    break;
-                }
-                var vertexU = this._private.vertexMap[request_.u];
-                var vertexV = this._private.vertexMap[request_.v];
-                if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
-                    break;
-                }
-                var edge = vertexU.edges.out[request_.v];
-                response = (edge !== null) && edge && true || false;
-            }
-            return response;
-        };
-
-        DirectedGraph.prototype.verticesCount = function() {
-            return Object.keys(this._private.vertexMap).length;
-        };
-
-        DirectedGraph.prototype.edgesCount = function() {
-            return this._private.edgeCount;
-        };
-
-        DirectedGraph.prototype.getEdges = function() {
-            var edges = [];
-            var vertices = this.getVertices();
-            var processVertexOutEdges = function(outEdges_) {
-                outEdges_.forEach(function(outEdge_) {
-                    edges.push(outEdge_);
-                });
-            };
-            var self = this;
-            vertices.forEach(function(vertexId_) {
-                processVertexOutEdges(self.outEdges(vertexId_));
-            });
-            return edges;
-        };
-                             
-        DirectedGraph.prototype.inEdges = function(vertexId_) {
-            var result = [];
-            if (this.isVertex(vertexId_)) {
-                for (var vertexIdV in this._private.vertexMap[vertexId_].edges.in) {
-                    result.push({ u: vertexIdV, v: vertexId_});
-                }
-            }
-            return result;
-        };
-
-        DirectedGraph.prototype.outEdges = function(vertexId_) {
-            var result = [];
-            if (this.isVertex(vertexId_)) {
-                for (var vertexIdV in this._private.vertexMap[vertexId_].edges.out) {
-                    result.push({ u: vertexId_, v: vertexIdV});
-                }
-            }
-            return result;
-        };
-
-        DirectedGraph.prototype.inDegree = function (vertexId_) {
-            return this.isVertex(vertexId_)?Object.keys(this._private.vertexMap[vertexId_].edges.in).length:-1;
-        };
-
-        DirectedGraph.prototype.outDegree = function (vertexId_) {
-            return this.isVertex(vertexId_)?Object.keys(this._private.vertexMap[vertexId_].edges.out).length:-1;
-        };
-
-
-        DirectedGraph.prototype.hasVertexProperty = function(vertexId_) {
-            if (!this.isVertex(vertexId_)) {
-                return false;
-            }
-            if (helperFunctions.JSType(this._private.vertexMap[vertexId_].properties) === '[object Undefined]') {
-                return false;
-            }
-            return true;
-        };
-
-        DirectedGraph.prototype.getVertexProperty = function(vertexId_) {
-            if (!this.isVertex(vertexId_)) {
-                return void 0;
-            }
-            return this._private.vertexMap[vertexId_].properties;
-        };
-
-        /*
-          request = {
-              u: vertex ID string
-              p: optional property (must be serializable to JSON)
-          }
-          response = {
-              error: null or error string
-              result: vertex ID string or null if error
-          }
-         */
-        DirectedGraph.prototype.setVertexProperty = function(request_) {
-            return this.addVertex(request_);
-        };
-
-        DirectedGraph.prototype.clearVertexProperty = function(vertexId_) {
-            if (!this.isVertex(vertexId_)) {
-                return false;
-            }
-            delete this._private.vertexMap[vertexId_].properties;
-            return true;
-        };
-
-        DirectedGraph.prototype.hasEdgeProperty = function(request_) {
-            if (!this.isEdge(request_)) {
-                return false;
-            }
-            if (helperFunctions.JSType(this._private.vertexMap[request_.u].edges.out[request_.v].properties) === '[object Undefined]') {
-                return false;
-            }
-            return true;
-        };
-
-        DirectedGraph.prototype.clearEdgeProperty = function(request_) {
-            if (!this.isEdge(request_)) {
-                return false;
-            }
-            delete this._private.vertexMap[request_.u].edges.out[request_.v].properties;
-            return true;
-        };
-
-        /*
-          request = {
-              u: string,
               v: string
           }
           response = void 0 or whatever property is assigned to the edge
@@ -455,6 +385,81 @@ var digraphExport = require('./digraph-json-export');
             return this.addEdge(request_);
         };
 
+        DirectedGraph.prototype.hasEdgeProperty = function(request_) {
+            if (!this.isEdge(request_)) {
+                return false;
+            }
+            if (helperFunctions.JSType(this._private.vertexMap[request_.u].edges.out[request_.v].properties) === '[object Undefined]') {
+                return false;
+            }
+            return true;
+        };
+
+        DirectedGraph.prototype.clearEdgeProperty = function(request_) {
+            if (!this.isEdge(request_)) {
+                return false;
+            }
+            delete this._private.vertexMap[request_.u].edges.out[request_.v].properties;
+            return true;
+        };
+
+        // DIGRAPH-SCOPE METHODS
+
+        DirectedGraph.prototype.verticesCount = function() {
+            return Object.keys(this._private.vertexMap).length;
+        };
+
+        DirectedGraph.prototype.getVertices = function() {
+            var vertices = [];
+            for (var vertexId in this._private.vertexMap) {
+                vertices.push(vertexId);
+            }
+            return vertices;
+        };
+
+        DirectedGraph.prototype.edgesCount = function() {
+            return this._private.edgeCount;
+        };
+
+        DirectedGraph.prototype.getEdges = function() {
+            var edges = [];
+            var vertices = this.getVertices();
+            var processVertexOutEdges = function(outEdges_) {
+                outEdges_.forEach(function(outEdge_) {
+                    edges.push(outEdge_);
+                });
+            };
+            var self = this;
+            vertices.forEach(function(vertexId_) {
+                processVertexOutEdges(self.outEdges(vertexId_));
+            });
+            return edges;
+        };
+
+        DirectedGraph.prototype.rootVerticesCount = function() {
+            return Object.keys(this._private.rootMap).length;
+        };
+
+        DirectedGraph.prototype.getRootVertices = function() {
+            var rootVertices = [];
+            for (var vertexId in this._private.rootMap) {
+                rootVertices.push(vertexId);
+            }
+            return rootVertices;
+        };
+
+        DirectedGraph.prototype.leafVerticesCount = function() {
+            return Object.keys(this._private.leafMap).length;
+        };
+
+        DirectedGraph.prototype.getLeafVertices = function() {
+            var leafVertices = [];
+            for (var vertexId in this._private.leafMap) {
+                leafVertices.push(vertexId);
+            }
+            return leafVertices;
+        };
+
         DirectedGraph.prototype.toObject = function () {
             return digraphExport.exportObject(this);
         };
@@ -474,7 +479,6 @@ var digraphExport = require('./digraph-json-export');
         return DirectedGraph;
 
     })();
-
 
     var createDirectedGraph = function (jsonOrObject_) {
         var response = { error: null, result: null };

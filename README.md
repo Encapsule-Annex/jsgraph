@@ -19,7 +19,7 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
-- Implementation backed by [470 tests and Travis CI](https://travis-ci.org/Encapsule/jsgraph).
+- jsgraph is tested. Continuously. With [automated tests](https://travis-ci.org/Encapsule/jsgraph).
 
 ## Release
 
@@ -72,11 +72,13 @@ The `DirectedGraph` container object created by this process models "a graph" ge
             
 #### DirectedGraph vertex methods
 
-- `addVertex({u: vertexId, p: ?})` - add a vertex and optional property data to the digraph
 - `isVertex(vertexId)` - query the existence of a specific vertex in the graph
+- `addVertex({u: vertexId, p: ?})` - add a vertex and optional property data to the digraph
 - `removeVertex(vertexId)` - remove a specific vertex and its properties from the graph
 - `getVertexProperty(vertexId)` - get the properties data associated with a specific vertex
 - `setVertexProperty({u: vertexId, p: ?})` - set the properties data associated with a specific vertex
+- `hasVertexProperty(vertexId)` - query if a vertex has associated property data or not
+- `clearVertexProperty(vertexId)` - clear property data associated with a vertex
 - `inDegree(vertexId)` - determine how many edges are directed at a specific vertex
 - `inEdges(vertexId)` - get the list of edges directed at a specific vertex
 - `outDegree(vertexId)` - determine how many edges are directed away from a specific vertex
@@ -84,11 +86,13 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 
 #### DirectedGraph edge methods
 
-- `addEdge({ e: { u: vertexId, v: vertexId }, p: ?})` - add edge and optional property data from vertex u to vertex v 
 - `isEdge({ u: vertexId, v: vertexId })` - query the existence of a specific edge in the graph
+- `addEdge({ e: { u: vertexId, v: vertexId }, p: ?})` - add edge and optional property data from vertex u to vertex v 
 - `removeEdge({ u: vertexId, v: vertexId })` - remove a specific edge and its properties from the graph
 - `getEdgeProperty({ u: vertexId, v: vertexId })` - get the properties data associated with a specific edge
 - `setEdgeProperty({ e: { u: vertexId, v: vertexId }, p: ?})` - set the properties data associated with a specific edge
+- `hasEdgeProperty({ u: vertexId, v: vertexId })` - query if an edge has property data associated with it or not
+- `clearEdgeProperty({ u: vertexId, v: vertexId})` - clear property data associated with an edge
 
 #### DirectedGraph graph-scope methods
 
@@ -96,7 +100,9 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `getVertices()` - retrieve an array of ID strings for all vertices in the container
 - `edgesCount()` - obtain the count of edges in the container
 - `getEdges()` - retrieve an array of edge descriptor objects for all edges in the container
+- `rootVerticesCount()` - obtain count of vertices with in-degree zero
 - `getRootVertices()` - retrieve an array of ID strings for all vertices that have in-degree zero
+- `leafVerticesCount() - obtain count of vertices with out-degree zero
 - `getLeafVertices()` - retrieve an array of ID strings for all vertices that have out-degree zero
 - `toObject()` - serialize the DirectedGraph container to a JavaScript data object
 - `toJSON(replacer, space)` - serialize the DirectedGraph container to a JSON string
@@ -109,9 +115,13 @@ jsgraph bundles a small collection of powerful functions that operate on the dat
 
 Transform functions generate new `DirectedGraph` containers from existing container(s) applying some presribed filter, or transformation to the vertex and/or edge lists.
 
-Algorithm functions are miniature agent processes that traverse the topology of a `DirectedGraph` container issuing callbacks to your derived client code at specified event points.
+Algorithm functions are miniature agent processes that traverse the topology of a `DirectedGraph` container issuing callbacks to your derived client code at specified event points. Think of your graph as a maze: vertices are intersections, edges hallways. As the algorithmic agent walks through the maze it keeps track of where it's been so as to be able to dig itself out of corners and dead-ends. Each algorithm implements a different specific agent with its own goal strategies for "running the maze". 
 
-jsgraph uses names and conventions documented in Chapter 23 "Elementary Graph Algorithms" of [Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) (MIT Press).
+The magic of graph algorithms is that deep insight can be derived from watching and analyzing how specific graph algorithms traverse specific graph interconnect topologies. However, graph traversal algorithms are hard to implement due to their complexity and most implementations are purpose-built, and/or have little facility for embedded re-use or extension in contexts their authors didn't anticipate.
+
+jsgraph addresses this problem by copying the Boost Graph Library (BGL)'s fantastic use of the visitor pattern to encapsulate the specific goal strategies of graph traversal algorithms. The resulting API makes trivial use cases trivial and advanced use cases possible. Depending on your requirements, other similar libraries that provide single-call graph algorithm results may better suite your needs. But in cases where it makes sense to re-use the core algorithmic agents as the basis for your own complex data masterpiece, there's really just no substitute for the BGL visitor API style.
+
+jsgraph uses names and conventions documented in Chapter 23 "Elementary Graph Algorithms" of [Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) (MIT Press). 
 
 #### jsgraph.directed.transpose Transform
 
@@ -153,10 +163,6 @@ A depth-first traversal concludes when all reacable vertices have been visited, 
 ## Examples
 
 The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts.
-
-## Acknowledgements
-
-Thanks to [Jeremy Seik](http://wphomes.soic.indiana.edu/jsiek/) for writing the BGL and making it available as open source.
 
 <hr>
 
