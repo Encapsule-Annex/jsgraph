@@ -532,6 +532,68 @@ describe("DirectedGraph container object tests", function() {
         });
     });
 
+    describe("Property get/set/has/clear tests", function() {
+
+        var digraph = new DirectedGraph();
+
+        it("'hasVertexProperty' on non-existent vertex should return false", function() {
+            assert.isFalse(digraph.hasVertexProperty("does not exist"));
+            assert.isUndefined(digraph.getVertexProperty("does not exist"));
+        });
+
+        it("'hasVertexProperty' on vertex added w/out property should return false", function() {
+            digraph.addVertex({ u: 'test' });
+            assert.isFalse(digraph.hasVertexProperty("test"));
+            assert.isUndefined(digraph.getVertexProperty("test"));
+        });
+
+        it("'hasVertexProperty' on vertex added w/property should return true", function() {
+            digraph.addVertex({ u: 'test1', p: "some data" });
+            assert.isTrue(digraph.hasVertexProperty("test1"));
+            assert.equal(digraph.getVertexProperty("test1"), "some data");
+        });
+
+        it("'clearVertexProperty' on non-existent vertex should return false", function() {
+            assert.isFalse(digraph.clearVertexProperty("does not exist"));
+        });
+
+        it("'clearVertexProperty' on vertex that exists should return true (regardless of if it has a property)", function() {
+            assert.isTrue(digraph.clearVertexProperty("test"));
+        });
+
+        it("'hasVertexProperty' should return false on vertex w/property after it is cleared", function() {
+            assert.isTrue(digraph.clearVertexProperty("test1"));
+            assert.isFalse(digraph.hasVertexProperty("test1"));
+        });
+
+        it("'hasEdgeProperty' should return false on non-existent edge", function() {
+            assert.isFalse(digraph.hasEdgeProperty({ u: "test", v: "test1" }));
+        });
+
+        it("'hasEdgeProperty' should return false on edge added w/no property", function() {
+            digraph.addEdge({e:{u:'test', v:'test1'}});
+            assert.isFalse(digraph.hasEdgeProperty({u:'test',v:'test1'}));
+        });
+
+        it("'hasEdgeProperty' should return true on edge added w/property", function() {
+            digraph.addEdge({e:{u:'apple',v:'orange'},p:'fruit'});
+            assert.isTrue(digraph.hasEdgeProperty({u:'apple', v:'orange'}));
+        });
+
+        it("'clearEdgeProperty' should return false on non-existent edge", function() {
+            assert.isFalse(digraph.clearEdgeProperty({u:'bull',v:'shit'}));
+        });
+
+        it("'clearEdgeProperty' should return true on edge that doesn't have a property", function() {
+            assert.isTrue(digraph.clearEdgeProperty({u:'test',v:'test1'}));
+        });
+
+        it("'clearEdgeProperty' should return true on edge has a property", function() {
+            assert.isTrue(digraph.clearEdgeProperty({u:'apple',v:'orange'}));
+        });
+
+    });
+
     describe("Graph stress", function() {
 
         var verticesToAllocate = 1000000;
