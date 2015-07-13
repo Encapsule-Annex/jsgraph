@@ -14,36 +14,36 @@ var digraphExport = require('./digraph-json-export');
     var DirectedGraph = (function() {
         function DirectedGraph(jsonOrObject_) {
             // Vertex-scope methods
-            this.addVertex = __bind(this.addVertex, this);
             this.isVertex = __bind(this.isVertex, this);
+            this.addVertex = __bind(this.addVertex, this);
             this.removeVertex = __bind(this.removeVertex, this);
-            this.inEdges = __bind(this.inEdges, this);
-            this.outEdges = __bind(this.outEdges, this);
-            this.inDegree = __bind(this.inDegree, this);
-            this.outDegree = __bind(this.outDegree, this);
             this.getVertexProperty = __bind(this.getVertexProperty, this);
             this.setVertexProperty = __bind(this.setVertexProperty, this);
             this.hasVertexProperty = __bind(this.hasVertexProperty, this);
             this.clearVertexProperty = __bind(this.clearVertexProperty, this);
+            this.inDegree = __bind(this.inDegree, this);
+            this.inEdges = __bind(this.inEdges, this);
+            this.outDegree = __bind(this.outDegree, this);
+            this.outEdges = __bind(this.outEdges, this);
             
             // Edge-scope methods
+            this.isEdge = __bind(this.isEdge, this);
             this.addEdge = __bind(this.addEdge, this);
             this.removeEdge = __bind(this.removeEdge, this);
-            this.isEdge = __bind(this.isEdge, this);
             this.getEdgeProperty = __bind(this.getEdgeProperty, this);
             this.setEdgeProperty = __bind(this.setEdgeProperty, this);
             this.hasEdgeProperty = __bind(this.hasEdgeProperty, this);
             this.clearEdgeProperty = __bind(this.clearEdgeProperty, this);
             
             // Digraph-scope methods
+            this.verticesCount = __bind(this.verticesCount, this);
             this.getVertices = __bind(this.getVertices, this);
+            this.edgesCount = __bind(this.edgesCount, this);
+            this.getEdges = __bind(this.getEdges, this);
             this.rootVerticesCount = __bind(this.rootVerticesCount, this);
             this.getRootVertices = __bind(this.getRootVertices, this);
             this.leafVerticesCount = __bind(this.leafVerticesCount, this);
             this.getLeafVertices = __bind(this.getLeafVertices, this);
-            this.verticesCount = __bind(this.verticesCount, this);
-            this.edgesCount = __bind(this.edgesCount, this);
-            this.getEdges = __bind(this.getEdges, this);
             this.toObject = __bind(this.toObject, this);
             this.toJSON = __bind(this.toJSON, this);
             this.fromObject = __bind(this.fromObject, this);
