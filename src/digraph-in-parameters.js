@@ -6,7 +6,7 @@ var verifyVertexReadRequest = function(request_) {
     var response = { error: null, result: false };
     var jstype = helperFunctions.JSType(request_);
     if (jstype !== '[object String]') {
-        response.error = "Invalid value type '" + jstype + "' found vertex read request. Expected '[object String]'.";
+        response.error = "Invalid value type '" + jstype + "' found when expecting vertex read request. Expected '[object String]'.";
     } else {
         response.result = true;
     }
@@ -91,6 +91,7 @@ var verifyEdgeWriteRequest = function(request_) {
         jstype = helperFunctions.JSType(request_.p);
         if (jstype === '[object Function]') {
             response.error = "Invalid value type '" + jstype + "' found while insecting edge property 'p' in edge write request object. Must be serializable to JSON!";
+            break;
         }
         response.result = true;
     }
