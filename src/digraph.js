@@ -23,12 +23,18 @@ var digraphExport = require('./digraph-json-export');
             this.outDegree = __bind(this.outDegree, this);
             this.getVertexProperty = __bind(this.getVertexProperty, this);
             this.setVertexProperty = __bind(this.setVertexProperty, this);
+            this.hasVertexProperty = __bind(this.hasVertexProperty, this);
+            this.clearVertexProperty = __bind(this.clearVertexProperty, this);
+            
             // Edge-scope methods
             this.addEdge = __bind(this.addEdge, this);
             this.removeEdge = __bind(this.removeEdge, this);
             this.isEdge = __bind(this.isEdge, this);
             this.getEdgeProperty = __bind(this.getEdgeProperty, this);
             this.setEdgeProperty = __bind(this.setEdgeProperty, this);
+            this.hasEdgeProperty = __bind(this.hasEdgeProperty, this);
+            this.clearEdgeProperty = __bind(this.clearEdgeProperty, this);
+            
             // Digraph-scope methods
             this.getVertices = __bind(this.getVertices, this);
             this.rootVerticesCount = __bind(this.rootVerticesCount, this);
@@ -42,6 +48,7 @@ var digraphExport = require('./digraph-json-export');
             this.toJSON = __bind(this.toJSON, this);
             this.fromObject = __bind(this.fromObject, this);
             this.fromJSON = __bind(this.fromJSON, this);
+
             // DirectedGraph container private runtime state.
             this._private = {
                 vertexMap: {},
@@ -349,9 +356,19 @@ var digraphExport = require('./digraph-json-export');
             return this.isVertex(vertexId_)?Object.keys(this._private.vertexMap[vertexId_].edges.out).length:-1;
         };
 
+
+        DirectedGraph.prototype.hasVertexProperty = function(vertexId_) {
+            if (!this.isVertex(vertexId_)) {
+                return false;
+            }
+            if (helperFunctions.JSType(this._private.vertexMap[vertexId_].properties) === '[object Undefined]') {
+                return false;
+            }
+            return true;
+        };
+
         DirectedGraph.prototype.getVertexProperty = function(vertexId_) {
-            var vertexDescriptor = this._private.vertexMap[vertexId_];
-            if (!((vertexDescriptor !== null) && vertexDescriptor)) {
+            if (!this.isVertex(vertexId_)) {
                 return void 0;
             }
             return this._private.vertexMap[vertexId_].properties;
@@ -369,6 +386,32 @@ var digraphExport = require('./digraph-json-export');
          */
         DirectedGraph.prototype.setVertexProperty = function(request_) {
             return this.addVertex(request_);
+        };
+
+        DirectedGraph.prototype.clearVertexProperty = function(vertexId_) {
+            if (!this.isVertex(vertexId_)) {
+                return false;
+            }
+            delete this._private.vertexMap[vertexId_].properties;
+            return true;
+        };
+
+        DirectedGraph.prototype.hasEdgeProperty = function(request_) {
+            if (!this.isEdge(request_)) {
+                return false;
+            }
+            if (helperFunctions.JSType(this._private.vertexMap[request_.u].edges.out[request_.v].properties) === '[object Undefined]') {
+                return false;
+            }
+            return true;
+        };
+
+        DirectedGraph.prototype.clearEdgeProperty = function(request_) {
+            if (!this.isEdge(request_)) {
+                return false;
+            }
+            delete this._private.vertexMap[request_.u].edges.out[request_.v].properties;
+            return true;
         };
 
         /*
