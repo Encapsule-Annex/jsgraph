@@ -77,6 +77,8 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `removeVertex(vertexId)` - remove a specific vertex and its properties from the graph
 - `getVertexProperty(vertexId)` - get the properties data associated with a specific vertex
 - `setVertexProperty({u: vertexId, p: ?})` - set the properties data associated with a specific vertex
+- `hasVertexProperty(vertexId)` - determine if a specific vertex has a property value set or not
+- `clearVertexProperty(vertexId)` - clear the property value associated with a vertex
 - `inDegree(vertexId)` - determine how many edges are directed at a specific vertex
 - `inEdges(vertexId)` - get the list of edges directed at a specific vertex
 - `outDegree(vertexId)` - determine how many edges are directed away from a specific vertex
@@ -89,6 +91,8 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `removeEdge({ u: vertexId, v: vertexId })` - remove a specific edge and its properties from the graph
 - `getEdgeProperty({ u: vertexId, v: vertexId })` - get the properties data associated with a specific edge
 - `setEdgeProperty({ e: { u: vertexId, v: vertexId }, p: ?})` - set the properties data associated with a specific edge
+- `hasEdgeProperty({u: vertexId, v: vertexId})` - determine if a specific edge has a property value set or not
+- `clearEdgeProperty({u: vertexId, v: vertexId})` - clear the property value associated with an edge
 
 #### DirectedGraph graph-scope methods
 
@@ -96,7 +100,9 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `getVertices()` - retrieve an array of ID strings for all vertices in the container
 - `edgesCount()` - obtain the count of edges in the container
 - `getEdges()` - retrieve an array of edge descriptor objects for all edges in the container
+- `rootVerticesCount()` - obtain the count of vertices with zero in-degree
 - `getRootVertices()` - retrieve an array of ID strings for all vertices that have in-degree zero
+- `leafVerticesCount()` - obtain the count of vertices with zero out-degree
 - `getLeafVertices()` - retrieve an array of ID strings for all vertices that have out-degree zero
 - `toObject()` - serialize the DirectedGraph container to a JavaScript data object
 - `toJSON(replacer, space)` - serialize the DirectedGraph container to a JSON string
