@@ -111,6 +111,8 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 
 ### Transforms & Algorithms
 
+_"Begin at the beginning," the King said gravely. "and go on till you come to the end; then stop." - Lewis Carroll, Alice in Wonderland_
+
 jsgraph bundles a small collection of powerful functions that operate on the data contained in a `DirectedGraph` container in useful ways.
 
 Transform functions generate new `DirectedGraph` containers from existing container(s) applying some presribed filter, or transformation to the vertex and/or edge lists.
