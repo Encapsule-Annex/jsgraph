@@ -1,4 +1,6 @@
-// Encapsule/jsgraph/src/digraph-visit.js
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
+//
 // Wraps call to DirectedGraph algorithm visitor function callbacks.
 
 var helperFunctions = require('./helper-functions');
@@ -23,13 +25,14 @@ module.exports = function (request_) {
     while (!inBreakScope) {
         inBreakScope = true;
         var visitorCallback = request_.visitor[request_.method];
-        if ((visitorCallback === null) && !visitorCallback) {
-            // If the visitor is not defined on the visitor object, return true to continue the search.
+        var jstype = helperFunctions.JSType(visitorCallback);
+        // If the visitor function is not defined on the visitor object, return true to continue the search.
+        if (jstype !== '[object Function]') {
             response.result = true;
             break;
         }
         var continueSearch = visitorCallback(request_.request);
-        var jstype = helperFunctions.JSType(continueSearch);
+        jstype = helperFunctions.JSType(continueSearch);
         if (jstype !== '[object Boolean]') {
             errors.unshift("BFS visitor." + request_.method + " returned type '" + jstype + "' instead of expected '[object Boolean]'.");
             break;

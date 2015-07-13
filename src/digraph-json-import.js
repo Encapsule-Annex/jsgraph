@@ -1,5 +1,5 @@
-// digraph-json-import.js
-//
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
 
 module.exports = function (digraph_, jsonOrObject_) {
 

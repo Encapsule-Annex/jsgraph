@@ -1,9 +1,11 @@
-// Encapsule/jsgraph/src/digraph-algorithm-bft.js
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
 //
-// Inspired by the design of the Boost Graph Library (BGL)
-// http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
 
 /*
+  Inspired by the design of the Boost Graph Library (BGL)
+  http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
+
   All visitor callback functions are optional.
   See also BFS Visitor Concept documentation from the BGL:
   http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/BFSVisitor.html
@@ -20,9 +22,7 @@
   blackTarget: function(vertexIdU_, vertexIdV_, digraph_),
   finishVertex: function(vertexId_, digraph_)
   };
-*/
 
-/*
   request = {
       digraph: reference to jsgraph.DirectedGraph container object (required)
       visitor: reference to jsgraph BFV visitor object (required)
