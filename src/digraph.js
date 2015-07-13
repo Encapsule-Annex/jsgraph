@@ -299,7 +299,7 @@ var digraphExport = require('./digraph-json-export');
                 if (!((vertexU !== null) && vertexU && (vertexV !== null) && vertexV)) {
                     break;
                 }
-                var edge = vertexU.edges.out[vertexIdV_];
+                var edge = vertexU.edges.out[request_.v];
                 response = (edge !== null) && edge && true || false;
             }
             return response;
