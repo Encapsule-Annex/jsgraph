@@ -1,35 +1,44 @@
-// digraph-json-export.js
+// Copyright (c) 2014-2015 Christopher D. Russell
+// https://github.com/encapsule/jsgraph
 //
-
 // Export the topology and attached vertex and edge properties
 // of a DirectedGraph container object as a JSON-format UTF8 
 // string. This canonical format can be passed as an optional
 // constructor parameter to restore container state across
 // execution contexts.
 
-module.exports = function (digraph_, replacer_, space_) {
+var helperFunctions = require('./helper-functions');
+var DigraphDataExporter = module.exports = {};
 
+DigraphDataExporter.exportObject = function (digraph_) {
     var digraphState = {
-        vertices: [],
-        edges: []
+        vlist: [],
+        elist: []
     };
+    var vertexSerialized = {}; // Keep track of the vertices referenced in the edge list.
+    var edgeList = digraph_.getEdges();
+    var vertexList = digraph_.getVertices();
+    digraph_.getEdges().forEach(function(edge_) {
+        var edgeProperty = digraph_.getEdgeProperty(edge_);
+        digraphState.elist.push({ e: edge_, p: edgeProperty });
+        vertexSerialized[edge_.u] = vertexSerialized[edge_.v] = true;
+    });
+    digraph_.getVertices().forEach(function(vertexId_) {
+        var vertexProperty = digraph_.getVertexProperty(vertexId_);
+        var jstype = helperFunctions.JSType(vertexProperty);
+        // If the vertex has an attached property, serialize it to the vlist.
+        if (jstype !== '[object Undefined]') {
+            digraphState.vlist.push({ u: vertexId_, p: vertexProperty });
+        } else {
+            // If the vertex wasn't mentioned in the elist, we need to serialize, sans property, to the vlist.
+            if (vertexSerialized[vertexId_] !== true) {
+                digraphState.vlist.push({ u: vertexId_ });
+            }
+        }
+    });
+    return digraphState;
+};
 
-    var vertexMap = digraph_.vertexMap;
-    var vertexId;
-
-    var processEdge = function(edge_) {
-        var edgeProps = digraph_.getEdgeProperty(edge_.u, edge_.v);
-        digraphState.edges.push({ uid: edge_.u, vid: edge_.v, eprops: edgeProps });
-    };
-
-    for (vertexId in vertexMap) {
-        var vertexDescriptor = vertexMap[vertexId];
-        digraphState.vertices.push({ vid: vertexId, vprops: vertexDescriptor.properties });
-        var outEdges = digraph_.outEdges(vertexId);
-        outEdges.forEach(processEdge);
-    }
-
-    var jsonExportObject = { jsgraph: { digraph: digraphState } };
-
-    return JSON.stringify(jsonExportObject, replacer_, space_);
+DigraphDataExporter.exportJSON = function (digraph_, replacer_, space_) {
+    return JSON.stringify(DigraphDataExporter.exportObject(digraph_), replacer_, space_);
 };

@@ -4,8 +4,8 @@ var expect = require('chai').expect;
 var should = require('chai').should;
 var uuid = require('node-uuid');
 
-var DirectedGraph = require('../src/digraph');
-var transposeDigraph = require('../src/digraph-transpose');
+var DirectedGraph = require('../src/digraph').DirectedGraph;
+var transposeDigraph = require('../src/digraph-algorithm-transpose');
 
 describe("Directed graph tranposition test", function() {
 
@@ -14,19 +14,21 @@ describe("Directed graph tranposition test", function() {
 
     before(function() {
         digraphInput = new DirectedGraph();
-        digraphInput.addVertex("process", { testProperties: { description: "this vertex represents a program proces" }});
-        digraphInput.addVertex("inputA", { testProperties: { description: "this vertex represents data input A" }});
-        digraphInput.addVertex("inputB", { testProperties: { description: "this vertex representa data input B" }});
-        digraphInput.addVertex("outputA", { testProperties: { description: "this vertex represents data output A" }});
-        digraphInput.addVertex("outputB", { testProperties: { description: "this vertex represents data output B" }});
-        digraphInput.addVertex("outputC", { testProperties: { description: "this vertex represents data output C" }});
-        digraphInput.addEdge("inputA", "process", { testProperties: { description: "this edge represents the flow of data from input A to process" }});
-        digraphInput.addEdge("inputB", "process", { testProperties: { description: "this edge represents the flow of data from input B to process" }});
-        digraphInput.addEdge("process", "outputA", { testProperties: { description: "this edge represents the flow of data from process to output A" }});
-        digraphInput.addEdge("process", "outputB", { testProperties: { description: "this edge represents the flow of data from process to output B" }});
-        digraphInput.addEdge("process", "outputC", { testProperties: { description: "this edge represents the flow of data from process to output C" }});
+        digraphInput.addVertex({ u: "process", p: { testProperties: { description: "this vertex represents a program proces" }}});
+        digraphInput.addVertex({ u: "inputA", p: { testProperties: { description: "this vertex represents data input A" }}});
+        digraphInput.addVertex({ u: "inputB", p: { testProperties: { description: "this vertex representa data input B" }}});
+        digraphInput.addVertex({ u: "outputA", p: { testProperties: { description: "this vertex represents data output A" }}});
+        digraphInput.addVertex({ u: "outputB", p: { testProperties: { description: "this vertex represents data output B" }}});
+        digraphInput.addVertex({ u: "outputC", p: { testProperties: { description: "this vertex represents data output C" }}});
+        digraphInput.addEdge({ e: { u: "inputA", v: "process" }, p: { testProperties: { description: "this edge represents the flow of data from input A to process" }}});
+        digraphInput.addEdge({ e: { u: "inputB", v: "process" }, p: { testProperties: { description: "this edge represents the flow of data from input B to process" }}});
+        digraphInput.addEdge({ e: { u: "process", v: "outputA" }, p: { testProperties: { description: "this edge represents the flow of data from process to output A" }}});
+        digraphInput.addEdge({ e: { u: "process", v: "outputB" }, p: { testProperties: { description: "this edge represents the flow of data from process to output B" }}});
+        digraphInput.addEdge({ e: { u: "process", v: "outputC" }, p: { testProperties: { description: "this edge represents the flow of data from process to output C" }}});
         // The transposed digraph is a copy of the original with the edge directions reversed.
-        digraphOutput = transposeDigraph(digraphInput);
+        var innerResponse = transposeDigraph(digraphInput);
+        assert.isNull(innerResponse.error);
+        digraphOutput = innerResponse.result;
     });
 
     describe("macro-level tests", function() {
@@ -39,11 +41,11 @@ describe("Directed graph tranposition test", function() {
         });
 
         it("input digraph should have two root vertices", function() {
-            assert.lengthOf(Object.keys(digraphInput.rootMap), 2);
+            assert.equal(digraphInput.rootVerticesCount(), 2);
         });
 
         it("input digraph should have three leaf vertices", function() {
-            assert.lengthOf(Object.keys(digraphInput.leafMap), 3);
+            assert.equal(digraphInput.leafVerticesCount(), 3);
         });
 
         it("output digraph should contain six vertices", function() {
@@ -55,11 +57,11 @@ describe("Directed graph tranposition test", function() {
         });
 
         it("output digraph should have three root vertices", function() {
-            assert.lengthOf(Object.keys(digraphOutput.rootMap), 3);
+            assert.equal(digraphOutput.rootVerticesCount(), 3);
         });
 
         it("output digraph should have two leaf vertices", function() {
-            assert.lengthOf(Object.keys(digraphOutput.leafMap), 2);
+            assert.equal(digraphOutput.leafVerticesCount(), 2);
         });
     });
 

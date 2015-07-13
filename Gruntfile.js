@@ -15,29 +15,7 @@ module.exports = function (grunt_) {
 
         mochaTest: {
             options: { reporter: 'spec', checkLeaks: true },
-            src: [
-                // tests.js is scratchpad for experimenting with Mocha et al.
-                'test/tests.js',
-
-                // Directed graph container object DirectedGraph tests.
-                'test/digraph-test.js',
-
-                // Directed graph container object transposition tests.
-                'test/digraph-transpose-test.js',
-
-                // DirectedGraph object-based breadth-first visitor algorithm tests.
-                'test/digraph-bfv-test.js',
-
-                // DirectedGraph object-based breadth-first search algorithm tests.
-                'test/digraph-bfs-test.js',
-
-                // DirectedGraph object-based depth-first visitor algorithm tests.
-                'test/digraph-dfv-test.js',
-
-                // DirectedGraph object-based depth-first search algorithm tests.
-                'test/digraph-dfs-test.js'
-
-            ]
+            src: [ 'test/test-jsgraph.js' ]
         }
     };
 
