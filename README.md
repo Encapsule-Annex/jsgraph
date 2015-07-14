@@ -8,7 +8,9 @@
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
-Encapsule/jsgraph is a framework for working with in-memory directed graph models in JavaScript inspired by the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html).
+Encapsule/jsgraph is a framework for working with directed graph data models using an in-memory storage container abstraction, and a small but growing collection of powerfully-extensible graph coloring algorithms implemented using the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern).
+
+jsgraph is based on the API design and architectural separaton of concerns for graph algorithms invented by the authors of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL). The port is logically close enough that the BGL documentation should be considered as an advanced resource.
 
 ### Installaton
 
@@ -25,7 +27,7 @@ To obtain a copy of these assets locally, use Git to clone the jsgraph repositor
 
         $ git clone git@github.com:Encapsule/jsgraph.git
 
-Or visit the library repo site: [https://github.com/Encapsule/jsgraph](https://github.com/Encapsule/jsgraph)
+See also: [Encapsule/jsgraph on GitHub](https://github.com/Encapsule/jsgraph)
 
 ## Features
 
