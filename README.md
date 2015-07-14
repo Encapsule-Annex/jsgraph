@@ -12,6 +12,14 @@ Encapsule/jsgraph is a framework for working with directed graph data models usi
 
 jsgraph is based on the API design and architectural separaton of concerns for graph algorithms invented by the authors of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL). The port is logically close enough that the BGL documentation should be considered as an advanced resource.
 
+### Programming
+
+- [Object Reference: DirectedGraph](./docs/object-DirectedGraph.md)
+- [Object reference: JSON I/O](./docs/object-JSON.md)
+- [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)
+- [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)
+- [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)
+
 ### Installaton
 
 In your project, install via npm.
