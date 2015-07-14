@@ -23,8 +23,10 @@ Encapsule/jsgraph is a framework for working with in-memory directed graph model
 
 ## Example
 
+The following short example constructs a `DirectedGraph` container using a v0.5 jsgraph digraph data object, and derives a simple rank assignment algorithm from jsgraph's bundled `breadthFirstTraverse` algorithm. Note that the BFT visitor interface callback functions leverage the `DirectedGraph` API to get/set the data property value of each visited vertex to its rank.
+
         // Encapsule/jsgraph/examples/bft-vertex-ranking.js
-        var jsgraph = require('../index'); // in-package example
+        var jsgraph = require('jsgraph');
         var response = jsgraph.directed.create({
             elist: [
                 { e: { u: "A", v: "B" } },
@@ -38,9 +40,8 @@ Encapsule/jsgraph is a framework for working with in-memory directed graph model
         }
         // Now the container is safe to use.
         var digraph = response.result;
-        var vertexRankHashtable = {};
         // THINK OF VISITOR INTERFACES LIKE ALGORITHM FLIGHT RECORDERS
-        // VERTEX RANKING ALGORITHM (based on breadth-first traverse)
+        // VERTEX RANKING ALGORITHM (breadthFirstTraverse visitor interface)
         var bftVisitorInterface = {
             startVertex: function(request) {
                 request.g.setVertexProperty({ u: request.u, p: 0});
@@ -62,8 +63,10 @@ Encapsule/jsgraph is a framework for working with in-memory directed graph model
         if (response.error) {
             throw new Error(response.error);
         }
-        console.log("DirectedGraph: '" + digraph.toJSON(undefined,4) + "'");
-        console.log("BFT traversal: '" + JSON.stringify(response.result,undefined,4) + "'");
+        console.log("DirectedGraph: '" +
+            digraph.toJSON(undefined,4) + "'");
+        console.log("BFT traversal:
+            '" + JSON.stringify(response.result,undefined,4) + "'");
 
 ... produces the following output with each vertice's property value set to its rank (edge hops away from a root vertex in this example).
     
@@ -122,14 +125,13 @@ Encapsule/jsgraph is a framework for working with in-memory directed graph model
 
 **v0.5 is a breaking upgrade for users of v0.4**
 
-- Clients of v0.4 jsgraph will need to make some minor changes to their derived code to upgrade to v0.5.
-- No more exceptions. Functions/methods that might reasonably fail now return an error/result response object.
-- Breadth-first visit and search algorithms have been coalesced into the new function export `breadthFirstTraverse`.
-- Depth-first visit and search algorithms have been coalesced into the new function export `depthFirstTraverse`.
-- All visitor interface methods are now required to return a Boolean flag that indicates if the traversal should continue or terminate.
-- Significant investment in error handling and reporting to improve developer experience and simplify diagnosis of production failures.
+- Stylistic changes are required to v0.4 to upgrade.
+- No more exceptions. jsgraph now returns error/result response objects.
+- Breadth-first * algorithms coalesced into `breadthFirstTraverse`.
+- Depth-first * algorithms coalesced into `depthFirstTraverse`.
+- Algorithms now support early terminate under client control.
 - ~400 new tests added for v0.5 release.
-- Documentation brought current.
+- Documentation and example updates.
 
 ## API
 
