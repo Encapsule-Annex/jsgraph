@@ -230,7 +230,7 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `getEdges()` - retrieve an array of edge descriptor objects for all edges in the container
 - `rootVerticesCount()` - obtain count of vertices with in-degree zero
 - `getRootVertices()` - retrieve an array of ID strings for all vertices that have in-degree zero
-- `leafVerticesCount() - obtain count of vertices with out-degree zero
+- `leafVerticesCount()` - obtain count of vertices with out-degree zero
 - `getLeafVertices()` - retrieve an array of ID strings for all vertices that have out-degree zero
 - `toObject()` - serialize the DirectedGraph container to a JavaScript data object
 - `toJSON(replacer, space)` - serialize the DirectedGraph container to a JSON string
