@@ -294,9 +294,11 @@ A depth-first traversal concludes when all reacable vertices have been visited, 
 
 The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts.
 
-## More help
+## Support
 
-I am very interested to learn what others are building with jsgraph and how I can help. Get in touch via @AlpineLakes on Twitter or e-mail: chrisrus@encapsule.org
+I'm happy to answer questions and help you get going with jsgraph in your project.
+
+Ping me on Twitter ([@AlpineLakes](https://twitter.com/AlpineLakes)) or file [Issues](https://github.com/Encapsule/jsgraph/issues) tagged with the 'question' label.
 
 <hr>
 

@@ -1,0 +1,9 @@
+*~
+.travis.yml
+.npmignore
+src/*~
+docs/
+examples/
+Gruntfile.js
+ITA-23.4.gif
+test/
