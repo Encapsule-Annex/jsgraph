@@ -8,7 +8,34 @@
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
-Encapsule/jsgraph is a functional port of directed graph container and algorithm suport from the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) to JavaScript that greatly simplifies the task of working with complex in-memory graph data structures on Node.js and HTML 5.
+Encapsule/jsgraph is a framework for working with directed graph data models using an in-memory storage container abstraction, and a small but growing collection of powerfully-extensible graph coloring algorithms implemented using the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern).
+
+jsgraph is based on the API design and architectural separaton of concerns for graph algorithms invented by the authors of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL). The port is logically close enough that the BGL documentation should be considered as an advanced resource.
+
+### Programming
+
+- [Object Reference: DirectedGraph](./docs/object-DirectedGraph.md)
+- [Object Reference: DirectedGraph data I/O](./docs/object-JSON.md)
+- [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)
+- [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)
+- [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)
+
+### Installaton
+
+In your project, install via npm.
+
+        $ npm install jsgraph --save # 
+        jsgraph@0.5.xx node_modules/jsgraph
+
+### Sources
+
+The published npm package contains everything required by the library runtime but does not include its test suite or documentation.
+
+To obtain a copy of these assets locally, use Git to clone the jsgraph repository from GitHub:
+
+        $ git clone git@github.com:Encapsule/jsgraph.git
+
+See also: [Encapsule/jsgraph on GitHub](https://github.com/Encapsule/jsgraph)
 
 ## Features
 
@@ -19,20 +46,119 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
-- jsgraph is tested. Continuously. With [automated tests](https://travis-ci.org/Encapsule/jsgraph).
+- jsgraph is tested continuously with [Travis CI](https://travis-ci.org/Encapsule/jsgraph).
+
+## Example
+
+The following short example constructs a `DirectedGraph` container using a v0.5 jsgraph digraph data object, and derives a simple rank assignment algorithm from jsgraph's bundled `breadthFirstTraverse` algorithm. Note that the BFT visitor interface callback functions leverage the `DirectedGraph` API to get/set the data property value of each visited vertex to its rank.
+
+        // Encapsule/jsgraph/examples/bft-vertex-ranking.js
+        var jsgraph = require('jsgraph');
+        var response = jsgraph.directed.create({
+            elist: [
+                { e: { u: "A", v: "B" } },
+                { e: { u: "B", v: "C" } },
+                { e: { u: "B", v: "D" } }
+            ]
+        });
+        // Check the response object for error!
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        // Now the container is safe to use.
+        var digraph = response.result;
+        // THINK OF VISITOR INTERFACES LIKE ALGORITHM FLIGHT RECORDERS
+        // VERTEX RANKING ALGORITHM (breadthFirstTraverse visitor interface)
+        var bftVisitorInterface = {
+            startVertex: function(request) {
+                request.g.setVertexProperty({ u: request.u, p: 0});
+                return true; // continue the traversal
+            },
+            treeEdge: function (request) {
+                request.g.setVertexProperty({
+                    u: request.e.v,
+                    p: request.g.getVertexProperty(request.e.u) + 1
+                });
+                return true;
+            }
+        };
+        // ACTUATE OUR VISITOR INTERFACE WITH BFT TO PRODUCE THE RESULT
+        response = jsgraph.directed.breadthFirstTraverse({
+            digraph: digraph,
+            visitor: bftVisitorInterface
+        });
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        console.log("DirectedGraph: '" +
+            digraph.toJSON(undefined,4) + "'");
+        console.log("BFT traversal:
+            '" + JSON.stringify(response.result,undefined,4) + "'");
+
+... produces the following output with each vertice's property value set to its rank (edge hops away from a root vertex in this example).
+    
+        DirectedGraph: '{
+            "vlist": [
+                {
+                    "u": "A",
+                    "p": 0
+                },
+                {
+                    "u": "B",
+                    "p": 1
+                },
+                {
+                    "u": "C",
+                    "p": 2
+                },
+                {
+                    "u": "D",
+                    "p": 2
+                }
+            ],
+            "elist": [
+                {
+                    "e": {
+                        "u": "A",
+                        "v": "B"
+                    }
+                },
+                {
+                    "e": {
+                        "u": "B",
+                        "v": "C"
+                    }
+                },
+                {
+                    "e": {
+                        "u": "B",
+                        "v": "D"
+                    }
+                }
+            ]
+        }'
+        BFT traversal: '{
+            "searchStatus": "completed",
+            "colorMap": {
+                "A": 2,
+                "B": 2,
+                "C": 2,
+                "D": 2
+            },
+            "undiscoveredMap": {}
+        }'
 
 ## Release
 
-v0.5 is a breaking upgrade for users of v0.4:
+**v0.5 is a breaking upgrade for users of v0.4**
 
-- Clients of v0.4 jsgraph will need to make some minor changes to their derived code to upgrade to v0.5.
-- No more exceptions. Functions/methods that might reasonably fail now return an error/result response object.
-- Breadth-first visit and search algorithms have been coalesced into the new function export `breadthFirstTraverse`.
-- Depth-first visit and search algorithms have been coalesced into the new function export `depthFirstTraverse`.
-- All visitor interface methods are now required to return a Boolean flag that indicates if the traversal should continue or terminate.
-- Significant investment in error handling and reporting to improve developer experience and simplify diagnosis of production failures.
-- ~300 new tests added for v0.5 release.
-- Documentation brought current.
+- Stylistic changes are required to v0.4 clients to upgrade.
+- No more exceptions. jsgraph now returns error/result response objects.
+- Breadth-first * algorithms coalesced into `breadthFirstTraverse`.
+- Depth-first * algorithms coalesced into `depthFirstTraverse`.
+- Algorithms now support early terminate under client control.
+- ~400 new tests added for v0.5 release.
+- Documentation and example updates.
 
 ## API
 
@@ -68,7 +194,9 @@ jsgraph's core directed graph container object, **DirectedGraph**, is constructe
         
         '{"vlist":[],"elist":[]}'
         
-The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. See **[Object reference: JSON I/O](./docs/object-JSON.md)** for more information.
+The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. 
+
+**See also: [Object reference: JSON I/O](./docs/object-JSON.md)**
             
 #### DirectedGraph vertex methods
 
@@ -94,7 +222,7 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `hasEdgeProperty({ u: vertexId, v: vertexId })` - query if an edge has property data associated with it or not
 - `clearEdgeProperty({ u: vertexId, v: vertexId})` - clear property data associated with an edge
 
-#### DirectedGraph graph-scope methods
+#### DirectedGraph container methods
 
 - `verticesCount()` - obtain the count of vertices in the container
 - `getVertices()` - retrieve an array of ID strings for all vertices in the container
@@ -110,6 +238,8 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `fromJSON(jsonString)` - import jsgraph-format JSON string into the container (addative)
 
 ### Transforms & Algorithms
+
+_"Begin at the beginning," the King said gravely. "and go on till you come to the end; then stop." - Lewis Carroll, Alice in Wonderland_
 
 jsgraph bundles a small collection of powerful functions that operate on the data contained in a `DirectedGraph` container in useful ways.
 
@@ -160,9 +290,15 @@ Supported visitor interface callbacks for depth-first traversal: `initializeVert
 
 A depth-first traversal concludes when all reacable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
 
-## Examples
+## More examples
 
-The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts. If you get stuck, or need help assessing jsgraph for use in your own data masterpiece get in touch: chrisrus@encapsule.org.
+The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts.
+
+## Support
+
+I'm happy to answer questions and help you get going with jsgraph in your project.
+
+Ping me on Twitter ([@AlpineLakes](https://twitter.com/AlpineLakes)) or file [Issues](https://github.com/Encapsule/jsgraph/issues) tagged with the 'question' label.
 
 <hr>
 
