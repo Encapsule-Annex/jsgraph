@@ -19,7 +19,7 @@ Encapsule/jsgraph is a framework for working with in-memory directed graph model
 - Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
-- jsgraph is tested continuously with [automated tests](https://travis-ci.org/Encapsule/jsgraph)
+- jsgraph is tested continuously with [Travis CI](https://travis-ci.org/Encapsule/jsgraph).
 
 ## Example
 
@@ -125,7 +125,7 @@ The following short example constructs a `DirectedGraph` container using a v0.5 
 
 **v0.5 is a breaking upgrade for users of v0.4**
 
-- Stylistic changes are required to v0.4 to upgrade.
+- Stylistic changes are required to v0.4 clients to upgrade.
 - No more exceptions. jsgraph now returns error/result response objects.
 - Breadth-first * algorithms coalesced into `breadthFirstTraverse`.
 - Depth-first * algorithms coalesced into `depthFirstTraverse`.
