@@ -40,9 +40,35 @@ However, if you call `jsgraph.directed.create` and pass a parameter the construc
         
 **Note:** Not all jsgraph functions and methods return error/result response objects. Many are implemented instead to return reasonable default values when bad input is received. However, in cases where an error/result response is indicated in the documentation, it is essential that you check and handle all errors reported by jsgraph as all are significant.
 
+## DirectedGraph methods
+
+For convenience we abbreviate functions defined on the `DirectedGraph` prototype object, e.g. `isVertex`, using the notation `DirectedGraph.isVertex`.
+
+You can't actually call `DirectedGraph.isVertex` using this syntax however. The `DirectedGraph` symbol isn't exported by jsgraph and is a constructor function.
+
+What is implied and the correct use of methods is as follows:
+
+        var jsgraph = require('jsgraph');
+        var digraph = jsgraph.directed.create().result;
+        var foundStartVertex = digraph.isVertex("startVertex"); // methods apply to container instances
 
 
-## DirectedGraph.addVertex
+
+
+
+### DirectedGraph.isVertex
+
+        digraph.isVertex('foo');
+
+**Return:**
+
+Returns boolean true iff the specified vertex ID is part of the graph. Otherwise, false.
+
+
+
+
+
+### DirectedGraph.addVertex
 
         var response = digraph.addVertex(request);                
 
@@ -64,12 +90,10 @@ Call returns a JavaScript response object with the following properties:
 
 If the vertex already exists in the container and property data was specified, then `addVertex` updates the vertex's property data in the container. If the vertex already exists and no property data is specified, `addVertex` does nothing. If your intention is to clear the property data associated with a vertex in the container, use `setVertexProperty` 
 
-<hr>
-EDIT MARK
-<hr>
 
 
-## DirectedGraph.removeVertex
+
+### DirectedGraph.removeVertex
 
         digraph.removeVertex(vertexId_);
 
@@ -85,14 +109,6 @@ Returns true to indicate that the specified vertex is not part of the graph.
 
 Removing a vertex automatically removes all the the vertex's edges (both in and out-edges are removed). 
 
-## jsgraph.DirectedGraph.isVertex
-
-        digraph.isVertex('foo');
-
-**Return:**
-
-Returns boolean true iff the specified vertex ID is part of the graph. Otherwise, false.
-
 ## jsgraph.DirectedGraph.verticesCount
 
         var count = digraph.verticesCount();
@@ -100,6 +116,160 @@ Returns boolean true iff the specified vertex ID is part of the graph. Otherwise
 **Return:**
 
 Integer indicating the number of vertices in this graph.
+
+
+
+
+
+### DirectedGraph.getVertexProperty
+
+        var properties = digraph.getVertexProperty(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+
+**Return:**
+
+Returns a reference to the property data attached to the specified vertex.
+
+
+
+
+### DirectedGraph.setVertexProperty
+
+        var properties = digraph.getVertexProperty(vertexId_, ref_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+- ref_: whatever you want as long as it's serializable to JSON
+
+**Return:**
+
+Returns true if set. Otherwise false if the specified vertex is not part of the graph.
+
+**Notes:**
+
+
+
+
+
+
+### DirectedGraph.hasVertexProperty
+
+        var response = digraph.hasVertexProperty("vertexID");
+
+**Parameters:**
+
+- vertexId_ (required): the unique string identifying the vertex to query.
+
+**Return:**
+
+Returns true if the vertex has associated property data. Otherwise, false.
+
+**Notes:**
+
+`hasVertexProperty` will return false if the request is invalid, the vertex does not exist in the graph, or the vertex exists and does not have associated property data.
+
+
+
+
+### DirectedGraph.clearVertexProperty
+
+
+        var response = digraph.clearVertexProperty("vertexID");
+
+**Parameters:**
+
+- vertexId_ (required): the unique string identifying the vertex that you wish to disassociate from attached property data
+
+**Return:**
+
+Returns true to indicate that regardless of initial conditions, the vertex now has no property data associated with it. Otherwise, false.
+
+**Notes:**
+
+`clearVertexProperty` will return false if the request is invalid, or if the vertex does not exist in the graph.
+
+
+
+
+
+### DirectedGraph.inDegree
+
+        var degree = digraph.inDegree(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+
+**Return:**
+
+Integer indicating the in-degree of the specific vertex.
+
+
+
+
+### DirectedGraph.inEdges
+
+        var edgeArray = digraph.inEdges(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (required): the unique string identifying the vertex to query.
+
+**Return:**
+
+Returns an array of edge descriptor objects specifying the source and sink vertex ID's of each of the specified vertex's in-edges.
+
+
+
+
+
+
+### DirectedGraph.outDegree
+
+        var degree = digraph.outDegree(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+
+**Return:**
+
+Integer indicating the out-degree of the specific vertex.
+
+
+
+
+
+### DirectedGraph.outEdges
+
+        var edgeArray = digraph.outEdges(vertexId_);
+
+**Parameters:**
+
+- vertexId_ (requierd): the unique string identifying the vertex to query.
+
+**Return:**
+
+Returns an array of edge descriptor objects specifiy the source and sink vertex ID's of each of the specified vertex's out-edges.
+
+
+
+^ vertex methods in correct order
+v chaos
+
+
+
+
+
+
+
+
+
+
 
 ## jsgraph.DirectedGraph.getVertices
 
@@ -124,81 +294,6 @@ Returns an array of identifier strings indicating the set of root vertices in th
 **Return:**
 
 Returns an array of identifier strings indicating the set of leaf vertices in the graph (i.e. the set of vertices with out-degree zero).
-
-
-## jsgraph.DirectedGraph.getVertexPropertyObject
-
-        var properties = digraph.getVertexPropertyObject(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-
-**Return:**
-
-Returns a reference to the property object attached to the specified vertex when it was added to the graph.
-
-## jsgraph.DirectedGraph.setVertexPropertyObject
-
-        var properties = digraph.getVertexPropertyObject(vertexId_, ref_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-- ref_: whatever you want as long as it's serializable to JSON
-
-**Return:**
-
-Returns true if set. Otherwise false if the specified vertex is not part of the graph.
-
-## jsgraph.DirectedGraph.inEdges
-
-        var edgeArray = digraph.inEdges(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (required): the unique string identifying the vertex to query.
-
-**Return:**
-
-Returns an array of edge descriptor objects specifying the source and sink vertex ID's of each of the specified vertex's in-edges.
-
-## jsgraph.DirectedGraph.outEdges
-
-        var edgeArray = digraph.outEdges(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-
-**Return:**
-
-Returns an array of edge descriptor objects specifiy the source and sink vertex ID's of each of the specified vertex's out-edges.
-
-## jsgraph.DirectedGraph.inDegree
-
-        var degree = digraph.inDegree(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-
-**Return:**
-
-Integer indicating the in-degree of the specific vertex.
-
-## jsgraph.DirectedGraph.outDegree
-
-        var degree = digraph.outDegree(vertexId_);
-
-**Parameters:**
-
-- vertexId_ (requierd): the unique string identifying the vertex to query.
-
-**Return:**
-
-Integer indicating the out-degree of the specific vertex.
-
 
 
 
