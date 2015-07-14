@@ -15,7 +15,7 @@ jsgraph is based on the API design and architectural separaton of concerns for g
 ### Programming
 
 - [Object Reference: DirectedGraph](./docs/object-DirectedGraph.md)
-- [Object reference: JSON I/O](./docs/object-JSON.md)
+- [Object Reference: DirectedGraph data I/O](./docs/object-JSON.md)
 - [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)
 - [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)
 - [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)
@@ -292,7 +292,11 @@ A depth-first traversal concludes when all reacable vertices have been visited, 
 
 ## More examples
 
-The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts. If you get stuck, or need help assessing jsgraph for use in your own data masterpiece please get in touch: chrisrus@encapsule.org. I am very interested to learn what people are building with jsgraph and how I can help.
+The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts.
+
+## More help
+
+I am very interested to learn what others are building with jsgraph and how I can help. Get in touch via @AlpineLakes on Twitter or e-mail: chrisrus@encapsule.org
 
 <hr>
 
