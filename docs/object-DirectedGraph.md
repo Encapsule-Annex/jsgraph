@@ -17,7 +17,7 @@ Many very important and common data structures are simply specific cases of dire
 
 
 
-### Construction
+## Construction
 
 **See also: [Object reference: JSON I/O](./object-JSON.md)**
 
@@ -102,7 +102,7 @@ An _edge write request_ is an object with required sub-object 'e' and optional d
 
 
 
-### DirectedGraph.isVertex
+## DirectedGraph.isVertex
 
         digraph.isVertex(string);
 
@@ -123,7 +123,7 @@ If you pass the ID of a non-existent vertex, or bad input the response will be f
 
 
 
-### DirectedGraph.addVertex
+## DirectedGraph.addVertex
 
         var response = digraph.addVertex({ u: string, p: data});
 
@@ -155,7 +155,7 @@ The `setVertexProperty` method is a convenience alias for the `addVertex` and th
 
 
 
-### DirectedGraph.removeVertex
+## DirectedGraph.removeVertex
 
         digraph.removeVertex(string);
 
@@ -180,9 +180,9 @@ If you pass bad input, or the vertex doesn't exist in the container the call ret
 
 
 
-### DirectedGraph.getVertexProperty
+## DirectedGraph.getVertexProperty
 
-        var properties = digraph.getVertexProperty(string);
+        var response = digraph.getVertexProperty(string);
 
 **Request**
 
@@ -192,10 +192,15 @@ _vertex read request_
 
 Returns a reference to data associated with the vertex in the container. If no association exists, the call returns undefined.
 
+**Notes**
+
+`getVertexProperty` will return undefined if passed bad input.
 
 
 
-### DirectedGraph.setVertexProperty
+
+
+## DirectedGraph.setVertexProperty
 
 `setVertexProperty` is an alias for method `addVertex`.
 
@@ -203,7 +208,7 @@ Returns a reference to data associated with the vertex in the container. If no a
 
 
 
-### DirectedGraph.hasVertexProperty
+## DirectedGraph.hasVertexProperty
 
         var response = digraph.hasVertexProperty(string);
 
@@ -223,7 +228,7 @@ Returns true if the vertex has associated property data. Otherwise, false.
 
 
 
-### DirectedGraph.clearVertexProperty
+## DirectedGraph.clearVertexProperty
 
 
         var response = digraph.clearVertexProperty(string);
@@ -232,11 +237,11 @@ Returns true if the vertex has associated property data. Otherwise, false.
 
 _vertex read request_
 
-**Return:**
+**Return**
 
 Returns true to indicate that regardless of initial conditions, the vertex now has no property data associated with it. Otherwise, false.
 
-**Notes:**
+**Notes**
 
 `clearVertexProperty` will return false if the request is invalid, or if the vertex does not exist in the graph.
 
@@ -245,9 +250,9 @@ Returns true to indicate that regardless of initial conditions, the vertex now h
 
 
 
-### DirectedGraph.inDegree
+## DirectedGraph.inDegree
 
-        var degree = digraph.inDegree(string);
+        var response = digraph.inDegree(string);
 
 **Request**
 
@@ -265,9 +270,9 @@ Integer indicating the in-degree of the specific vertex.
 
 
 
-### DirectedGraph.inEdges
+## DirectedGraph.inEdges
 
-        var edgeArray = digraph.inEdges(string);
+        var response = digraph.inEdges(string);
 
 **Request**
 
@@ -291,9 +296,9 @@ Array of edge descriptor objects specifying the source and sink vertex ID's of e
 
 
 
-### DirectedGraph.outDegree
+## DirectedGraph.outDegree
 
-        var degree = digraph.outDegree(string);
+        var response = digraph.outDegree(string);
 
 **Request**
 
@@ -310,9 +315,9 @@ Integer indicating the out-degree of the specific vertex.
 
 
 
-### DirectedGraph.outEdges
+## DirectedGraph.outEdges
 
-        var edgeArray = digraph.outEdges(string);
+        var response = digraph.outEdges(string);
 
 **Request**
 
@@ -333,88 +338,105 @@ Array of edge descriptor objects specifying the source and sink vertex ID's of e
 
 
 
-<hr>
-above this is v0.5 docs
-<hr>
 
 
-## DirectedGraph edge methods
+## DirectedGraph.addEdge
+
+        var response = digraph.addEdge({ e: { u: string, v: string }, p: data });
+
+**Request**
+
+_edge write request_
+
+**Response**
+
+JavaScript object with the following properties:
+
+- **error**: null or string explaining what went wrong
+- **result**: an edge read request object or null if error
+
+**Notes**
+
+If specified, property data should be serializable to JSON. There are ways around this but you _should_ store non-serializable references (e.g. functions) in external hashtables indexed by a concatenation of the edge's vertex identifiers.
+
+If the edge already exists in the container and property data was specified, then `addEdge` updates the edge's property data in the container.
+
+If the edge already exists and no property data was specified, `addEdge` does nothing.
+
+If your intention is to disassociate the edge from property data, call `clearEdgeProperty` method.
+
+The `setEdgeProperty` method is a convenience alias for `addEdge` and their behavior is identical in all respects.
 
 
 
-## jsgraph.DirectedGraph.isEdge
 
-        digraph.isEdge(uid,vid);
 
-**Parameters:**
 
-- uid (required): the unique string identifying the directed edge's source vertex, U.
-- vid (required): the unique string identifying the directed edge's sink vertex, V.
+## DirectedGraph.isEdge
 
-**Return:**
+        digraph.isEdge({ u: string, v: string });
+
+**Request**
+
+_edge read request_
+
+**Response**
 
 Return true if the edge is part of the graph. Otherwise, false.
 
+**Notes**
 
-
-## jsgraph.DirectedGraph.addEdge
-
-        var edge = digraph.addEdge(vertexIdU_, vertexIdV_, properties_);
-
-**Parameters:**
-
-- vertexIdU_ (required): a unqique string identifying the directed edge's source vertex, U.
-- vertexIdV_ (required): a unqique string identifying the directed edge's sink vertex, V.
-- properties_ (optional): reference to a property object to attach to the new edge.
-
-**Return:**
-
-Returns an edge descriptor object containing the identifiers of the U and V vertices:
-
-        { u: 'vertex U ID string', v: 'vertex V ID string' }
-
-**Remarks:**
-
-If a vertex or vertices specified in a call to `addEdge` do not exist, they are added automatically and then the edge is added without associated property objects (you'll need to assign these manually by vertex ID in this situation).
-
-
-
-
-## jsgraph.DirectedGraph.removeEdge
-
-        digraph.removeEdge(uid, vid);
-
-**Parameters:**
-
-- uid (required): the unqiue string identifying the directed edge's source vertex, U.
-- vid (required): the unique string identifying the directed edge's sink vertex, V.
-
-**Return:**
-
-Returns true to indicate that the specified edge is not part of the graph.
+`isEdge` will return false if you pass bad input.
 
 
 
 
 
-## jsgraph.DirectedGraph.getEdgeProperty
+## DirectedGraph.removeEdge
 
-        var properties = digraph.getEdgePropertyObject(vertexIdU_, vertexIdV);
-
-**Parameters:**
-
-- vertexIdU_ (required): the unqiue string identifying the directed edge's source vertex, U.
-- vertexIdV_  (required): the unique string identifying the directed edge's sink vertex, V.
-
-**Return:**
-
-Returns a reference to the property object attached to the specified edge when it was added to the graph.
+        digraph.removeEdge({ u: string, v: string });
 
 
+**Request**
+
+_edge read request_
+
+**Response**
+
+Returns true to indicate that regardless of initial conditions, the specified edge in not part of the graph. Otherwise false.
+
+**Notes**
+
+Removing an edge has no impact on the edges vertices or their associated property data.
+
+`removeEdge` will return false if you pass bad input.
 
 
 
-## jsgraph.DirectedGraph.setEdgeProperty
+
+
+## DirectedGraph.getEdgeProperty
+
+        var response = digraph.getEdgePropertyObject({ u: string, v: string });
+
+**Request**
+
+_edge read request_
+
+**Response**
+
+Returns a reference to the property data associated with the specified edge in the graph. If no association exists the call returns undefined.
+
+**Notes**
+
+`getEdgeProperty` will return undefined if passed bad input, the edge does not exist, or the edge exists but has no associated property data.
+
+
+
+
+
+
+## DirectedGraph.setEdgeProperty
 
 `setEdgeProperty` is an alias for `addEdge`.
 
@@ -422,10 +444,45 @@ Returns a reference to the property object attached to the specified edge when i
 
 
 
-### DirectedGraph.hasEdgeProperty
+## DirectedGraph.hasEdgeProperty
+
+        var response = digraph.hasEdgeProperty({ u: string, v: string });
+
+**Request**
+
+_edge read request_
+
+**Response**
+
+Returns true if the specified edge has associated property data. Otherwise false.
+
+**Notes**
+
+`hasEdgeProperty` will return false if passed input, if the edge does not exist in the graph, or if the edge exists but has no associated property data.
 
 
-### DirectedGraph.clearEdgeProperty
+
+
+## DirectedGraph.clearEdgeProperty
+
+        var response = digraph.clearEdgeProperty({ u: string, v: string });
+
+**Request**
+
+_edge read request_
+
+**Response**
+
+Returns true to indicate that regardless of initial conditions there is no property data associated with the specified edge in the container. Otherwise false.
+
+**Notes**
+
+`clearEdgeProperty` will return false if passed bad input.
+
+
+<hr>
+edit mark
+<hr>
 
 
 ## DirectedGraph container methods
@@ -434,7 +491,7 @@ Returns a reference to the property object attached to the specified edge when i
 
 ## jsgraph.DirectedGraph.verticesCount
 
-        var count = digraph.verticesCount();
+        var response = digraph.verticesCount();
 
 **Return:**
 
@@ -460,7 +517,7 @@ Returns an array of string vertex identifiers.
 
 ## jsgraph.DirectedGraph.edgesCount
 
-        var count = digraph.edgesCount();
+        var response = digraph.edgesCount();
 
 **Return:**
 
@@ -473,7 +530,7 @@ Integer indicating the number of edges in this graph.
 
 ## jsgraph.DirectedGraph.getEdges
 
-        var edges = digraph.getEdges()
+        var response = digraph.getEdges()
 
 **Returns:**
 
@@ -491,7 +548,7 @@ Returns an array of edge descriptor objects with `u` and `v` properties set to t
 
 ## jsgraph.DirectedGraph.getRootVertices
 
-        var vertices = digraph.getRootVertices();
+        var response = digraph.getRootVertices();
 
 **Return:**
 
@@ -508,7 +565,7 @@ Returns an array of identifier strings indicating the set of root vertices in th
 
 ## jsgraph.Directedgraph.getLeafVertices
 
-        var vertices = digraph.getLeafVertices();
+        var response = digraph.getLeafVertices();
 
 **Return:**
 
