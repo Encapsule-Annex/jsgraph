@@ -49,7 +49,9 @@ However, if you call `jsgraph.directed.create` and pass a parameter the construc
 
 
 
-## DirectedGraph container methods
+## DirectedGraph methods
+
+### Method notation
 
 For convenience we abbreviate functions defined on the `DirectedGraph` prototype object, e.g. `isVertex`, using the notation `DirectedGraph.isVertex`.
 
@@ -61,7 +63,40 @@ What is implied and the correct use of methods is as follows:
         var digraph = jsgraph.directed.create().result;
         var foundStartVertex = digraph.isVertex("startVertex"); // methods apply to container instances
 
+### Method request types
 
+There are currently four (4) unique in-parameter request types leveraged by `DirectedGraph`'s methods:
+
+**vertex read request**
+
+A _vertex read request_ is a string that is interpretted as the unique ID of a vertex in a container.
+
+        var vertexReadRequest = "vertexID";
+
+**vertex write request**
+
+A _vertex write request_ is an object with required string property 'u' and optional data property 'p'.
+
+        var vertexWriteRequest = {
+            u: "vertexID",
+            p: { notes: "data to associate with the 'vertexID' vertex in the container" }
+        };
+
+**edge read request**
+
+An _edge read request_ is an object with required string properties 'u' and 'v'.
+
+        var edgeReadRequest = { u: "Hello", v: "World" };
+
+**edge write request**
+
+An _edge write request_ is an object with required sub-object 'e' and optional data property 'p' where sub-object 'e' is a _edge read request_.
+
+        var edgeWriteRequest = {
+            e: { u: "Hello", v: "World" },
+            p: { notes: "some data to associate with the edge from 'Hello' to 'World'" }
+        };
+        
 
 
 
@@ -73,7 +108,7 @@ What is implied and the correct use of methods is as follows:
 
 **Request**
 
-- string (required): vertex ID
+_vertex read request_
 
 **Response**
 
@@ -94,10 +129,7 @@ If you pass the ID of a non-existent vertex, or bad input the response will be f
 
 **Request**
 
-JavaScript object with the following properties:
-
-- **u** (required string): vertex ID
-- **p** (optional): undefined or any value serializable to JSON
+_vertex write request_
 
 **Response**
 
@@ -129,7 +161,7 @@ The `setVertexProperty` method is a convenience alias for the `addVertex` and th
 
 **Request**
 
-- string (required) - vertex ID
+_vertex read request_
 
 **Response**
 
@@ -154,7 +186,7 @@ If you pass bad input, or the vertex doesn't exist in the container the call ret
 
 **Request**
 
-- string (required) - vertex ID
+_vertex read request_
 
 **Response**
 
@@ -177,7 +209,7 @@ Returns a reference to data associated with the vertex in the container. If no a
 
 **Request**
 
-- string (required) - vertex ID
+_vertex read request_
 
 **Response**
 
@@ -198,7 +230,7 @@ Returns true if the vertex has associated property data. Otherwise, false.
 
 **Request**
 
-- string (required): vertex ID
+_vertex read request_
 
 **Return:**
 
@@ -219,7 +251,7 @@ Returns true to indicate that regardless of initial conditions, the vertex now h
 
 **Request**
 
-- string (required): vertex ID
+_vertex read request_
 
 **Response**
 
@@ -239,7 +271,7 @@ Integer indicating the in-degree of the specific vertex.
 
 **Request**
 
-- string (required): vertex ID
+_vertex read request_
 
 **Response**
 
@@ -265,7 +297,7 @@ Array of edge descriptor objects specifying the source and sink vertex ID's of e
 
 **Request**
 
-- string (required): vertex ID
+_vertex read request_
 
 **Response**
 
@@ -284,7 +316,7 @@ Integer indicating the out-degree of the specific vertex.
 
 **Request**
 
-- string (required): vertex ID
+_vertex read request_
 
 **Response**
 
