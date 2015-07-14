@@ -284,7 +284,7 @@ A depth-first traversal concludes when all reacable vertices have been visited, 
 
 ## More examples
 
-The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts. If you get stuck, or need help assessing jsgraph for use in your own data masterpiece get in touch: chrisrus@encapsule.org.
+The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts. If you get stuck, or need help assessing jsgraph for use in your own data masterpiece please get in touch: chrisrus@encapsule.org. I am very interested to learn what people are building with jsgraph and how I can help.
 
 <hr>
 
