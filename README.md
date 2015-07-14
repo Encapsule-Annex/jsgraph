@@ -10,6 +10,23 @@ _Graphs are mathematical abstractions that are useful for solving many types of 
 
 Encapsule/jsgraph is a framework for working with in-memory directed graph models in JavaScript inspired by the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html).
 
+### Installaton
+
+In your project, install via npm.
+
+        $ npm install jsgraph --save # 
+        jsgraph@0.5.xx node_modules/jsgraph
+
+### Sources
+
+The published npm package contains everything required by the library runtime but does not include its test suite or documentation.
+
+To obtain a copy of these assets locally, use Git to clone the jsgraph repository from GitHub:
+
+        $ git clone git@github.com:Encapsule/jsgraph.git
+
+Or visit the library repo site: [https://github.com/Encapsule/jsgraph](https://github.com/Encapsule/jsgraph)
+
 ## Features
 
 - Generic in-memory container for directed mathematical graph data and property sets.
