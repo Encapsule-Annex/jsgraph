@@ -19,7 +19,7 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
-- jsgraph is tested. Continuously. With [automated tests](https://travis-ci.org/Encapsule/jsgraph).
+- jsgraph is tested continuously with [automated tests](https://travis-ci.org/Encapsule/jsgraph).
 
 ## Release
 
@@ -31,7 +31,7 @@ v0.5 is a breaking upgrade for users of v0.4:
 - Depth-first visit and search algorithms have been coalesced into the new function export `depthFirstTraverse`.
 - All visitor interface methods are now required to return a Boolean flag that indicates if the traversal should continue or terminate.
 - Significant investment in error handling and reporting to improve developer experience and simplify diagnosis of production failures.
-- ~300 new tests added for v0.5 release.
+- ~400 new tests added for v0.5 release.
 - Documentation brought current.
 
 ## API
@@ -68,7 +68,9 @@ jsgraph's core directed graph container object, **DirectedGraph**, is constructe
         
         '{"vlist":[],"elist":[]}'
         
-The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. See **[Object reference: JSON I/O](./docs/object-JSON.md)** for more information.
+The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. 
+
+**See also: [Object reference: JSON I/O](./docs/object-JSON.md)**
             
 #### DirectedGraph vertex methods
 
@@ -94,7 +96,7 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `hasEdgeProperty({ u: vertexId, v: vertexId })` - query if an edge has property data associated with it or not
 - `clearEdgeProperty({ u: vertexId, v: vertexId})` - clear property data associated with an edge
 
-#### DirectedGraph graph-scope methods
+#### DirectedGraph container methods
 
 - `verticesCount()` - obtain the count of vertices in the container
 - `getVertices()` - retrieve an array of ID strings for all vertices in the container
