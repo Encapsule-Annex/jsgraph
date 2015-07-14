@@ -4,34 +4,29 @@
 
 jsgraph's `DirectedGraph` container object provides a normalized API for managing in-memory directed graph data structures regardless of the application-specific semantics you ascribe to the data.
 
-**Tip:**
+Many very important and common data structures are simply specific cases of directed graph structures that may be trivially stored in a `DirectedGraph` container. Consider storing your application-specifc data structures as directed graphs and passing around `DirectedGraph` container references instead of JavaScript object references.
 
-`DirectedGraph` is low-overhead and is suitable for use in scenarios where one wouldn't necessarily consider using a mathematical graph model, or a utility library such as jsgraph that supports them.
-
-Many very important and common data structure can be modeled using vertices, directed edges, and two property data hashtables indexed by vertex and edge ID. This includes constructs such as sets (just a digraph w/no edges), vectors (just a digraph with directed edges that order the vertices), hashtables (DirectedGraph is effectively a two-dimensional hash table with the second dimenson, edges, accessible via the first, vertices)...
-
-_Moving applicaton-specific data structures into jsgraph elevates the level of abstraction of your client code._
-
+- Elevate the level of abstraction of your design.
 - Write less code that's more concise and simpler to read.
 - Spend less time in the debugger thanks to helpful error messages.
 - Make your codebase uniform, simple to read, refactor, and re-use.
+- Have more productive dicussions with your co-workers.
+- Accommodate changing requirements by design, not reaction.
 
-## Construction
+### Construction
 
 **See also: [Object reference: JSON I/O](./object-JSON.md)**
 
 jsgraph's directed graph container, `DirectedGraph`, is constructed by calling the `jsgraph.directed.create` factory function export. 
 
         var jsgraph = require('jsgraph');
-        
         var response = jsgraph.directed.create(/*optional init data*/);
-
-        // Create may fail if passed bad data. Always check for error!
         if (!response.error) {
-            var digraph = response.result;
             // container is ready for use
+            var digraph = response.result;
             console.log("digraph JSON = '" + digraph.toJSON() + "'");
         } else {
+            // container constructor failed
             console.error(response.error);
         }         
 
@@ -44,6 +39,8 @@ However, if you call `jsgraph.directed.create` and pass a parameter the construc
         '{ error: "Some error string explaining what went wrong.", result: null }`
         
 **Note:** Not all jsgraph functions and methods return error/result response objects. Many are implemented instead to return reasonable default values when bad input is received. However, in cases where an error/result response is indicated in the documentation, it is essential that you check and handle all errors reported by jsgraph as all are significant.
+
+
 
 ## DirectedGraph.addVertex
 

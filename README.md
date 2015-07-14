@@ -8,7 +8,7 @@
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
 
-Encapsule/jsgraph is a functional port of directed graph container and algorithm suport from the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL) to JavaScript that greatly simplifies the task of working with complex in-memory graph data structures on Node.js and HTML 5.
+Encapsule/jsgraph is a framework for working with in-memory directed graph models in JavaScript inspired by the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html).
 
 ## Features
 
@@ -19,11 +19,108 @@ Encapsule/jsgraph is a functional port of directed graph container and algorithm
 - Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
 - Core breadth and depth-first traversal algorithms now support termination allowing for derived code to operate efficiently on large in-memory structures.
 - Request/response object style API with helpful diagnostic error messages. Implementation does not throw or use exceptions.
-- jsgraph is tested continuously with [automated tests](https://travis-ci.org/Encapsule/jsgraph).
+- jsgraph is tested continuously with [automated tests](https://travis-ci.org/Encapsule/jsgraph)
+
+## Example
+
+        // Encapsule/jsgraph/examples/bft-vertex-ranking.js
+        var jsgraph = require('../index'); // in-package example
+        var response = jsgraph.directed.create({
+            elist: [
+                { e: { u: "A", v: "B" } },
+                { e: { u: "B", v: "C" } },
+                { e: { u: "B", v: "D" } }
+            ]
+        });
+        // Check the response object for error!
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        // Now the container is safe to use.
+        var digraph = response.result;
+        var vertexRankHashtable = {};
+        // THINK OF VISITOR INTERFACES LIKE ALGORITHM FLIGHT RECORDERS
+        // VERTEX RANKING ALGORITHM (based on breadth-first traverse)
+        var bftVisitorInterface = {
+            startVertex: function(request) {
+                request.g.setVertexProperty({ u: request.u, p: 0});
+                return true; // continue the traversal
+            },
+            treeEdge: function (request) {
+                request.g.setVertexProperty({
+                    u: request.e.v,
+                    p: request.g.getVertexProperty(request.e.u) + 1
+                });
+                return true;
+            }
+        };
+        // ACTUATE OUR VISITOR INTERFACE WITH BFT TO PRODUCE THE RESULT
+        response = jsgraph.directed.breadthFirstTraverse({
+            digraph: digraph,
+            visitor: bftVisitorInterface
+        });
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        console.log("DirectedGraph: '" + digraph.toJSON(undefined,4) + "'");
+        console.log("BFT traversal: '" + JSON.stringify(response.result,undefined,4) + "'");
+
+... produces the following output with each vertice's property value set to its rank (edge hops away from a root vertex in this example).
+    
+        DirectedGraph: '{
+            "vlist": [
+                {
+                    "u": "A",
+                    "p": 0
+                },
+                {
+                    "u": "B",
+                    "p": 1
+                },
+                {
+                    "u": "C",
+                    "p": 2
+                },
+                {
+                    "u": "D",
+                    "p": 2
+                }
+            ],
+            "elist": [
+                {
+                    "e": {
+                        "u": "A",
+                        "v": "B"
+                    }
+                },
+                {
+                    "e": {
+                        "u": "B",
+                        "v": "C"
+                    }
+                },
+                {
+                    "e": {
+                        "u": "B",
+                        "v": "D"
+                    }
+                }
+            ]
+        }'
+        BFT traversal: '{
+            "searchStatus": "completed",
+            "colorMap": {
+                "A": 2,
+                "B": 2,
+                "C": 2,
+                "D": 2
+            },
+            "undiscoveredMap": {}
+        }'
 
 ## Release
 
-v0.5 is a breaking upgrade for users of v0.4:
+**v0.5 is a breaking upgrade for users of v0.4**
 
 - Clients of v0.4 jsgraph will need to make some minor changes to their derived code to upgrade to v0.5.
 - No more exceptions. Functions/methods that might reasonably fail now return an error/result response object.
@@ -164,7 +261,7 @@ Supported visitor interface callbacks for depth-first traversal: `initializeVert
 
 A depth-first traversal concludes when all reacable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
 
-## Examples
+## More examples
 
 The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts. If you get stuck, or need help assessing jsgraph for use in your own data masterpiece get in touch: chrisrus@encapsule.org.
 
