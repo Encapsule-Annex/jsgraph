@@ -10,9 +10,12 @@ Please refer to Chapter 23 "Elementary Graph Algorithms" of [Introduction To Alg
 
 `depthFirstTraverse` is called with a normalized traversal algorithm request object and returns a normalized traversal algorithm response object.
 
-        var response = digraph.directed.depthFirstTraverse({ digraph: myDigraph, visitor: myDFTVisitor });
+        var response = digraph.directed.depthFirstTraverse({
+            digraph: myDigraph,
+            visitor: myDFTVisitor
+        });
 
-**See: [Algorithm Reference: Traversal algorithms overview](./algorithms-traversal.md)**
+**See: [Algorithm Reference: Traversal algorithms overview](./algorithms-traversal.md) for details.**
 
 ### DFT visitor interface object
 
