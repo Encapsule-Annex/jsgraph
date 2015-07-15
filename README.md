@@ -16,7 +16,7 @@ jsgraph is based on the API design and architectural separaton of concerns for g
 
 I encourage you to take some time and experiment with the library as it's truly powerful once you get over the initial learning curve.
 
-"At the other end of the spectrum is, for example, graph theory, where the basic object, a graph, can be immediately comprehended. One will not get anywhere in graph theory by sitting in an armchair and trying to understand graphs better. Neither is it particularly necessary to read much of the literature before tackling a problem: it is of course helpful to be aware of some of the most important techniques, but the interesting problems tend to be open precisely because the established techniques cannot easily be applied." - [W.T. Gowers](https://en.wikipedia.org/wiki/Timothy_Gowers)
+_"At the other end of the spectrum is, for example, graph theory, where the basic object, a graph, can be immediately comprehended. One will not get anywhere in graph theory by sitting in an armchair and trying to understand graphs better. Neither is it particularly necessary to read much of the literature before tackling a problem: it is of course helpful to be aware of some of the most important techniques, but the interesting problems tend to be open precisely because the established techniques cannot easily be applied."_ - [W.T. Gowers](https://en.wikipedia.org/wiki/Timothy_Gowers)
 
 ### Programming
 
