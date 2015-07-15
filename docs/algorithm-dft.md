@@ -4,6 +4,20 @@
 
 ## jsgraph.directed.depthFirstTraverse
 
+Please refer to Chapter 23 "Elementary Graph Algorithms" of [Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) (MIT Press) for a complete discussion of the classic depth-first search and visit algorithms encapsulated by jsgraph's `depthFirstTraverse` algorithm.
+
+### DFT request and response
+
+`depthFirstTraverse` is called with a normalized traversal algorithm request object and returns a normalized traversal algorithm response object.
+
+        var response = digraph.directed.depthFirstTraverse({ digraph: myDigraph, visitor: myDFTVisitor });
+
+**See: [Algorithm Reference: Traversal algorithms overview](./algorithms-traversal.md)**
+
+### DFT visitor interface object
+
+
+
 
 
 ## DFV / DFS

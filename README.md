@@ -8,7 +8,7 @@
 
 ## About jsgraph
 
-_Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs._  - [J. Siek](http://ecee.colorado.edu/~siek/resume.pdf)
+_Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs._ - [J. Siek](http://ecee.colorado.edu/~siek/resume.pdf)
 
 Encapsule/jsgraph is a framework for working with directed graph data models using an in-memory storage container abstraction, and a small but growing collection of powerfully-extensible graph coloring algorithms implemented using the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern). The library is specifically designed for efficient embedding in complex Node.js / HTML 5 applications that require clean separation of concerns, and a high-degree of extensibility and control.
 
@@ -16,7 +16,7 @@ jsgraph is based on the API design and architectural separaton of concerns for g
 
 I encourage you to take some time and experiment with the library as it's truly powerful once you get over the initial learning curve.
 
-_"At the other end of the spectrum is, for example, graph theory, where the basic object, a graph, can be immediately comprehended. One will not get anywhere in graph theory by sitting in an armchair and trying to understand graphs better. Neither is it particularly necessary to read much of the literature before tackling a problem: it is of course helpful to be aware of some of the most important techniques, but the interesting problems tend to be open precisely because the established techniques cannot easily be applied."_ - [W.T. Gowers](https://en.wikipedia.org/wiki/Timothy_Gowers)
+"... At the other end of the spectrum is, for example, graph theory, where the basic object, a graph, can be immediately comprehended. One will not get anywhere in graph theory by sitting in an armchair and trying to understand graphs better. Neither is it particularly necessary to read much of the literature before tackling a problem: it is of course helpful to be aware of some of the most important techniques, but the interesting problems tend to be open precisely because the established techniques cannot easily be applied."_ - [W.T. Gowers](https://en.wikipedia.org/wiki/Timothy_Gowers)
 
 ### Programming
 
