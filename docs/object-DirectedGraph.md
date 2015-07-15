@@ -48,7 +48,6 @@ However, if you call `jsgraph.directed.create` and pass a parameter the construc
 
 
 
-
 ## DirectedGraph methods
 
 ### Method notation
@@ -98,8 +97,7 @@ An _edge write request_ is an object with required sub-object 'e' and optional d
         };
         
 
-
-
+# DirectedGraph vertex methods
 
 
 ## DirectedGraph.isVertex
@@ -337,7 +335,7 @@ Array of edge descriptor objects specifying the source and sink vertex ID's of e
 `inEdges` will return an empty array if the request is invalid, or if the vertex has no in-edges.
 
 
-
+# DirectedGraph edge methods
 
 
 ## DirectedGraph.addEdge
@@ -480,20 +478,17 @@ Returns true to indicate that regardless of initial conditions there is no prope
 `clearEdgeProperty` will return false if passed bad input.
 
 
-<hr>
-edit mark
-<hr>
 
 
-## DirectedGraph container methods
+# DirectedGraph container methods
 
 
 
-## jsgraph.DirectedGraph.verticesCount
+## DirectedGraph.verticesCount
 
         var response = digraph.verticesCount();
 
-**Return:**
+**Response**
 
 Integer indicating the number of vertices in this graph.
 
@@ -502,11 +497,11 @@ Integer indicating the number of vertices in this graph.
 
 
 
-## jsgraph.DirectedGraph.getVertices
+## DirectedGraph.getVertices
 
         vertices = digraph.getVertices();
 
-**Return:**
+**Response**
 
 Returns an array of string vertex identifiers.    
 
@@ -515,11 +510,11 @@ Returns an array of string vertex identifiers.
 
 
 
-## jsgraph.DirectedGraph.edgesCount
+## DirectedGraph.edgesCount
 
         var response = digraph.edgesCount();
 
-**Return:**
+**Reponse**
 
 Integer indicating the number of edges in this graph.
 
@@ -528,11 +523,11 @@ Integer indicating the number of edges in this graph.
 
 
 
-## jsgraph.DirectedGraph.getEdges
+## DirectedGraph.getEdges
 
-        var response = digraph.getEdges()
+        var response = digraph.getEdges();
 
-**Returns:**
+**Response**
 
 Returns an array of edge descriptor objects with `u` and `v` properties set to tail and head vertex identifier strings respectively.
 
@@ -540,9 +535,13 @@ Returns an array of edge descriptor objects with `u` and `v` properties set to t
 
 
 
-### DirectedGraph.rootVerticesCount
+## DirectedGraph.rootVerticesCount
 
+        var response = digraph.rootVerticesCount();
 
+**Response**
+
+Integer count of the number of vertices with in-degree equal to zero (0).
 
 
 
@@ -550,7 +549,7 @@ Returns an array of edge descriptor objects with `u` and `v` properties set to t
 
         var response = digraph.getRootVertices();
 
-**Return:**
+**Response**
 
 Returns an array of identifier strings indicating the set of root vertices in the graph (i.e. the set of vertices with in-degree zero).
 
@@ -560,14 +559,20 @@ Returns an array of identifier strings indicating the set of root vertices in th
 
 ### DirectedGraph.leafVerticesCount
 
+        var response = digraph.leafVerticesCount();
+
+**Response**
+
+Integer count of the number of vertices with out-degree equal to zero (0).
 
 
 
-## jsgraph.Directedgraph.getLeafVertices
+
+## Directedgraph.getLeafVertices
 
         var response = digraph.getLeafVertices();
 
-**Return:**
+**Response**
 
 Returns an array of identifier strings indicating the set of leaf vertices in the graph (i.e. the set of vertices with out-degree zero).
 
@@ -575,37 +580,56 @@ Returns an array of identifier strings indicating the set of leaf vertices in th
 
 ### DirectedGraph.toObject
 
+        var response = digraph.toObject();
 
+**Response**
+
+Returns a serialized data object that contains the contents of the directed graph.
+
+**Notes**
+
+`toObject` is typically used to obtain the serialized representation of a container for inclusion in some other structure.
+
+The object returned may be passed to the `DirectedGraph` constructor, or to method `fromObject`.
 
 ### DirectedGraph.toJSON
 
-        var digraph = new DirectedGraph();
-        digraph.toJSON(undefined,4);
+        var response = digraph.toJSON(replacer,space);
 
-**Returns:**
+**Response**
 
-JSON-encoded serialization of the contents of the DirectedGraph container. 
+Returns a `DirectedGraph`'s serialized data object converted to JSON.
 
 **Remarks:**
 
-Pass the JSON string returned by DirectedGraph.toJSON to method DirectedGraph.importJSON or the DirectedGraph constructor to import.
-
-## jsgraph.DirectedGraph.importJSON
-
-        digraph.DirectedGraph.importJSON(JSON);
-
-** Remarks:**
-
-JSON import adds vertices and edges to the current DirectedGraph container from an external JSON source. Duplicates are ignored.
-
-
+The JSON string returned may be passed to the `DirectedGraph` constructor, or to method `fromJSON`.
 
 
 ### DirectedGraph.fromObject
 
+        var response = digraph.fromObject(object);
+
+**Request**
+
+JavaScript object returned by `toObject`.
+
+**Response**
+
+JavaScript object with the following properties:
+
+- **error**: null or a string explaining what went wrong
+- **result**: true to indicate success or null if error
+
+**Notes**
+
+`fromObject` parses request and uses `addVertex` and `addEdge` container API's to add the additional vertices and edges to the container.
+
 
 
 ### DirectedGraph.fromJSON
+
+Identical to `fromObject` except that the request is a JSON string instead of a datg object.
+
 
 
 
