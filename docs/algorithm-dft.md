@@ -22,6 +22,7 @@ Please refer to Chapter 23 "Elementary Graph Algorithms" of [Introduction To Alg
 A DFT visitor interface is a JavaScript object with zero or more defined function cvallbacks that you implement with the following semantics:
 
 callback | request | explanation
+-------- | ------- | -----------
 initializeVertex | { u: string: g: DirectedGraph } | invoked on every vertex of the graph before the start of the search
 startVertex | { u: string: g: DirectedGraph } | invoked on the source vertex once before the start of the search
 discoverVertex | { u: string: g: DirectedGraph } | invoked when a vertex is encountered for the first time
