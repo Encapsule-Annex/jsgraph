@@ -1,11 +1,9 @@
 // digraph-test.js
 
 var assert = require('chai').assert;
-var expect = require('chai').expect;
-var should = require('chai').should;
 var uuid = require('node-uuid');
-
-var DirectedGraph = require('../src/digraph');
+var DirectedGraphContainer = require('../src/digraph');
+var DirectedGraph = DirectedGraphContainer.DirectedGraph;
 
 describe("DirectedGraph container object tests", function() {
 
@@ -17,7 +15,7 @@ describe("DirectedGraph container object tests", function() {
         });
 
         it ("graph should have zero vertices", function() {
-            assert.lengthOf(Object.keys(digraph.vertexMap), 0);
+            assert.lengthOf(Object.keys(digraph._private.vertexMap), 0);
             assert.equal(digraph.verticesCount(), 0);
         });
 
@@ -42,15 +40,19 @@ describe("DirectedGraph container object tests", function() {
         var json = null;
         
         before(function(){
-            vertices.forEach(function(v){
-                digraph.addVertex(v, { k: v });
+            vertices.forEach(function(u){
+                digraph.addVertex({ u: u, p: { k: u }});
             });
-
             vertices.forEach(function(u){
                 vertices.forEach(function(v){
-                    if(u !== v) digraph.addEdge(u, v);
+                    if(u !== v) digraph.addEdge({ e: { u: u, v: v}});
                 });
             });
+        });
+
+        it("graph export JSON should match expected control string", function() {
+            var expectedJSON = '{"vlist":[{"u":"foo","p":{"k":"foo"}},{"u":"bar","p":{"k":"bar"}},{"u":"baz","p":{"k":"baz"}}],"elist":[{"e":{"u":"foo","v":"bar"}},{"e":{"u":"foo","v":"baz"}},{"e":{"u":"bar","v":"foo"}},{"e":{"u":"bar","v":"baz"}},{"e":{"u":"baz","v":"foo"}},{"e":{"u":"baz","v":"bar"}}]}';
+            assert.equal(digraph.toJSON(), expectedJSON);
         });
 
         it("graph should export properly structured JSON string", function(){
@@ -58,10 +60,31 @@ describe("DirectedGraph container object tests", function() {
             assert.isString(json);
             var parsed = JSON.parse(json);
             assert.isObject(parsed);
-            assert.isObject(parsed.jsgraph);
-            assert.isObject(parsed.jsgraph.digraph);
-            assert.isArray(parsed.jsgraph.digraph.vertices);
-            assert.isArray(parsed.jsgraph.digraph.edges);
+            assert.isArray(parsed.vlist);
+            assert.isArray(parsed.elist);
+        });
+
+        it("graph export to object and JSON should be identical", function() {
+            var testObjectJSON = JSON.stringify(digraph.toObject());
+            var testJSON = digraph.toJSON();
+            assert.equal(testObjectJSON, testJSON);
+        });
+
+        it("graph constructed from export object should be identical to original", function() {
+            var testGraph = new DirectedGraph(digraph.toObject());
+            assert.equal(testGraph.toJSON(), digraph.toJSON());
+        });
+
+        it("empty graph filled using fromObject should be identical to original", function() {
+            var testGraph = new DirectedGraph();
+            testGraph.fromObject(digraph.toObject());
+            assert.equal(testGraph.toJSON(), digraph.toJSON());
+        });
+
+        it("empty graph filled using fromJSON should be identical to original", function() {
+            var testGraph = new DirectedGraph();
+            testGraph.fromJSON(digraph.toJSON());
+            assert.equal(testGraph.toJSON(), digraph.toJSON());
         });
 
         describe("Re-create the directed graph container from the JSON.", function() {
@@ -76,6 +99,40 @@ describe("DirectedGraph container object tests", function() {
                 assert.equal(copy.toJSON(), json);
             });
         });
+
+        describe("Test JSON export algorith's vertex skip facility", function() {
+
+            var testGraph = null;
+            var expectedJSON = '{"vlist":[{"u":"strawberry","p":"has a property"},{"u":"not-mentioned-no-property"}],"elist":[{"e":{"u":"apple","v":"orange"}},{"e":{"u":"bannana","v":"apple"}},{"e":{"u":"pineapple","v":"orange"}},{"e":{"u":"strawberry","v":"blueberry"},"p":"link"}]}';
+            var actualJSON = null;
+            
+            before(function() {
+                var digraph = new DirectedGraph({
+                    vlist: [
+                        { u: 'apple' },
+                        { u: 'orange' },
+                        { u: 'bannana' },
+                        { u: 'pineapple' },
+                        { u: 'strawberry', p: "has a property" },
+                        { u: 'blueberry' },
+                        { u: 'not-mentioned-no-property' }
+                    ],
+                    elist: [
+                        { e: { u: 'strawberry', v: 'blueberry' }, p: 'link' },
+                        { e: { u: 'bannana', v: 'apple' }},
+                        { e: { u: 'apple', v: 'orange' }},
+                        { e: { u: 'pineapple', v: 'orange' }}
+                    ]
+                });
+                actualJSON = digraph.toJSON();
+            });
+
+            it("Exported JSON should match expected JSON value.", function() {
+                assert.equal(actualJSON, expectedJSON);
+            });
+
+        });
+
     });
 
     describe("Vertex API tests", function() {
@@ -85,7 +142,7 @@ describe("DirectedGraph container object tests", function() {
         var addVertexTest = function() {
 
             it("graph should have a single vertex", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 1);
+                assert.lengthOf(Object.keys(digraph._private.vertexMap), 1);
                 assert.equal(digraph.verticesCount(), 1);
             });
 
@@ -121,7 +178,7 @@ describe("DirectedGraph container object tests", function() {
         var removeVertexTest = function() {
 
             it("graph should have zero vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 0);
+                assert.lengthOf(Object.keys(digraph._private.vertexMap), 0);
                 assert.equal(digraph.verticesCount(), 0);
             });
 
@@ -139,11 +196,11 @@ describe("DirectedGraph container object tests", function() {
         };
 
         describe("addVertex", function() {
-            before(function() { digraph.addVertex("apple"); });
+            before(function() { digraph.addVertex({ u: "apple"}); });
             addVertexTest();
         });
         describe("addVertex (idempotency)", function() {
-            before(function() { digraph.addVertex("apple"); });
+            before(function() { digraph.addVertex({ u: "apple"}); });
             addVertexTest();
         });
         describe("removeVertex", function() {
@@ -163,7 +220,7 @@ describe("DirectedGraph container object tests", function() {
         var addEdgeTest = function() {
 
             it("graph should have two vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 2);
+                assert.lengthOf(Object.keys(digraph._private.vertexMap), 2);
                 assert.equal(digraph.verticesCount(), 2);
             });
 
@@ -214,7 +271,7 @@ describe("DirectedGraph container object tests", function() {
 
         var removeEdgeTest = function() {
             it("graph should have two vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 2);
+                assert.lengthOf(Object.keys(digraph._private.vertexMap), 2);
                 assert.equal(digraph.verticesCount(), 2);
             });
 
@@ -264,33 +321,41 @@ describe("DirectedGraph container object tests", function() {
         };
 
         describe("addEdge(apple,orange)", function() {
-            before(function() { digraph.addEdge("apple", "orange"); });
+            before(function() {
+                digraph.addEdge({ e: { u: "apple", v: "orange"}});
+            });
             addEdgeTest();
         });
 
         describe("addEdge(apple,orange) (idempotency)", function() {
-            before(function() { digraph.addEdge("apple", "orange"); });
+            before(function() {
+                digraph.addEdge({ e: { u: "apple", v: "orange"}});
+            });
             addEdgeTest();
         });
 
         describe("removeEdge(apple,orange)", function() {
-            before(function() { digraph.removeEdge("apple", "orange"); });
+            before(function() {
+                digraph.removeEdge({u: "apple", v: "orange"});
+            });
             removeEdgeTest();
         });
 
         describe("removeEdge(apple,orange) idempotency", function() {
-            before(function() { digraph.removeEdge("apple", "orange"); });
+            before(function() {
+                digraph.removeEdge({u:"apple",v:"orange"});
+            });
             removeEdgeTest();
         });
 
         describe("addEdge(apple,orange), removeVertex(orange)", function() {
             before(function() {
-                digraph.addEdge("apple", "orange");
+                digraph.addEdge({e:{u:"apple",v:"orange"}});
                 digraph.removeVertex("orange");
             });
 
             it("graph should have one vertex", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 1);
+                assert.lengthOf(Object.keys(digraph._private.vertexMap), 1);
                 assert.equal(digraph.verticesCount(), 1);
             });
 
@@ -329,12 +394,12 @@ describe("DirectedGraph container object tests", function() {
 
         // create a triangle.
         var digraph = new DirectedGraph();
-        digraph.addEdge("white", "blue");
-        digraph.addEdge("blue", "green");
-        digraph.addEdge("green", "white");
+        digraph.addEdge({e: { u: "white", v: "blue"}});
+        digraph.addEdge({e: { u: "blue",  v: "green"}});
+        digraph.addEdge({e:{ u: "green", v: "white"}});
 
         it("graph should have three vertices", function() {
-            assert.lengthOf(Object.keys(digraph.vertexMap), 3);
+            assert.lengthOf(Object.keys(digraph._private.vertexMap), 3);
             assert.equal(digraph.verticesCount(), 3);
         });
 
@@ -375,25 +440,25 @@ describe("DirectedGraph container object tests", function() {
 
             before(function() {
 
-                digraph.addEdge("north1","east1");
-                digraph.addEdge("east1","south1");
-                digraph.addEdge("south1","west1");
-                digraph.addEdge("west1","north1");
+                digraph.addEdge({e:{ u: "north1", v: "east1"}});
+                digraph.addEdge({e:{ u: "east1", v: "south1"}});
+                digraph.addEdge({ e: { u: "south1", v: "west1"}});
+                digraph.addEdge({ e: { u: "west1", v: "north1"}});
 
-                digraph.addEdge("north2","east2");
-                digraph.addEdge("east2","south2");
-                digraph.addEdge("south2","west2");
-                digraph.addEdge("west2","north2");
+                digraph.addEdge({ e: { u: "north2", v: "east2"}});
+                digraph.addEdge({ e: { u: "east2", v: "south2"}});
+                digraph.addEdge({ e: { u: "south2", v: "west2"}});
+                digraph.addEdge({ e: { u: "west2", v: "north2"}});
 
-                digraph.addEdge("north1","north2");
-                digraph.addEdge("east1","east2");
-                digraph.addEdge("south1","south2");
-                digraph.addEdge("west1","west2");
+                digraph.addEdge({ e: { u: "north1", v: "north2"}});
+                digraph.addEdge({ e: { u: "east1", v: "east2"}});
+                digraph.addEdge({ e: { u: "south1", v: "south2"}});
+                digraph.addEdge({ e: { u: "west1", v: "west2"}});
 
             });
 
             it("graph should have eigth vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 8);
+                assert.lengthOf(Object.keys(digraph._private.vertexMap), 8);
                 assert.equal(digraph.verticesCount(), 8);
             });
 
@@ -433,7 +498,7 @@ describe("DirectedGraph container object tests", function() {
             });
 
             it("graph should have seven vertices", function() {
-                assert.lengthOf(Object.keys(digraph.vertexMap), 7);
+                assert.lengthOf(Object.keys(digraph._private.vertexMap), 7);
                 assert.equal(digraph.verticesCount(), 7);
             });
 
@@ -467,17 +532,79 @@ describe("DirectedGraph container object tests", function() {
         });
     });
 
+    describe("Property get/set/has/clear tests", function() {
+
+        var digraph = new DirectedGraph();
+
+        it("'hasVertexProperty' on non-existent vertex should return false", function() {
+            assert.isFalse(digraph.hasVertexProperty("does not exist"));
+            assert.isUndefined(digraph.getVertexProperty("does not exist"));
+        });
+
+        it("'hasVertexProperty' on vertex added w/out property should return false", function() {
+            digraph.addVertex({ u: 'test' });
+            assert.isFalse(digraph.hasVertexProperty("test"));
+            assert.isUndefined(digraph.getVertexProperty("test"));
+        });
+
+        it("'hasVertexProperty' on vertex added w/property should return true", function() {
+            digraph.addVertex({ u: 'test1', p: "some data" });
+            assert.isTrue(digraph.hasVertexProperty("test1"));
+            assert.equal(digraph.getVertexProperty("test1"), "some data");
+        });
+
+        it("'clearVertexProperty' on non-existent vertex should return false", function() {
+            assert.isFalse(digraph.clearVertexProperty("does not exist"));
+        });
+
+        it("'clearVertexProperty' on vertex that exists should return true (regardless of if it has a property)", function() {
+            assert.isTrue(digraph.clearVertexProperty("test"));
+        });
+
+        it("'hasVertexProperty' should return false on vertex w/property after it is cleared", function() {
+            assert.isTrue(digraph.clearVertexProperty("test1"));
+            assert.isFalse(digraph.hasVertexProperty("test1"));
+        });
+
+        it("'hasEdgeProperty' should return false on non-existent edge", function() {
+            assert.isFalse(digraph.hasEdgeProperty({ u: "test", v: "test1" }));
+        });
+
+        it("'hasEdgeProperty' should return false on edge added w/no property", function() {
+            digraph.addEdge({e:{u:'test', v:'test1'}});
+            assert.isFalse(digraph.hasEdgeProperty({u:'test',v:'test1'}));
+        });
+
+        it("'hasEdgeProperty' should return true on edge added w/property", function() {
+            digraph.addEdge({e:{u:'apple',v:'orange'},p:'fruit'});
+            assert.isTrue(digraph.hasEdgeProperty({u:'apple', v:'orange'}));
+        });
+
+        it("'clearEdgeProperty' should return false on non-existent edge", function() {
+            assert.isFalse(digraph.clearEdgeProperty({u:'bull',v:'shit'}));
+        });
+
+        it("'clearEdgeProperty' should return true on edge that doesn't have a property", function() {
+            assert.isTrue(digraph.clearEdgeProperty({u:'test',v:'test1'}));
+        });
+
+        it("'clearEdgeProperty' should return true on edge has a property", function() {
+            assert.isTrue(digraph.clearEdgeProperty({u:'apple',v:'orange'}));
+        });
+
+    });
+
     describe("Graph stress", function() {
 
-        var verticesToAllocate = 10000;
+        var verticesToAllocate = 1000000;
         var digraph = new DirectedGraph();
         var x;
         for (x = 0; x < verticesToAllocate; x++) {
-            digraph.addVertex("" + x + "");
+            digraph.addVertex({ u: "" + x + ""});
         }
 
         it("graph should have " + verticesToAllocate + " vertices", function() {
-            assert.lengthOf(Object.keys(digraph.vertexMap), verticesToAllocate);
+            assert.lengthOf(Object.keys(digraph._private.vertexMap), verticesToAllocate);
             assert.equal(digraph.verticesCount(), verticesToAllocate);
         });
     });

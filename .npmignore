@@ -1,0 +1,8 @@
+*~
+.travis.yml
+.npmignore
+src/*~
+docs/
+examples/
+Gruntfile.js
+test/

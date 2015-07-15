@@ -1,70 +1,138 @@
-// digraph-json-import.js
-//
+/*
+  Encapsule/jsgraph/src/digraph-json-import.js
 
-module.exports = function (digraph_, json_) {
+  Copyright (C) 2014-2015 Christopher D. Russell
+
+  This library is published under the MIT License and is part of the
+  Encapsule Project System in Cloud (SiC) open service architecture.
+  Please follow https://twitter.com/Encapsule for news and updates
+  about jsgraph and other time saving libraries that do amazing things
+  with in-memory data on Node.js and HTML.
+*/
+
+module.exports = function (digraph_, jsonOrObject_) {
 
     var jsonParse;
     var getType = function(ref_) { return Object.prototype.toString.call(ref_); };
+    var response = { error: null, result: null };
+    var errors = [];
+    var inBreakScope = false;
 
-    var type = getType(json_);
-    switch (type) {
-    case '[object String]':
-        try {
-            jsonParse = JSON.parse(json_);
-        } catch (exception_) {
-            throw new Error("JSON parse error: Cannot import invalid JSON document into jsgraph.");
-        }
-        break;
-    case '[object Object]':
-        jsonParse = json_;
-        break;
-    default:
-        throw new Error("Invalid reference to '" + type + "' passed instead of expected JSON (or equivalent object) reference.");
-    }
-
-    type = getType(jsonParse);
-    if (type !== '[object Object]') {
-        throw new Error("JSON semantics error: Expected top-level object but found '" + type + "'.");
-    }
-
-    type = getType(jsonParse.jsgraph);
-    if (type !== '[object Object]') {
-        throw new Error("JSON semantics error: Could not find required top-level object 'jsgraph'.");
-    }
-
-    type = getType(jsonParse.jsgraph.digraph);
-    if (type !== '[object Object]') {
-        throw new Error("JSON semantics error: Could not find expected digraph state object 'jsgraph.directed'.");
-    }
-
-    digraphJSON = jsonParse.jsgraph.digraph;
-
-    type = getType(digraphJSON.vertices);
-    if (type !== '[object Array]') {
-        throw new Error("JSON semantics error: Expected 'vertices' to be an array but found '" + type + "'.");
-    }
-
-    type = getType(digraphJSON.edges);
-    if (type !== '[object Array]') {
-        throw new Error("JSON semantics error: Expected 'edges' to be an array but found '" + type + "'.");
-    }
-
-    digraphJSON.vertices.forEach(function(vertexDescriptor_) {
+    var processVertex = function(vertexDescriptor_) {
         type = getType(vertexDescriptor_);
         if (type !== '[object Object]') {
-            throw new Error("JSON semantics error: Expected vertex descriptor object in 'vertices' array but found '" + type + "' instead.");
+            errors.unshift("JSON semantics error: Expected vertex descriptor object in 'vlist' array but found '" + type + "' instead.");
+        } else {
+            type = getType(vertexDescriptor_.u);
+            if (type !== '[object String]') {
+                errors.unshift("JSON semantics error: Expected vertex descriptor property 'u' to be a string but found '" + type + "' instead.");
+            } else {
+                digraph_.addVertex({ u: vertexDescriptor_.u, p: vertexDescriptor_.p});
+            }
         }
-        type = getType(vertexDescriptor_.vid);
-        if (type !== '[object String]') {
-            throw new Error("JSON semantics error: Expected vertex descriptor property 'vid' to be a string but found '" + type + "' instead.");
+    };
+
+    var processEdge = function (edgeDescriptor_) {
+        type = getType(edgeDescriptor_);
+        if (type !== '[object Object]') {
+            errors.unshift("JSON semantics error: Expected edge descriptor object in 'elist' array but found '" + type + "' instead.");
+        } else {
+            type = getType(edgeDescriptor_.e);
+            if (type !== '[object Object]') {
+                errors.unshift("JSON semantics error: Edge record in 'elist' should define edge descriptor object 'e' but but found '" + type + "' instead.");
+            } else {
+                type = getType(edgeDescriptor_.e.u);
+                if (type !== '[object String]') {
+                    errors.unshift("JSON semantics error: Expected edge descriptor property 'e.u' to be a string but found '" + type + "' instead.");
+                } else {
+                    type = getType(edgeDescriptor_.e.v);
+                    if (type !== '[object String]') {
+                        errors.unshift("JSON semantics error: Expected edge descriptor property 'e.v' to be a string but found '" + type + "' instead.");
+                    } else {
+                        digraph_.addEdge({ e: edgeDescriptor_.e, p: edgeDescriptor_.p});
+                    }
+                }
+            }
         }
-        digraph_.addVertex(vertexDescriptor_.vid, vertexDescriptor_.vprops);
-    });
+    };
 
-    digraphJSON.edges.forEach(function(edgeDescriptor_) {
-        digraph_.addEdge(edgeDescriptor_.uid, edgeDescriptor_.vid, edgeDescriptor_.eprops);
-    });
+    while (!inBreakScope) {
+        inBreakScope = true;
 
-    return true;
+        var type = getType(jsonOrObject_);
+        switch (type) {
+        case '[object String]':
+            try {
+                jsonParse = JSON.parse(jsonOrObject_);
+            } catch (exception_) {
+                errors.unshift("Exception occurred while parsing JSON: " + exception_.message);
+            }
+            break;
+        case '[object Object]':
+            jsonParse = jsonOrObject_;
+            break;
+        default:
+            errors.unshift("Invalid reference to '" + type + "' passed instead of expected JSON (or equivalent object) reference.");
+        }
+        if (errors.length) {
+            break;
+        }
+
+        type = getType(jsonParse);
+        if (type !== '[object Object]') {
+            errors.unshift("JSON semantics error: Expected top-level object but found '" + type + "'.");
+            break;
+        }
+
+        type = getType(jsonParse.vlist);
+        switch (type) {
+        case '[object Undefined]':
+            jsonParse.vlist = []; // default to empty vertex list
+            break;
+        case '[object Array]':
+            // do nothing the array is parsed below
+            break;
+        default:
+            errors.unshift("JSON semantics error: Expected 'vlist' (vertices) to be an array but found '" + type + "'.");
+            break;
+        }
+        if (errors.length) {
+            break;
+        }
+
+        type = getType(jsonParse.elist);
+        switch (type) {
+        case '[object Undefined]':
+            jsonParse.elist = []; // default to empty edge list
+            break;
+        case '[object Array]':
+            // do nothing
+            break;
+        default:
+            errors.unshift("JSON semantics error: Expected 'elist' (edges) to be an array but found '" + type + "'.");
+        }
+        if (errors.length) {
+            break;
+        }
+
+        jsonParse.vlist.forEach(processVertex);
+        if (errors.length) {
+            break;
+        }
+
+        jsonParse.elist.forEach(processEdge);
+        if (errors.length) {
+            break;
+        }
+
+    } // while !inBreakScope
+
+    if (errors.length) {
+        response.error = errors.join(' ');
+    } else {
+        response.result = true;
+    }
+
+    return response;
 
 };
