@@ -31,7 +31,7 @@ _"... At the other end of the spectrum is, for example, graph theory, where the 
 
 In your project, install via npm.
 
-        $ npm install jsgraph --save # 
+        $ npm install jsgraph --save
         jsgraph@0.5.xx node_modules/jsgraph
 
 ### Sources

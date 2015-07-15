@@ -117,3 +117,7 @@ Use the `response.searchStatus` string to discriminate the exit status of the tr
 
 
 
+<hr>
+
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+

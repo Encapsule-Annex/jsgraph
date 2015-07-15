@@ -639,3 +639,7 @@ Identical to `fromObject` except that the request is a JSON string instead of a 
 
 
 
+<hr>
+
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+

@@ -19,3 +19,7 @@ JavaScript object with the following properties:
 - **error**: null or a string explaining what went wrong
 - **result**: a `DirectedGraph` container reference or null if error
 
+<hr>
+
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+
