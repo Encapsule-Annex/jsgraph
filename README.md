@@ -4,11 +4,11 @@
 
 **Encapsule Project: [news](https://twitter.com/Encapsule) / [info](http://blog.encapsule.org) / [source code](https://github.com/encapsule/)**
 
-**View this document [GitHub](https://github.com/Encapsule/jsgraph/blob/master/README.md)**
+**View master branch version of this document on [GitHub](https://github.com/Encapsule/jsgraph/blob/master/README.md)**
 
 ## About jsgraph
 
-_Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
+_Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs._  - [J. Siek](http://ecee.colorado.edu/~siek/resume.pdf)
 
 Encapsule/jsgraph is a framework for working with directed graph data models using an in-memory storage container abstraction, and a small but growing collection of powerfully-extensible graph coloring algorithms implemented using the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern).
 
