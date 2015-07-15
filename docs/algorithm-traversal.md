@@ -83,9 +83,9 @@ Traversal algorithms return an error/result response object.
 A traversal context object looks like this:
 
         var traversalContext = {
-            searchStatus: string indicating the status of the traversal
-            colorMap: an internal hashtable used internally by the algorithm
-            undiscoveredMap: an internal hashtable used to keep track of vertices that have not been visited
+            searchStatus: string status
+            colorMap: hashtable
+            undiscoveredMap: hashtable
         };
 
 It is often useful to determine if a traversal completed or was terminated by a **false** visitor callback response.
