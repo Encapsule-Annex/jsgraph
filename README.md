@@ -4,6 +4,8 @@
 
 **Encapsule Project: [news](https://twitter.com/Encapsule) / [info](http://blog.encapsule.org) / [source code](https://github.com/encapsule/)**
 
+**View this document [GitHub](https://github.com/Encapsule/jsgraph/blob/master/README.md)**
+
 ## About jsgraph
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
@@ -14,8 +16,8 @@ jsgraph is based on the API design and architectural separaton of concerns for g
 
 ### Programming
 
-- [Object Reference: DirectedGraph](./docs/object-DirectedGraph.md)
-- [Object Reference: DirectedGraph data I/O](./docs/object-JSON.md)
+- [Object Reference: DirectedGraph container](./docs/object-DirectedGraph.md)
+- [Object Reference: DirectedGraph export object](./docs/object-JSON.md)
 - [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)
 - [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)
 - [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)
@@ -178,7 +180,7 @@ v0.5 jsgraph has the following public export object:
 
 ### DirectedGraph container object
 
-**See also: [Object Reference: DirectedGraph](./docs/object-DirectedGraph.md)**
+**See also: [Object Reference: DirectedGraph container](./docs/object-DirectedGraph.md)**
 
 jsgraph's core directed graph container object, **DirectedGraph**, is constructed by a calling library export function `jsgraph.directed.create`:
 
@@ -196,7 +198,7 @@ jsgraph's core directed graph container object, **DirectedGraph**, is constructe
         
 The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. 
 
-**See also: [Object reference: JSON I/O](./docs/object-JSON.md)**
+**See also: [Object reference: DirectedGraph export object](./docs/object-JSON.md)**
             
 #### DirectedGraph vertex methods
 

@@ -1,6 +1,6 @@
 # Encapsule/jsgraph object reference
 
-[^--- Back to README.md](../README.md)
+[^--- TOP](../README.md)
 
 ## DirectedGraph container
 
