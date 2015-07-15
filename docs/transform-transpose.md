@@ -2,19 +2,18 @@
 
 ## jsgraph.directed.transpose
 
+Transposing a directed graph is the process of flipping the direction of its edges around. jsgraph's `jsgraph.directed.transpose` transform encapsulates this process returning a newly constructed `DirectedGraph` container from an existing instance.
 
+        var transposedDigraph = jsgraph.transpose(originalDigraph);
 
+**Request**
 
-# Generic Transforms
+Reference to a `DirectedGraph` container instance.
 
-## jsgraph.directed.transpose
+**Response**
 
-        var transposedDigraph = jsgraph.transpose(digraphIn_);
+JavaScript object with the following properties:
 
-**Parameters:**
+- **error**: null or a string explaining what went wrong
+- **result**: a `DirectedGraph` container reference or null if error
 
-- digraphIn_ (required): a reference to a previously-constructed and initialized DirectedGraph object.
-
-**Return:**
-
-Returns a new instance of DirectedGraph that reverses the direction of all the edges in the source graph.
