@@ -6,8 +6,8 @@
 
 jsgraph v0.5 exports two _traveral_ algorithms:
 
-- [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)
-- [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)
+- [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./algorithm-bft.md)
+- [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./algorithm-dft.md)
 
 ### Traversal request object
 
