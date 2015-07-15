@@ -71,3 +71,8 @@ _`DirectedGraph` export object `elist` array contains:_
             },
             p: optional serializable data
         };
+
+<hr>
+
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+

@@ -39,3 +39,9 @@ finishVertex | { u: string: g: DirectedGraph } |invoked on vertex u after finish
 
 
 **See also: [Boost C++ Graph Library: DFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/DFSVisitor.html)**
+
+
+<hr>
+
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+
