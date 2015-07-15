@@ -4,19 +4,26 @@
 
 **Encapsule Project: [news](https://twitter.com/Encapsule) / [info](http://blog.encapsule.org) / [source code](https://github.com/encapsule/)**
 
+**View master branch version of this document on [GitHub](https://github.com/Encapsule/jsgraph/blob/master/README.md)**
+
 ## About jsgraph
 
-_Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs. - [Jeremy G. Siek](http://ecee.colorado.edu/~siek/resume.pdf)_
+_Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs._ - [J. Siek](http://ecee.colorado.edu/~siek/resume.pdf)
 
-Encapsule/jsgraph is a framework for working with directed graph data models using an in-memory storage container abstraction, and a small but growing collection of powerfully-extensible graph coloring algorithms implemented using the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern).
+Encapsule/jsgraph is a framework for working with directed graph data models using an in-memory storage container abstraction, and a small but growing collection of powerfully-extensible graph coloring algorithms implemented using the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern). The library is specifically designed for efficient embedding in complex Node.js / HTML 5 applications that require clean separation of concerns, and a high-degree of extensibility and control.
 
 jsgraph is based on the API design and architectural separaton of concerns for graph algorithms invented by the authors of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL). The port is logically close enough that the BGL documentation should be considered as an advanced resource.
 
+I encourage you to take some time and experiment with the library as it's truly powerful once you get over the initial learning curve.
+
+_"... At the other end of the spectrum is, for example, graph theory, where the basic object, a graph, can be immediately comprehended. One will not get anywhere in graph theory by sitting in an armchair and trying to understand graphs better. Neither is it particularly necessary to read much of the literature before tackling a problem: it is of course helpful to be aware of some of the most important techniques, but the interesting problems tend to be open precisely because the established techniques cannot easily be applied."_ - [W.T. Gowers](https://en.wikipedia.org/wiki/Timothy_Gowers)
+
 ### Programming
 
-- [Object Reference: DirectedGraph](./docs/object-DirectedGraph.md)
-- [Object Reference: DirectedGraph data I/O](./docs/object-JSON.md)
+- [Object Reference: DirectedGraph container](./docs/object-DirectedGraph.md)
+- [Object Reference: DirectedGraph export object](./docs/object-JSON.md)
 - [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)
+- [Algorithm Reference: Traversal algorithms overview](./docs/algorithm-traversal.md)
 - [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)
 - [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)
 
@@ -24,7 +31,7 @@ jsgraph is based on the API design and architectural separaton of concerns for g
 
 In your project, install via npm.
 
-        $ npm install jsgraph --save # 
+        $ npm install jsgraph --save
         jsgraph@0.5.xx node_modules/jsgraph
 
 ### Sources
@@ -178,7 +185,7 @@ v0.5 jsgraph has the following public export object:
 
 ### DirectedGraph container object
 
-**See also: [Object Reference: DirectedGraph](./docs/object-DirectedGraph.md)**
+**See also: [Object Reference: DirectedGraph container](./docs/object-DirectedGraph.md)**
 
 jsgraph's core directed graph container object, **DirectedGraph**, is constructed by a calling library export function `jsgraph.directed.create`:
 
@@ -196,7 +203,7 @@ jsgraph's core directed graph container object, **DirectedGraph**, is constructe
         
 The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. 
 
-**See also: [Object reference: JSON I/O](./docs/object-JSON.md)**
+**See also: [Object reference: DirectedGraph export object](./docs/object-JSON.md)**
             
 #### DirectedGraph vertex methods
 
@@ -230,7 +237,7 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `getEdges()` - retrieve an array of edge descriptor objects for all edges in the container
 - `rootVerticesCount()` - obtain count of vertices with in-degree zero
 - `getRootVertices()` - retrieve an array of ID strings for all vertices that have in-degree zero
-- `leafVerticesCount() - obtain count of vertices with out-degree zero
+- `leafVerticesCount()` - obtain count of vertices with out-degree zero
 - `getLeafVertices()` - retrieve an array of ID strings for all vertices that have out-degree zero
 - `toObject()` - serialize the DirectedGraph container to a JavaScript data object
 - `toJSON(replacer, space)` - serialize the DirectedGraph container to a JSON string

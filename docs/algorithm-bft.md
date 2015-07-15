@@ -1,82 +1,46 @@
 # Encapsule/jsgraph algorithm reference
 
+[^--- TOP](../README.md)
+
 ## jsgraph.directed.breadthFirstTraverse
 
+Please refer to Chapter 23 "Elementary Graph Algorithms" of [Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) (MIT Press) for a complete discussion of the classic depth-first search and visit algorithms encapsulated by jsgraph's `depthFirstTraverse` algorithm.
 
-## BFV / BFS
+### BFT request and response
 
-### breadthFirstSearchVisitor object interface
+`breadthFirstTraverse` is called with a normalized traversal algorithm request object and returns a normalized traversal algorithm response object.
 
-To leverage the `breadthFirstVisit` and `breadthFirstSearch` algorithms, you must implement a breadth-first search visitor object and provide callback implementations(s):
+        var response = digraph.directed.breadthFirstTraverse({
+            digraph: myDigraph,
+            visitor: myBFTVisitor
+        });
 
-        var breadthFirstVisitorInterface = {
-            initializeVertex: function(vertexId_, digraph_),
-            discoverVertex: function(vertexId_, digraph_),
-            startVertex: function(vertexId_, digraph_),
-            examineVertex: function(vertexId_, digraph_),
-            examineEdge: function(vertexIdU_, vertexIdV_, digraph_),
-            treeEdge: function(vertexIdU_, vertexIdV_, digraph_),
-            nonTreeEdge: function(vertexIdU_, vertexIdV_, digraph_),
-            grayTarget: function(vertexIdU_, vertexIdV_, digraph_),
-            blackTarget: function(vertexIdU_, vertexIdV_, digraph_),
-            finishVertex: function(vertexId_, digraph_)
-        };
+Note that by default, `breadthFirstTraverse` will fail if called on `DirectedGraph` container that has no root vertices (due to cycle(s) or no vertices at all). To allow this, in other words go through the motions but traverse nothing, set `request.options.allowEmptyStartVector` flag true.
 
-All callback functions are optional; implement only those you require.
+**See: [Algorithm Reference: Traversal algorithms overview](./algorithm-traversal.md) for details.**
 
-- **initializeVertex** - This invoked on every vertex of the graph before the start of the graph search.
-- **discoverVertex** - This is invoked when a vertex is encountered for the first time
-- **examineVertex** - This is invoked on a vertex as it is popped from the queue. This happens immediately before examine_edge() is invoked on each of the out-edges of vertex u.
-- **examineEdge** - This is invoked on every out-edge of each vertex after it is discovered.
-- **treeEdge** - This in invoked on edge edge as it becomes a member of the edges that form the search tree.
-- **nonTreeEdge** - This is invoked on back or cross edges.
-- **grayTarget** - This is invoked on the subset of non-tree edges whose target vertex is colored grat at the time of examination. The color gray indicates that the vertex is currently in the queue.
-- blackTarget - This is invoked on a subset of the edges whose target vertex is colored black at the time of examination. The color black indicates that the vertex has been removed from the queue.
-- finishVertex - This is invoked on a vertex after all of its out edges have been added to the search tree and all adjacent vertices have been discovered (but before the out-edges of the adjacent vertices have been examined).
+### BFT visitor interface object
 
-Please see the [Boost C++ Graph Library: BFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/BFSVisitor.html) documentation for a complete discussion of API semantics.
+A BFT visitor interface is a JavaScript object with zero or more defined function callbacks from the table below.
 
-### createBreadthFirstSearchContext
+Note that all client-provided visitor functions are required to return a Boolean response: true to continue the traversal, false to terminate.
 
-Prior to calling either `breadthFirstVisit` or `breadthFirstSearch` you must initialize a context object for the algorithm's internal state.
+callback | request | explanation
+-------- | ------- | -----------
+initializeVertex | { u: string, g: DirectedGraph } | invoked on every vertex of the graph before the start of the graph search
+startVertex | { u: string, g: DirectedGraph } | invoked on every vertex of the graph before the start of the graph search
+discoverVertex | { u: string, g: DirectedGraph } | invoked on every vertex of the graph before the start of the graph search
+examineVertex | { u: string, g: DirectedGraph } | invoked on every vertex of the graph before the start of the graph search
+examineEdge | { e: { u: string, v: string }, g: DirectedGraph } | invoked on every out-edge of each vertex after it is discovered
+nonTreeEdge | { e: { u: string, v: string }, g: DirectedGraph } | invoked on back or cross edges
+grayTarget | { e: { u: string, v: string }, g: DirectedGraph } | invoked on the subset of non-tree edges whose target vertex is colored grat at the time of examination. The color gray indicates that the vertex is currently in the queue
+blackTarget | { e: { u: string, v: string }, g: DirectedGraph } | invoked on a subset of the edges whose target vertex is colored black at the time of examination. The color black indicates that the vertex has been removed from the queue
+finishVertex | { u: string, g: DirectedGraph } | invoked on a vertex after all of its out edges have been added to the search tree and all adjacent vertices have been discovered (but before the out-edges of the adjacent vertices have been examined)
 
-      var bfsContext = jsgraph.directed.createBreadthFirstSearchContext(digraph_, visitorInterface_);
 
-**Parameters:**
+**See also: [Boost C++ Graph Library: BFS Visitor Concept](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/BFSVisitor.html)**
 
-- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
-- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object
+<hr>
 
-**Remarks:**
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
 
-You need to initialize a new context object every time you affect a new graph traversal.
-
-### breadthFirstVisit
-
-        jsgraph.directed.breadthFirstVisit(digraph_, context_, startVertexId_, visitorInterface_);
-
-**Parameters:**
-
-- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
-- context_ (required): a reference to your breadth-first search context object.
-- startVertexId_ (required): the string identifier of vertex at which to start the visit traversal.
-- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object.
-
-**Return:**
-
-None.
-
-### breadthFirstSearch
-
-        jsgraph.directed.breadthFirstSearch(digraph_, context_, startVertexArray_, visitorInterface_);
-
-**Parameters:**
-
-- digraph_ (required): a reference to a previously-constructed DirectedGraph object.
-- context_ (required): a reference to your breadth-first search context object.
-- startVertexArray_ (required): as array of string identifiers of the vertices to visit breadth-first.
-- visitorInterface_ (required): a reference to your application-specific BFS visitor interface object.
-
-**Return:**
-
-None.
