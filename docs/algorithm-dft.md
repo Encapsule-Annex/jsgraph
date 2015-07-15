@@ -15,11 +15,15 @@ Please refer to Chapter 23 "Elementary Graph Algorithms" of [Introduction To Alg
             visitor: myDFTVisitor
         });
 
+Note that by default, `depthFirstTraverse` will fail if called on `DirectedGraph` container that has no root vertices (due to cycle(s) or no vertices at all). To allow this, in other words go through the motions but traverse nothing, set `request.options.allowEmptyStartVector` flag true.
+
 **See: [Algorithm Reference: Traversal algorithms overview](./algorithm-traversal.md) for details.**
 
 ### DFT visitor interface object
 
-A DFT visitor interface is a JavaScript object with zero or more defined function cvallbacks that you implement with the following semantics:
+A DFT visitor interface is a JavaScript object with zero or more defined function callbacks from the table below.
+
+Note that all client-provided visitor functions are required to return a Boolean response: true to continue the traversal, false to terminate.
 
 callback | request | explanation
 -------- | ------- | -----------

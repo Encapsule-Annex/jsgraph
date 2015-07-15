@@ -15,11 +15,15 @@ Please refer to Chapter 23 "Elementary Graph Algorithms" of [Introduction To Alg
             visitor: myBFTVisitor
         });
 
+Note that by default, `breadthFirstTraverse` will fail if called on `DirectedGraph` container that has no root vertices (due to cycle(s) or no vertices at all). To allow this, in other words go through the motions but traverse nothing, set `request.options.allowEmptyStartVector` flag true.
+
 **See: [Algorithm Reference: Traversal algorithms overview](./algorithm-traversal.md) for details.**
 
 ### BFT visitor interface object
 
-A BFT visitor interface is a JavaScript object with zero or more defined function callbacks that you implement with the following semantics:
+A BFT visitor interface is a JavaScript object with zero or more defined function callbacks from the table below.
+
+Note that all client-provided visitor functions are required to return a Boolean response: true to continue the traversal, false to terminate.
 
 callback | request | explanation
 -------- | ------- | -----------
