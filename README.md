@@ -19,6 +19,7 @@ jsgraph is based on the API design and architectural separaton of concerns for g
 - [Object Reference: DirectedGraph container](./docs/object-DirectedGraph.md)
 - [Object Reference: DirectedGraph export object](./docs/object-JSON.md)
 - [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)
+- [Algorithm Reference: Traversal algorithms overview](./docs/algorithm-traversal.md)
 - [Algorithm Reference: jsgraph.directed.breadthFirstTraverse](./docs/algorithm-bft.md)
 - [Algorithm Reference: jsgraph.directed.depthFirstTraverse](./docs/algorithm-dft.md)
 

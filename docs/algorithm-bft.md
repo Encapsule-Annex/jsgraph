@@ -1,5 +1,7 @@
 # Encapsule/jsgraph algorithm reference
 
+[^--- TOP](../README.md)
+
 ## jsgraph.directed.breadthFirstTraverse
 
 
