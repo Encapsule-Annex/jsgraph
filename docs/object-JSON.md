@@ -51,3 +51,23 @@ In some scenarious you may find it useful to build the contents of your `Directe
 
 `DirectedGraph` methods `fromObject` and `fromJSON` parse an export object or JSON string respectively and add deserialize on top of the existing data in the container using the `addVertex` and `addEdge` methods.
 
+**Vertex write request object**
+
+_`DirectedGraph` export object `vlist` array contains:_
+
+        var vertexWriteRequest = {
+            u: vertex ID string
+            p: optional serializable data
+        };
+
+**Edge write request object**
+
+_`DirectedGraph` export object `elist` array contains:_
+
+        var edgeWriteRequest = {
+            e: {
+                u: vertex ID string
+                v: vertex ID string
+            },
+            p: optional serializable data
+        };
