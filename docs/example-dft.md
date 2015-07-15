@@ -1,5 +1,7 @@
 # Encapsule/jsgraph example
 
+**NOTE: This is a v0.4 example I haven't had time to update to the v0.5 API.**
+
 ## Depth-first traversal
 
 A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example from [Introduction to Algorithms 23.3](http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap23.htm).
@@ -116,3 +118,9 @@ A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example f
            "40 finishVertex w at time 12"]
 
 **<3**
+
+
+<hr>
+
+Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+
