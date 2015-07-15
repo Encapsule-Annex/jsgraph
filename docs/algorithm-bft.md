@@ -15,7 +15,7 @@ Please refer to Chapter 23 "Elementary Graph Algorithms" of [Introduction To Alg
             visitor: myBFTVisitor
         });
 
-**See: [Algorithm Reference: Traversal algorithms overview](./algorithms-traversal.md) for details.**
+**See: [Algorithm Reference: Traversal algorithms overview](./algorithm-traversal.md) for details.**
 
 ### BFT visitor interface object
 
