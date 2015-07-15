@@ -16,9 +16,9 @@ Traversal algorithms rely on a common request object structure and shared front-
 A traveral algorithm request is a JavaScript object that looks like this:
 
         var traversalRequest = {
-            digraph: (required) reference to in-memory `DirectedGraph` container
-            visitor: (required) reference to client-defined, algorithm-specific visitor interface object
-            options: (optional) an object containing advanced configuration options (discussed below)
+            digraph: (required) DirectedGraph container reference
+            visitor: (required) visitor interface object reference
+            options: (optional) advanced config options object
         };
 
 Pass a traversal request object to either `breadthFirstTraverse` or `depthFirstTraverse` and to initiate a traversal and obtain a response object.
@@ -31,10 +31,12 @@ Most of the time you'll not need to worry about `request.options`. A few commonl
 
 For reference, here are the property semantics of the `request.options` object:
 
-- **startVector**: A vertex ID string or array of vertex ID strings. Defaults to the root vertex set of the container.
-- **allowEmptyStartVector**: Boolean flag indicating if traversal with empty start vector is an error or not. Default is false.
-- **signalStart**: Boolean flag indicating if the algorithm should call the `startVertex` visitor interface callback. Default is true.
-- **traverseContext**: Traversal context object allowing client to pass in pre-colored colormaps etc. (very advanced)
+property | type | explanation
+-------- | ---- | -----------
+startVector | string or array of strings | one or more vertex ID string(s). defaults to root vertex set of container
+allowEmptyStartVector | Boolean | flag indicating if traversal with empty start vector is an error or not. default is false
+signalStart | Boolean | flag indicating if the algorithm should call the `startVertex` visitor interface callback. default is true.
+traverseContext | object | traversal context (advanced - see subsection below)
 
 #### Rootless directed graphs
 
