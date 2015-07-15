@@ -1,6 +1,6 @@
 # Encapsule/jsgraph object reference
 
-[Back to README.md](../README.md)
+[^--- Back to README.md](../README.md)
 
 ## DirectedGraph container
 
@@ -581,6 +581,8 @@ Returns an array of identifier strings indicating the set of leaf vertices in th
 
 
 ### DirectedGraph.toObject
+
+**See also: [Object Reference: data I/O](./docs/object-JSON.md)
 
         var response = digraph.toObject();
 
