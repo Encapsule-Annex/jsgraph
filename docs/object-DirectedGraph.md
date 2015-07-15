@@ -1,5 +1,7 @@
 # Encapsule/jsgraph object reference
 
+[Back to README.md](../README.md)
+
 ## DirectedGraph container
 
 jsgraph's `DirectedGraph` container object provides a normalized API for managing in-memory directed graph data structures regardless of the application-specific semantics you ascribe to the data.
