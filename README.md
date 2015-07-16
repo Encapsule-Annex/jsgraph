@@ -47,7 +47,7 @@ See also: [Encapsule/jsgraph on GitHub](https://github.com/Encapsule/jsgraph)
 ## Features
 
 - Generic in-memory container for directed mathematical graph data and property sets.
-- Directed graph tranposition algorithm (i.e. flip the edges).
+- Directed graph transposition algorithm (i.e., flip the edges).
 - Breadth-first visit and search algorithms (full, non-recursive implementation with edge classification).
 - Depth-first visit and search algorithms (full, non-recursive implementation with edge classicication).
 - Core algorithms leverage the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) for easy use and extension.
@@ -58,102 +58,104 @@ See also: [Encapsule/jsgraph on GitHub](https://github.com/Encapsule/jsgraph)
 ## Example
 
 The following short example constructs a `DirectedGraph` container using a v0.5 jsgraph digraph data object, and derives a simple rank assignment algorithm from jsgraph's bundled `breadthFirstTraverse` algorithm. Note that the BFT visitor interface callback functions leverage the `DirectedGraph` API to get/set the data property value of each visited vertex to its rank.
-
-        // Encapsule/jsgraph/examples/bft-vertex-ranking.js
-        var jsgraph = require('jsgraph');
-        var response = jsgraph.directed.create({
-            elist: [
-                { e: { u: "A", v: "B" } },
-                { e: { u: "B", v: "C" } },
-                { e: { u: "B", v: "D" } }
-            ]
+```javascript
+// Encapsule/jsgraph/examples/bft-vertex-ranking.js
+var jsgraph = require('jsgraph');
+var response = jsgraph.directed.create({
+    elist: [
+        { e: { u: "A", v: "B" } },
+        { e: { u: "B", v: "C" } },
+        { e: { u: "B", v: "D" } }
+    ]
+});
+// Check the response object for error!
+if (response.error) {
+    throw new Error(response.error);
+}
+// Now the container is safe to use.
+var digraph = response.result;
+// THINK OF VISITOR INTERFACES LIKE ALGORITHM FLIGHT RECORDERS
+// VERTEX RANKING ALGORITHM (breadthFirstTraverse visitor interface)
+var bftVisitorInterface = {
+    startVertex: function(request) {
+        request.g.setVertexProperty({ u: request.u, p: 0});
+        return true; // continue the traversal
+    },
+    treeEdge: function (request) {
+        request.g.setVertexProperty({
+            u: request.e.v,
+            p: request.g.getVertexProperty(request.e.u) + 1
         });
-        // Check the response object for error!
-        if (response.error) {
-            throw new Error(response.error);
+        return true;
+    }
+};
+// ACTUATE OUR VISITOR INTERFACE WITH BFT TO PRODUCE THE RESULT
+response = jsgraph.directed.breadthFirstTraverse({
+    digraph: digraph,
+    visitor: bftVisitorInterface
+});
+if (response.error) {
+    throw new Error(response.error);
+}
+console.log("DirectedGraph: '" +
+digraph.toJSON(undefined,4) + "'");
+console.log("BFT traversal: '" +
+    JSON.stringify(response.result,undefined,4) + "'");
+```
+... produces the following output with each vertex's property value set to its rank (edge hops away from a root vertex in this example).
+
+```javascript
+DirectedGraph: '{
+    "vlist": [
+        {
+            "u": "A",
+            "p": 0
+        },
+        {
+            "u": "B",
+            "p": 1
+        },
+        {
+            "u": "C",
+            "p": 2
+        },
+        {
+            "u": "D",
+            "p": 2
         }
-        // Now the container is safe to use.
-        var digraph = response.result;
-        // THINK OF VISITOR INTERFACES LIKE ALGORITHM FLIGHT RECORDERS
-        // VERTEX RANKING ALGORITHM (breadthFirstTraverse visitor interface)
-        var bftVisitorInterface = {
-            startVertex: function(request) {
-                request.g.setVertexProperty({ u: request.u, p: 0});
-                return true; // continue the traversal
-            },
-            treeEdge: function (request) {
-                request.g.setVertexProperty({
-                    u: request.e.v,
-                    p: request.g.getVertexProperty(request.e.u) + 1
-                });
-                return true;
+    ],
+    "elist": [
+        {
+            "e": {
+                "u": "A",
+                "v": "B"
             }
-        };
-        // ACTUATE OUR VISITOR INTERFACE WITH BFT TO PRODUCE THE RESULT
-        response = jsgraph.directed.breadthFirstTraverse({
-            digraph: digraph,
-            visitor: bftVisitorInterface
-        });
-        if (response.error) {
-            throw new Error(response.error);
+        },
+        {
+            "e": {
+                "u": "B",
+                "v": "C"
+            }
+        },
+        {
+            "e": {
+                "u": "B",
+                "v": "D"
+            }
         }
-        console.log("DirectedGraph: '" +
-            digraph.toJSON(undefined,4) + "'");
-        console.log("BFT traversal:
-            '" + JSON.stringify(response.result,undefined,4) + "'");
-
-... produces the following output with each vertice's property value set to its rank (edge hops away from a root vertex in this example).
-    
-        DirectedGraph: '{
-            "vlist": [
-                {
-                    "u": "A",
-                    "p": 0
-                },
-                {
-                    "u": "B",
-                    "p": 1
-                },
-                {
-                    "u": "C",
-                    "p": 2
-                },
-                {
-                    "u": "D",
-                    "p": 2
-                }
-            ],
-            "elist": [
-                {
-                    "e": {
-                        "u": "A",
-                        "v": "B"
-                    }
-                },
-                {
-                    "e": {
-                        "u": "B",
-                        "v": "C"
-                    }
-                },
-                {
-                    "e": {
-                        "u": "B",
-                        "v": "D"
-                    }
-                }
-            ]
-        }'
-        BFT traversal: '{
-            "searchStatus": "completed",
-            "colorMap": {
-                "A": 2,
-                "B": 2,
-                "C": 2,
-                "D": 2
-            },
-            "undiscoveredMap": {}
-        }'
+    ]
+}'
+BFT traversal: '{
+    "searchStatus": "completed",
+    "colorMap": {
+        "A": 2,
+        "B": 2,
+        "C": 2,
+        "D": 2
+    },
+    "undiscoveredMap": {}
+}'
+```
 
 ## Release
 
@@ -171,17 +173,19 @@ The following short example constructs a `DirectedGraph` container using a v0.5 
 
 v0.5 jsgraph has the following public export object:
 
-        var jsgraph = require('jsgraph');
-        jsgraph === {
-            directed: {
-                create: [Function],
-                transpose: [Function],
-                breadthFirstTraverse: [Function],
-                depthFirstTraverse: [Function],
-                colors: { white: 0, gray: 1, black: 2 },
-                createTraversalContext: [Function]
-            }
-        }
+```javascript
+var jsgraph = require('jsgraph');
+jsgraph === {
+    directed: {
+    create: [Function],
+    transpose: [Function],
+    breadthFirstTraverse: [Function],
+    depthFirstTraverse: [Function],
+    colors: { white: 0, gray: 1, black: 2 },
+    createTraversalContext: [Function]
+    }
+}
+```
 
 ### DirectedGraph container object
 
@@ -189,17 +193,23 @@ v0.5 jsgraph has the following public export object:
 
 jsgraph's core directed graph container object, **DirectedGraph**, is constructed by a calling library export function `jsgraph.directed.create`:
 
-        var jsgraph = require('jsgraph');
-        var digraph = null;
-        var response = jsgraph.directed.create(/*data or JSON*/);
-        if (response.error) {
-            console.log(response.error);
-        } else {
-            digraph = response.result;
-            console.log(digraph.toJSON());
-        }
-        
-        '{"vlist":[],"elist":[]}'
+```javascript
+var jsgraph = require('jsgraph');
+var digraph = null;
+var response = jsgraph.directed.create(/*data or JSON*/);
+if (response.error) {
+    console.log(response.error);
+} else {
+    digraph = response.result;
+    console.log(digraph.toJSON());
+}
+```
+
+... produces:
+
+```javascript
+'{"vlist":[],"elist":[]}'
+```
         
 The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. 
 
@@ -252,11 +262,11 @@ jsgraph bundles a small collection of powerful functions that operate on the dat
 
 Transform functions generate new `DirectedGraph` containers from existing container(s) applying some presribed filter, or transformation to the vertex and/or edge lists.
 
-Algorithm functions are miniature agent processes that traverse the topology of a `DirectedGraph` container issuing callbacks to your derived client code at specified event points. Think of your graph as a maze: vertices are intersections, edges hallways. As the algorithmic agent walks through the maze it keeps track of where it's been so as to be able to dig itself out of corners and dead-ends. Each algorithm implements a different specific agent with its own goal strategies for "running the maze". 
+Algorithm functions are miniature agent processes that traverse the topology of a `DirectedGraph` container issuing callbacks to your derived client code at specified event points. Think of your graph as a maze: vertices are intersections, edges hallways. As the algorithmic agent walks through the maze it keeps track of where it's been so as to be able to dig itself out of corners and dead-ends. Each algorithm implements a different specific agent with its own goal strategies for "running the maze." 
 
 The magic of graph algorithms is that deep insight can be derived from watching and analyzing how specific graph algorithms traverse specific graph interconnect topologies. However, graph traversal algorithms are hard to implement due to their complexity and most implementations are purpose-built, and/or have little facility for embedded re-use or extension in contexts their authors didn't anticipate.
 
-jsgraph addresses this problem by copying the Boost Graph Library (BGL)'s fantastic use of the visitor pattern to encapsulate the specific goal strategies of graph traversal algorithms. The resulting API makes trivial use cases trivial and advanced use cases possible. Depending on your requirements, other similar libraries that provide single-call graph algorithm results may better suite your needs. But in cases where it makes sense to re-use the core algorithmic agents as the basis for your own complex data masterpiece, there's really just no substitute for the BGL visitor API style.
+jsgraph addresses this problem by copying the Boost Graph Library (BGL)'s fantastic use of the visitor pattern to encapsulate the specific goal strategies of graph traversal algorithms. The resulting API makes trivial use cases trivial and advanced use cases possible. Depending on your requirements, other similar libraries that provide single-call graph algorithm results may better suit your needs. But in cases where it makes sense to re-use the core algorithmic agents as the basis for your own complex data masterpiece, there's really just no substitute for the BGL visitor API style.
 
 jsgraph uses names and conventions documented in Chapter 23 "Elementary Graph Algorithms" of [Introduction To Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) (MIT Press). 
 
@@ -266,12 +276,14 @@ jsgraph uses names and conventions documented in Chapter 23 "Elementary Graph Al
 
 jsgraph currently provides a single 'transform' function, `jsgraph.directed.transpose` that constructs a new `DirectedGraph` that that is equivalent to an existing `DirectedGraph` except that the direction of all the edges is reversed. Note that vertex and edge properties (if any) are copied by reference to the transposed digraph as a deep copy is seldom desirable. 
 
-        var response = jsgraph.directed.transpose(digraph);
-        if (response.error) {
-            console.log(response.error);
-        } else {
-            console.log("Transposed digraph JSON: '" + response.result.toJSON() + "'.");
-        }
+```javascript
+var response = jsgraph.directed.transpose(digraph);
+if (response.error) {
+    console.log(response.error);
+} else {
+    console.log("Transposed digraph JSON: '" + response.result.toJSON() + "'.");
+}
+```
 
 #### jsgraph.directed.breadthFirstTraverse Algorithm
 

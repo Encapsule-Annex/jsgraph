@@ -15,15 +15,17 @@ Traversal algorithms rely on a common request object structure and shared front-
 
 A traveral algorithm request is a JavaScript object that looks like this:
 
-        var traversalRequest = {
-            digraph: (required) DirectedGraph container reference
-            visitor: (required) visitor interface object reference
-            options: (optional) advanced config options object
-        };
+```javascript
+var traversalRequest = {
+    digraph: (required) DirectedGraph container reference
+    visitor: (required) visitor interface object reference
+    options: (optional) advanced config options object
+};
+```
 
 Pass a traversal request object to either `breadthFirstTraverse` or `depthFirstTraverse` and to initiate a traversal and obtain a response object.
 
-### Request behavior
+### Request options object
 
 In versions prior to v0.5, jsgraph algorithms exposed some sharp edges that made them difficult for novices to apply correctly. In v0.5 the API was refactored to hide uncommonly used options, and take reasonable default actions.
 
@@ -75,45 +77,44 @@ In advanced scenarios, and sometimes in cases where you need fine-grained contro
 
 Traversal algorithms return an error/result response object.
 
-        var response = {
-            error: null or string explaining what went wrong
-            result: for traversal algorithms always a traversal context object or null if error
-        };
+```javascript
+var response = {
+    error: null or string explaining what went wrong
+    result: for traversal algorithms always a traversal context object or null if error
+};
+```
         
 A traversal context object looks like this:
 
-        var traversalContext = {
-            searchStatus: string status
-            colorMap: hashtable
-            undiscoveredMap: hashtable
-        };
+```javascript
+var traversalContext = {
+    searchStatus: string status
+    colorMap: hashtable
+    undiscoveredMap: hashtable
+};
+```
 
 It is often useful to determine if a traversal completed or was terminated by a **false** visitor callback response.
 
 Use the `response.searchStatus` string to discriminate the exit status of the traversal as follows:
 
-        var response = jsgraph.directed.exampleTraverse(request);
-        if (!response.error) {
-            var traversalContext = response.result;
-            switch (traversalContext.searchStatus) {
-            case 'completed':
-                // traversal completed normally
-                break;
-            case 'terminated':
-                // traversal was terminated by a false visitor callback response
-                break;
-            default:
-                // unexpected
-                break;
-            }
-        }
-
-
-
-
-
-             
-
+```javascript
+var response = jsgraph.directed.exampleTraverse(request);
+if (!response.error) {
+    var traversalContext = response.result;
+    switch (traversalContext.searchStatus) {
+    case 'completed':
+        // traversal completed normally
+        break;
+    case 'terminated':
+        // traversal was terminated by a false visitor callback response
+        break;
+    default:
+        // unexpected
+        break;
+    }
+}
+```
 
 
 

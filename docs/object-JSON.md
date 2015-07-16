@@ -6,10 +6,12 @@
 
 A `DirectedGraph` export object is a JavaScript object with the following format:
 
-        var digraphExportObject = {
-            vlist: [],
-            elist: []
-        };
+```javascript
+var digraphExportObject = {
+    vlist: [],
+    elist: []
+};
+```
 
 `vlist` array is order agnostic and contains zero or more **vertex write request** object(s).
 
@@ -21,31 +23,36 @@ Recall that vertex write request and edge write request objects are used for cal
 
 Oftentimes it is useful to serialize the contents of a `DirectedGraph` container:
 
-        var digraphExportObject = digraph.toObject(); // export object response
+```javscript
+var digraphExportObject = digraph.toObject(); // export object response
+```
 
 ... or to go straight to JSON:
 
-        var digraphExportJSON = digraph.toJSON(); // accepts standard in-params
+```javascript
+var digraphExportJSON = digraph.toJSON(); // accepts standard in-params
+```
 
 ## DirectedGraph deserialization
 
 To construct a `DirectedGraph` container from an export object or JSON string, pass the exported data to `DirectedGraph`'s constructor:
 
-        var response = jsgraph.directed.create({
-            vlist: [
-                { u: 'Bellevue', p: 'city' },
-                { u: 'Seattle', p: 'city' }
-            ],
-            elist: [
-                { e: { u: 'Bellevue', v: 'Seattle' }, p: 'I-520 Bridge Westbound' },
-                { e: { u: 'Seattle', v: 'Bellevue' }, p: 'I-520 Bridge Eastbound' }
-
-            ]
-        };
-        if (!response.error) {
-            var digraph = response.result;
-            // The container is initialzed
-        }
+```javascript
+var response = jsgraph.directed.create({
+    vlist: [
+        { u: 'Bellevue', p: 'city' },
+        { u: 'Seattle', p: 'city' }
+    ],
+    elist: [
+        { e: { u: 'Bellevue', v: 'Seattle' }, p: 'I-520 Bridge Westbound' },
+        { e: { u: 'Seattle', v: 'Bellevue' }, p: 'I-520 Bridge Eastbound' }
+    ]
+});
+if (!response.error) {
+    var digraph = response.result;
+    // The container is initialzed
+}
+```
         
 In some scenarious you may find it useful to build the contents of your `DirectedGraph` container up from a collection export objects (serialized off in a database, filesystem, or even generated programmatically by some other process).
 
@@ -55,22 +62,25 @@ In some scenarious you may find it useful to build the contents of your `Directe
 
 _`DirectedGraph` export object `vlist` array contains:_
 
-        var vertexWriteRequest = {
-            u: vertex ID string
-            p: optional serializable data
-        };
+```javascript
+var vertexWriteRequest = {
+    u: vertex ID string
+    p: optional serializable data
+};
+```
 
 **Edge write request object**
 
 _`DirectedGraph` export object `elist` array contains:_
 
-        var edgeWriteRequest = {
-            e: {
-                u: vertex ID string
-                v: vertex ID string
-            },
-            p: optional serializable data
-        };
+```javascript
+var edgeWriteRequest = {
+    e: {
+        u: vertex ID string
+        v: vertex ID string
+    },
+    p: optional serializable data
+};
 
 <hr>
 
