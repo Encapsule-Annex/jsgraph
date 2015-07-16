@@ -25,7 +25,7 @@ var traversalRequest = {
 
 Pass a traversal request object to either `breadthFirstTraverse` or `depthFirstTraverse` and to initiate a traversal and obtain a response object.
 
-### Request behavior
+### Request options object
 
 In versions prior to v0.5, jsgraph algorithms exposed some sharp edges that made them difficult for novices to apply correctly. In v0.5 the API was refactored to hide uncommonly used options, and take reasonable default actions.
 
