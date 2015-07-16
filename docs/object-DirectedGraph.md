@@ -643,7 +643,7 @@ Returns an array of identifier strings indicating the set of leaf vertices in th
 
 ### DirectedGraph.toObject
 
-**See also: [Object Reference: data I/O](./docs/object-JSON.md)
+**See also: [Object Reference: data I/O](./docs/object-JSON.md)**
 
 ```javascript
 var response = digraph.toObject();
@@ -661,6 +661,8 @@ The object returned may be passed to the `DirectedGraph` constructor, or to meth
 
 ### DirectedGraph.toJSON
 
+**See also: [Object Reference: data I/O](./docs/object-JSON.md)**
+
 ```javscript
 var response = digraph.toJSON(replacer,space);
 ```
@@ -675,6 +677,8 @@ The JSON string returned may be passed to the `DirectedGraph` constructor, or to
 
 
 ### DirectedGraph.fromObject
+
+**See also: [Object Reference: data I/O](./docs/object-JSON.md)**
 
 ```javascript
 var response = digraph.fromObject(object);
