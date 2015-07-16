@@ -99,62 +99,63 @@ if (response.error) {
 }
 console.log("DirectedGraph: '" +
 digraph.toJSON(undefined,4) + "'");
-console.log("BFT traversal:
-'" + JSON.stringify(response.result,undefined,4) + "'");
+console.log("BFT traversal: '" +
+    JSON.stringify(response.result,undefined,4) + "'");
 ```
-
 ... produces the following output with each vertex's property value set to its rank (edge hops away from a root vertex in this example).
-    
-        DirectedGraph: '{
-            "vlist": [
-                {
-                    "u": "A",
-                    "p": 0
-                },
-                {
-                    "u": "B",
-                    "p": 1
-                },
-                {
-                    "u": "C",
-                    "p": 2
-                },
-                {
-                    "u": "D",
-                    "p": 2
-                }
-            ],
-            "elist": [
-                {
-                    "e": {
-                        "u": "A",
-                        "v": "B"
-                    }
-                },
-                {
-                    "e": {
-                        "u": "B",
-                        "v": "C"
-                    }
-                },
-                {
-                    "e": {
-                        "u": "B",
-                        "v": "D"
-                    }
-                }
-            ]
-        }'
-        BFT traversal: '{
-            "searchStatus": "completed",
-            "colorMap": {
-                "A": 2,
-                "B": 2,
-                "C": 2,
-                "D": 2
-            },
-            "undiscoveredMap": {}
-        }'
+
+```javascript
+DirectedGraph: '{
+    "vlist": [
+        {
+            "u": "A",
+            "p": 0
+        },
+        {
+            "u": "B",
+            "p": 1
+        },
+        {
+            "u": "C",
+            "p": 2
+        },
+        {
+            "u": "D",
+            "p": 2
+        }
+    ],
+    "elist": [
+        {
+            "e": {
+                "u": "A",
+                "v": "B"
+            }
+        },
+        {
+            "e": {
+                "u": "B",
+                "v": "C"
+            }
+        },
+        {
+            "e": {
+                "u": "B",
+                "v": "D"
+            }
+        }
+    ]
+}'
+BFT traversal: '{
+    "searchStatus": "completed",
+    "colorMap": {
+        "A": 2,
+        "B": 2,
+        "C": 2,
+        "D": 2
+    },
+    "undiscoveredMap": {}
+}'
+```
 
 ## Release
 
@@ -172,17 +173,19 @@ console.log("BFT traversal:
 
 v0.5 jsgraph has the following public export object:
 
-        var jsgraph = require('jsgraph');
-        jsgraph === {
-            directed: {
-                create: [Function],
-                transpose: [Function],
-                breadthFirstTraverse: [Function],
-                depthFirstTraverse: [Function],
-                colors: { white: 0, gray: 1, black: 2 },
-                createTraversalContext: [Function]
-            }
-        }
+```javascript
+var jsgraph = require('jsgraph');
+jsgraph === {
+    directed: {
+    create: [Function],
+    transpose: [Function],
+    breadthFirstTraverse: [Function],
+    depthFirstTraverse: [Function],
+    colors: { white: 0, gray: 1, black: 2 },
+    createTraversalContext: [Function]
+    }
+}
+```
 
 ### DirectedGraph container object
 
@@ -190,17 +193,23 @@ v0.5 jsgraph has the following public export object:
 
 jsgraph's core directed graph container object, **DirectedGraph**, is constructed by a calling library export function `jsgraph.directed.create`:
 
-        var jsgraph = require('jsgraph');
-        var digraph = null;
-        var response = jsgraph.directed.create(/*data or JSON*/);
-        if (response.error) {
-            console.log(response.error);
-        } else {
-            digraph = response.result;
-            console.log(digraph.toJSON());
-        }
-        
-        '{"vlist":[],"elist":[]}'
+```javascript
+var jsgraph = require('jsgraph');
+var digraph = null;
+var response = jsgraph.directed.create(/*data or JSON*/);
+if (response.error) {
+    console.log(response.error);
+} else {
+    digraph = response.result;
+    console.log(digraph.toJSON());
+}
+```
+
+... produces:
+
+```javascript
+'{"vlist":[],"elist":[]}'
+```
         
 The `DirectedGraph` container object created by this process models "a graph" generically providing normalized access to its contents via the methods documented in the next sections. As indicated by the inline comment, you may also create a `DirectedGraph` from a data object or equivalent JSON string. 
 
@@ -267,12 +276,13 @@ jsgraph uses names and conventions documented in Chapter 23 "Elementary Graph Al
 
 jsgraph currently provides a single 'transform' function, `jsgraph.directed.transpose` that constructs a new `DirectedGraph` that that is equivalent to an existing `DirectedGraph` except that the direction of all the edges is reversed. Note that vertex and edge properties (if any) are copied by reference to the transposed digraph as a deep copy is seldom desirable. 
 
-        var response = jsgraph.directed.transpose(digraph);
-        if (response.error) {
-            console.log(response.error);
-        } else {
-            console.log("Transposed digraph JSON: '" + response.result.toJSON() + "'.");
-        }
+```javascript
+var response = jsgraph.directed.transpose(digraph);
+if (response.error) {
+    console.log(response.error);
+} else {
+    console.log("Transposed digraph JSON: '" + response.result.toJSON() + "'.");
+}
 
 #### jsgraph.directed.breadthFirstTraverse Algorithm
 
