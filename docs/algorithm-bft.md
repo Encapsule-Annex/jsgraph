@@ -10,10 +10,12 @@ Please refer to Chapter 23 "Elementary Graph Algorithms" of [Introduction To Alg
 
 `breadthFirstTraverse` is called with a normalized traversal algorithm request object and returns a normalized traversal algorithm response object.
 
-        var response = digraph.directed.breadthFirstTraverse({
-            digraph: myDigraph,
-            visitor: myBFTVisitor
-        });
+```javascript
+var response = digraph.directed.breadthFirstTraverse({
+    digraph: myDigraph,
+    visitor: myBFTVisitor
+});
+```
 
 Note that by default, `breadthFirstTraverse` will fail if called on `DirectedGraph` container that has no root vertices (due to cycle(s) or no vertices at all). To allow this, in other words go through the motions but traverse nothing, set `request.options.allowEmptyStartVector` flag true.
 
