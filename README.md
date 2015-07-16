@@ -283,6 +283,7 @@ if (response.error) {
 } else {
     console.log("Transposed digraph JSON: '" + response.result.toJSON() + "'.");
 }
+```
 
 #### jsgraph.directed.breadthFirstTraverse Algorithm
 
