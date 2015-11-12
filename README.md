@@ -1,21 +1,5 @@
 # Encapsule/jsgraph
 
-## CHANGE NOTICE:
-
-On November 10th, 2015 jsgraph will be deprecated and moved to the [Encapsule-Annex](https://github.com/Encapsule-Annex) organization on GitHub where it will continue to be available under the MIT License.
-
-Node.js/HTML5 projects that have a package dependency on jsgraph via npmjs.org should not be impacted.
-
-Projects that obtain jsgraph via Git will manual patching to pick up the new repository URL.
-
-jsgraph is succeeded by [Encapsule/jbus-common-graph](https://github.com/Encapsule/jbus-common-graph) - an augmented version of jsgraph licensed under the GNU Affero General Public License.
-
-[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
-
-**Encapsule Project: [news](https://twitter.com/Encapsule) / [info](http://blog.encapsule.org) / [source code](https://github.com/encapsule/)**
-
-**View master branch version of this document on [GitHub](https://github.com/Encapsule/jsgraph/blob/master/README.md)**
-
 ## About jsgraph
 
 _Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs._ - [J. Siek](http://ecee.colorado.edu/~siek/resume.pdf)
