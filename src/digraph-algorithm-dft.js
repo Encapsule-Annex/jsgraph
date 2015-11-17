@@ -27,6 +27,9 @@ module.exports = function (request_) {
     while (!inBreakScope) {
         inBreakScope = true;
         var index, vertexId;
+        var finishedEdges = {};
+        var innerRequest = null;
+        var hash = null;
 
         var innerResponse = normalizeRequest(request_);
         if (innerResponse.error) {
@@ -47,8 +50,7 @@ module.exports = function (request_) {
                 if (!continueSearch) {
                     break;
                 }
-            }
-
+            } // end for
         } // if searchStatus 'pending'
 
         nrequest.options.traverseContext.searchStatus = 'active';
@@ -105,9 +107,33 @@ module.exports = function (request_) {
                     // Remove the vertex from the undiscovered map.
                     delete nrequest.options.traverseContext.undiscoveredMap[currentVertexId];
 
+                    // Change the vertex's state to GRAY to record its discovery.
+                    nrequest.options.traverseContext.colorMap[currentVertexId] = colors.gray;
+
+                    // discoverVertex visitor callback.
+                    innerResponse = visitorCallback({
+                        algorithm: algorithmName,
+                        visitor: nrequest.visitor,
+                        method: 'discoverVertex',
+                        request: { u: currentVertexId, g: nrequest.digraph }
+                    });
+                    if (innerResponse.error) {
+                        errors.unshift(innerResponse.error);
+                        break;
+                    }
+                    continueSearch = innerResponse.result;
+                    if (!continueSearch) {
+                        break;
+                    }
+
                     // treeEdge visitor callback.
                     if (searchStack.length > 1) {
-                        innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'treeEdge', request: { e: { u: searchStack[searchStack.length - 2][0], v: currentVertexId }, g: nrequest.digraph }});
+                        innerResponse = visitorCallback({
+                            algorithm: algorithmName,
+                            visitor: nrequest.visitor,
+                            method: 'treeEdge',
+                            request: { e: { u: searchStack[searchStack.length - 2][0], v: currentVertexId }, g: nrequest.digraph }
+                        });
                         if (innerResponse.error) {
                             errors.unshift(innerResponse.error);
                             break;
@@ -119,22 +145,6 @@ module.exports = function (request_) {
                         }
                     }
 
-                    // discoverVertex visitor callback.
-                    innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'discoverVertex', request: { u: currentVertexId, g: nrequest.digraph }});
-                    if (innerResponse.error) {
-                        errors.unshift(innerResponse.error);
-                        break;
-                    }
-
-                    continueSearch = innerResponse.result;
-
-                    // Change the vertex's state to GRAY to record its discovery.
-                    nrequest.options.traverseContext.colorMap[currentVertexId] = colors.gray;
-
-                    if (!continueSearch) {
-                        break;
-                    }
-
                     // Examine adjacent vertices
                     var vertexOutEdges = nrequest.digraph.outEdges(currentVertexId);
                     var adjacentVertices = [];
@@ -144,7 +154,12 @@ module.exports = function (request_) {
                         var adjacentVertexId = vertexOutEdges.shift().v;
 
                         // examineEdge visitor callback.
-                        innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'examineEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
+                        innerResponse = visitorCallback({
+                            algorithm: algorithmName,
+                            visitor: nrequest.visitor,
+                            method: 'examineEdge',
+                            request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }
+                        });
                         if (innerResponse.error) {
                             errors.unshift(innerRepsonse.error);
                             break;
@@ -161,7 +176,12 @@ module.exports = function (request_) {
                             break;
                         case colors.gray:
                             // backEdge visitor callback.
-                            innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'backEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
+                            innerResponse = visitorCallback({
+                                algorithm: algorithmName,
+                                visitor: nrequest.visitor,
+                                method: 'backEdge',
+                                request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }
+                            });
                             if (innerResponse.error) {
                                 errors.unshift(innerResponse.error);
                             } else {
@@ -170,7 +190,12 @@ module.exports = function (request_) {
                             break;
                         case colors.black:
                             // forwardOrCrossEdge visitor callback.
-                            innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
+                            innerResponse = visitorCallback({
+                                algorithm: algorithmName,
+                                visitor: nrequest.visitor,
+                                method: 'forwardOrCrossEdge',
+                                request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }
+                            });
                             if (innerResponse.error) {
                                 errors.unshift(innerResponse.error);
                             } else {
@@ -186,11 +211,15 @@ module.exports = function (request_) {
                     break;
 
                 case colors.gray:
-
-                    // change the vertex's state to black to indicate search completion
+                    // change the vertex's state to black to indicate search completion.
                     nrequest.options.traverseContext.colorMap[currentVertexId] = colors.black;
                     // finishVertex visitor callback.
-                    innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'finishVertex', request: { u: currentVertexId, g: nrequest.digraph }});
+                    innerResponse = visitorCallback({
+                        algorithm: algorithmName,
+                        visitor: nrequest.visitor,
+                        method: 'finishVertex',
+                        request: { u: currentVertexId, g: nrequest.digraph }
+                    });
                     if (innerResponse.error) {
                         errors.unshift(innerResponse.error);
                         break;
@@ -198,6 +227,12 @@ module.exports = function (request_) {
                     continueSearch = innerResponse.result;
                     if (!continueSearch) {
                         break;
+                    }
+                    var inEdgeSet = nrequest.digraph.inEdges(currentVertexId);
+                    while (inEdgeSet.length) {
+                        var inEdge = inEdgeSet.pop();
+                        hash = inEdge.u + inEdge.v;
+                        finishedEdges[hash] = inEdge;
                     }
                     searchStack[searchStack.length - 1].shift();
                     if (!(searchStack[searchStack.length - 1].length)) {
@@ -213,7 +248,13 @@ module.exports = function (request_) {
                     // been 'finished'. 
 
                     if (searchStack.length > 1) {
-                        innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: (searchStack[searchStack.length - 2])[0], v: currentVertexId }, g: nrequest.digraph }});
+                        innerRequest = { e: { u: (searchStack[searchStack.length - 2])[0], v: currentVertexId }, g: nrequest.digraph };
+                        innerResponse = visitorCallback({
+                            algorithm: algorithmName,
+                            visitor: nrequest.visitor,
+                            method: 'forwardOrCrossEdge',
+                            request: innerRequest
+                        });
                         if (innerResponse.error) {
                             errors.unshift(innerResponse.error);
                             break;
@@ -240,6 +281,30 @@ module.exports = function (request_) {
             }
             
         } // end while outer depth-first search loop
+
+        if (errors.length || !continueSearch) {
+            break;
+        }
+
+        for (hash in finishedEdges) {
+            innerRequest = { e: finishedEdges[hash], g: nrequest.digraph };
+            innerResponse = visitorCallback({
+                algorithm: algorithmName,
+                visitor: nrequest.visitor,
+                method: 'finishEdge',
+                request: innerRequest
+            });
+            if (innerResponse.error) {
+                errors.unshift(innerResponse.error);
+                break;
+            }
+            continueSearch = innerResponse.result;
+            if (!continueSearch) {
+                break;
+            }
+
+        } // end for
+
 
     } // while !inBreakScope
 

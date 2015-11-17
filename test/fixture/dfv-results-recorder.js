@@ -75,6 +75,15 @@ module.exports = SearchPathRecorder = (function() {
                     return self.chainedVisitor.finishVertex(request);
                 }
                 return true;
+            },
+            // request: { e: { u: VertexId, v: VertexId }, g: DirectedGraph }
+            finishEdge: function(request) {
+                self.results.push(self.step++ + " finishEdge [" + request.e.u + "," + request.e.v + "]");
+                self.time++;
+                if (self.chainedVisitor.finishVertex) {
+                    return self.chainedVisitor.finishVertex(request);
+                }
+                return true;
             }
         };
 
