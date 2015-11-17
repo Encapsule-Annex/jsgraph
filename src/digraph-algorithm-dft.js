@@ -10,7 +10,7 @@
   with in-memory data on Node.js and HTML.
 */
 
-var helperFunctions = require('./helper-functions');
+var algorithmName = "DFT"; // used in error messages
 var colors = require('./digraph-algorithm-common-colors');
 var visitorCallback = require('./digraph-algorithm-common-visit');
 var normalizeRequest = require('./digraph-algorithm-common-request');
@@ -38,7 +38,7 @@ module.exports = function (request_) {
         // initializeVertex visitor callback.
         if (nrequest.options.traverseContext.searchStatus === 'pending') {
             for (vertexId in nrequest.options.traverseContext.colorMap) {
-                innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'initializeVertex', request: { u: vertexId, g: nrequest.digraph }});
+                innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'initializeVertex', request: { u: vertexId, g: nrequest.digraph }});
                 if (innerResponse.error) {
                     errors.unshift(innerResponse.error);
                     break;
@@ -76,7 +76,7 @@ module.exports = function (request_) {
 
             // startVertex visitor callback
             if (nrequest.options.signalStart) {
-                innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'startVertex', request: { u: vertexId, g: nrequest.digraph }});
+                innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'startVertex', request: { u: vertexId, g: nrequest.digraph }});
                 if (innerResponse.error) {
                     errors.unshift(innerResponse.error);
                     break;
@@ -107,7 +107,7 @@ module.exports = function (request_) {
 
                     // treeEdge visitor callback.
                     if (searchStack.length > 1) {
-                        innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'treeEdge', request: { e: { u: searchStack[searchStack.length - 2][0], v: currentVertexId }, g: nrequest.digraph }});
+                        innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'treeEdge', request: { e: { u: searchStack[searchStack.length - 2][0], v: currentVertexId }, g: nrequest.digraph }});
                         if (innerResponse.error) {
                             errors.unshift(innerResponse.error);
                             break;
@@ -120,7 +120,7 @@ module.exports = function (request_) {
                     }
 
                     // discoverVertex visitor callback.
-                    innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'discoverVertex', request: { u: currentVertexId, g: nrequest.digraph }});
+                    innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'discoverVertex', request: { u: currentVertexId, g: nrequest.digraph }});
                     if (innerResponse.error) {
                         errors.unshift(innerResponse.error);
                         break;
@@ -144,7 +144,7 @@ module.exports = function (request_) {
                         var adjacentVertexId = vertexOutEdges.shift().v;
 
                         // examineEdge visitor callback.
-                        innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'examineEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
+                        innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'examineEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
                         if (innerResponse.error) {
                             errors.unshift(innerRepsonse.error);
                             break;
@@ -161,7 +161,7 @@ module.exports = function (request_) {
                             break;
                         case colors.gray:
                             // backEdge visitor callback.
-                            innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'backEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
+                            innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'backEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
                             if (innerResponse.error) {
                                 errors.unshift(innerResponse.error);
                             } else {
@@ -170,7 +170,7 @@ module.exports = function (request_) {
                             break;
                         case colors.black:
                             // forwardOrCrossEdge visitor callback.
-                            innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
+                            innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: currentVertexId, v: adjacentVertexId }, g: nrequest.digraph }});
                             if (innerResponse.error) {
                                 errors.unshift(innerResponse.error);
                             } else {
@@ -190,7 +190,7 @@ module.exports = function (request_) {
                     // change the vertex's state to black to indicate search completion
                     nrequest.options.traverseContext.colorMap[currentVertexId] = colors.black;
                     // finishVertex visitor callback.
-                    innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'finishVertex', request: { u: currentVertexId, g: nrequest.digraph }});
+                    innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'finishVertex', request: { u: currentVertexId, g: nrequest.digraph }});
                     if (innerResponse.error) {
                         errors.unshift(innerResponse.error);
                         break;
@@ -213,7 +213,7 @@ module.exports = function (request_) {
                     // been 'finished'. 
 
                     if (searchStack.length > 1) {
-                        innerResponse = visitorCallback({ visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: (searchStack[searchStack.length - 2])[0], v: currentVertexId }, g: nrequest.digraph }});
+                        innerResponse = visitorCallback({ algorithm: algorithmName, visitor: nrequest.visitor, method: 'forwardOrCrossEdge', request: { e: { u: (searchStack[searchStack.length - 2])[0], v: currentVertexId }, g: nrequest.digraph }});
                         if (innerResponse.error) {
                             errors.unshift(innerResponse.error);
                             break;
