@@ -124,7 +124,7 @@ testCreateDirectedGraph({
     testName: "Default construction", validConfig: true,
     expectedResults: {
         error: '',
-        result: '{"vlist":[],"elist":[]}'
+        result: '{"name":"","description":"","vlist":[],"elist":[]}'
     }
 });
 
@@ -147,7 +147,7 @@ testCreateDirectedGraph({
     },
     expectedResults: {
         error: '',
-        result: '{"vlist":[{"u":"all","p":"whatever vertex property"},{"u":"work","p":{"x":6}}],"elist":[{"e":{"u":"all","v":"work"},"p":"whatever edge property"},{"e":{"u":"work","v":"and"}},{"e":{"u":"and","v":"no"}},{"e":{"u":"no","v":"play"},"p":"leads to superior code :)"}]}'
+        result: '{"name":"","description":"","vlist":[{"u":"all","p":"whatever vertex property"},{"u":"work","p":{"x":6}}],"elist":[{"e":{"u":"all","v":"work"},"p":"whatever edge property"},{"e":{"u":"work","v":"and"}},{"e":{"u":"and","v":"no"}},{"e":{"u":"no","v":"play"},"p":"leads to superior code :)"}]}'
     }
 });
 

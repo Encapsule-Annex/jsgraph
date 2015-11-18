@@ -78,6 +78,21 @@ testDFT({ testName: "Empty request", validConfig: false,
 })();
 
 (function() {
+    var digraph = new DirectedGraph();
+    digraph.addEdge({ e: { u: "lone-wolf-vertex", v: "lone-wolf-vertex" }});
+    testDFT({ testName: "Single vertex, with an out-edge to itself", validConfig: true,
+               request: { digraph: digraph, options: { startVector: 'lone-wolf-vertex'}},
+               expectedResults: {
+                   error: '',
+                   result: '{"searchStatus":"completed","colorMap":{"lone-wolf-vertex":2},"undiscoveredMap":{}}',
+                   path: '["0 initializeVertex lone-wolf-vertex","1 startVertex lone-wolf-vertex","2 discoverVertex lone-wolf-vertex at time 1","3 examineEdge [lone-wolf-vertex,lone-wolf-vertex]","4 backEdge [lone-wolf-vertex,lone-wolf-vertex]","5 finishVertex lone-wolf-vertex at time 2","6 finishEdge [lone-wolf-vertex,lone-wolf-vertex]"]'
+               }});
+})();
+
+
+
+
+(function() {
     var digraph = new DirectedGraph({
         elist: [ { e: { u: 'parent', v: 'child' } } ]
     });
@@ -87,7 +102,7 @@ testDFT({ testName: "Empty request", validConfig: false,
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{"parent":2,"child":2},"undiscoveredMap":{}}',
-                   path: '["0 initializeVertex parent","1 initializeVertex child","2 startVertex parent","3 discoverVertex parent at time 1","4 examineEdge [parent,child]","5 treeEdge [parent,child]","6 discoverVertex child at time 2","7 finishVertex child at time 3","8 finishVertex parent at time 4"]'
+                   path: '["0 initializeVertex parent","1 initializeVertex child","2 startVertex parent","3 discoverVertex parent at time 1","4 examineEdge [parent,child]","5 discoverVertex child at time 2","6 treeEdge [parent,child]","7 finishVertex child at time 3","8 finishVertex parent at time 4","9 finishEdge [parent,child]"]'
                }});
 })();
 
@@ -119,7 +134,7 @@ testDFT({ testName: "Empty request", validConfig: false,
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{"A":2,"B":2},"undiscoveredMap":{}}',
-                   path: '["0 initializeVertex A","1 initializeVertex B","2 startVertex A","3 discoverVertex A at time 1","4 examineEdge [A,B]","5 treeEdge [A,B]","6 discoverVertex B at time 2","7 examineEdge [B,A]","8 backEdge [B,A]","9 finishVertex B at time 3","10 finishVertex A at time 4"]'
+                   path: '["0 initializeVertex A","1 initializeVertex B","2 startVertex A","3 discoverVertex A at time 1","4 examineEdge [A,B]","5 discoverVertex B at time 2","6 treeEdge [A,B]","7 examineEdge [B,A]","8 backEdge [B,A]","9 finishVertex B at time 3","10 finishVertex A at time 4","11 finishEdge [A,B]","12 finishEdge [B,A]"]'
                }});
 })();
 
@@ -136,7 +151,7 @@ testDFT({ testName: "Empty request", validConfig: false,
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{"A":2,"B":2,"C":2},"undiscoveredMap":{}}',
-                   path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 startVertex A","4 discoverVertex A at time 1","5 examineEdge [A,B]","6 examineEdge [A,C]","7 treeEdge [A,B]","8 discoverVertex B at time 2","9 examineEdge [B,C]","10 treeEdge [B,C]","11 discoverVertex C at time 3","12 finishVertex C at time 4","13 finishVertex B at time 5","14 forwardOrCrossEdge [A,C]","15 finishVertex A at time 6"]'
+                   path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 startVertex A","4 discoverVertex A at time 1","5 examineEdge [A,B]","6 examineEdge [A,C]","7 discoverVertex B at time 2","8 treeEdge [A,B]","9 examineEdge [B,C]","10 discoverVertex C at time 3","11 treeEdge [B,C]","12 finishVertex C at time 4","13 finishVertex B at time 5","14 forwardOrCrossEdge [A,C]","15 finishVertex A at time 6","16 finishEdge [A,C]","17 finishEdge [B,C]","18 finishEdge [A,B]"]'
                }});
 })();
 
@@ -152,7 +167,7 @@ testDFT({ testName: "Empty request", validConfig: false,
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{"A":2,"B":2,"C":2},"undiscoveredMap":{}}',
-                   path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 startVertex A","4 discoverVertex A at time 1","5 examineEdge [A,B]","6 treeEdge [A,B]","7 discoverVertex B at time 2","8 finishVertex B at time 3","9 finishVertex A at time 4","10 startVertex C","11 discoverVertex C at time 5","12 examineEdge [C,B]","13 forwardOrCrossEdge [C,B]","14 finishVertex C at time 6"]'
+                   path: '["0 initializeVertex A","1 initializeVertex B","2 initializeVertex C","3 startVertex A","4 discoverVertex A at time 1","5 examineEdge [A,B]","6 discoverVertex B at time 2","7 treeEdge [A,B]","8 finishVertex B at time 3","9 finishVertex A at time 4","10 startVertex C","11 discoverVertex C at time 5","12 examineEdge [C,B]","13 forwardOrCrossEdge [C,B]","14 finishVertex C at time 6","15 finishEdge [C,B]","16 finishEdge [A,B]"]'
                }});
 })();
 
@@ -175,7 +190,7 @@ testDFT({ testName: "Empty request", validConfig: false,
                expectedResults: {
                    error: '',
                    result: '{"searchStatus":"completed","colorMap":{"u":2,"v":2,"y":2,"x":2,"w":2,"z":2},"undiscoveredMap":{}}',
-                   path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex w","7 discoverVertex w at time 1","8 examineEdge [w,y]","9 examineEdge [w,z]","10 treeEdge [w,y]","11 discoverVertex y at time 2","12 examineEdge [y,x]","13 treeEdge [y,x]","14 discoverVertex x at time 3","15 examineEdge [x,v]","16 treeEdge [x,v]","17 discoverVertex v at time 4","18 examineEdge [v,y]","19 backEdge [v,y]","20 finishVertex v at time 5","21 finishVertex x at time 6","22 finishVertex y at time 7","23 treeEdge [w,z]","24 discoverVertex z at time 8","25 examineEdge [z,z]","26 backEdge [z,z]","27 finishVertex z at time 9","28 finishVertex w at time 10","29 startVertex u","30 discoverVertex u at time 11","31 examineEdge [u,v]","32 forwardOrCrossEdge [u,v]","33 examineEdge [u,x]","34 forwardOrCrossEdge [u,x]","35 finishVertex u at time 12"]'
+                   path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex w","7 discoverVertex w at time 1","8 examineEdge [w,y]","9 examineEdge [w,z]","10 discoverVertex y at time 2","11 treeEdge [w,y]","12 examineEdge [y,x]","13 discoverVertex x at time 3","14 treeEdge [y,x]","15 examineEdge [x,v]","16 discoverVertex v at time 4","17 treeEdge [x,v]","18 examineEdge [v,y]","19 backEdge [v,y]","20 finishVertex v at time 5","21 finishVertex x at time 6","22 finishVertex y at time 7","23 discoverVertex z at time 8","24 treeEdge [w,z]","25 examineEdge [z,z]","26 backEdge [z,z]","27 finishVertex z at time 9","28 finishVertex w at time 10","29 startVertex u","30 discoverVertex u at time 11","31 examineEdge [u,v]","32 forwardOrCrossEdge [u,v]","33 examineEdge [u,x]","34 forwardOrCrossEdge [u,x]","35 finishVertex u at time 12","36 finishEdge [x,v]","37 finishEdge [u,v]","38 finishEdge [u,x]","39 finishEdge [y,x]","40 finishEdge [w,y]","41 finishEdge [v,y]","42 finishEdge [z,z]","43 finishEdge [w,z]"]'
                }});
 
 
@@ -211,7 +226,7 @@ testDFT({ testName: "Empty request", validConfig: false,
             expectedResults: {
                 error: '',
                 result: '{"searchStatus":"terminated","colorMap":{"u":2,"v":2,"y":2,"x":2,"w":0,"z":0},"undiscoveredMap":{"w":true,"z":true}}',
-                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 treeEdge [u,v]","11 discoverVertex v at time 2","12 examineEdge [v,y]","13 treeEdge [v,y]","14 discoverVertex y at time 3","15 examineEdge [y,x]","16 treeEdge [y,x]","17 discoverVertex x at time 4","18 examineEdge [x,v]","19 backEdge [x,v]","20 finishVertex x at time 5","21 finishVertex y at time 6","22 finishVertex v at time 7","23 forwardOrCrossEdge [u,x]","24 finishVertex u at time 8","25 startVertex w"]'
+                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 discoverVertex v at time 2","11 treeEdge [u,v]","12 examineEdge [v,y]","13 discoverVertex y at time 3","14 treeEdge [v,y]","15 examineEdge [y,x]","16 discoverVertex x at time 4","17 treeEdge [y,x]","18 examineEdge [x,v]","19 backEdge [x,v]","20 finishVertex x at time 5","21 finishVertex y at time 6","22 finishVertex v at time 7","23 forwardOrCrossEdge [u,x]","24 finishVertex u at time 8","25 startVertex w"]'
             }
         });
 
@@ -228,7 +243,7 @@ testDFT({ testName: "Empty request", validConfig: false,
             expectedResults: {
                 error: '',
                 result: '{"searchStatus":"terminated","colorMap":{"u":1,"v":1,"y":1,"x":0,"w":0,"z":0},"undiscoveredMap":{"x":true,"w":true,"z":true}}',
-                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 treeEdge [u,v]","11 discoverVertex v at time 2","12 examineEdge [v,y]","13 treeEdge [v,y]","14 discoverVertex y at time 3"]'
+                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 discoverVertex v at time 2","11 treeEdge [u,v]","12 examineEdge [v,y]","13 discoverVertex y at time 3"]'
             }
         });
 
@@ -272,15 +287,15 @@ testDFT({ testName: "Empty request", validConfig: false,
             request: {
                 digraph: digraph,
                 visitor: {
-                    examineEdge: function (request_) {
+                    treeEdge: function (request_) {
                         return (request_.e.v !== 'v');
                     }
                 }
             },
             expectedResults: {
                 error: '',
-                result: '{"searchStatus":"terminated","colorMap":{"u":1,"v":0,"y":0,"x":0,"w":0,"z":0},"undiscoveredMap":{"v":true,"y":true,"x":true,"w":true,"z":true}}',
-                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]"]'
+                result: '{"searchStatus":"terminated","colorMap":{"u":1,"v":1,"y":0,"x":0,"w":0,"z":0},"undiscoveredMap":{"y":true,"x":true,"w":true,"z":true}}',
+                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 discoverVertex v at time 2","11 treeEdge [u,v]"]'
             }
         });
 
@@ -297,7 +312,7 @@ testDFT({ testName: "Empty request", validConfig: false,
             expectedResults: {
                 error: '',
                 result: '{"searchStatus":"terminated","colorMap":{"u":1,"v":1,"y":1,"x":1,"w":0,"z":0},"undiscoveredMap":{"w":true,"z":true}}',
-                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 treeEdge [u,v]","11 discoverVertex v at time 2","12 examineEdge [v,y]","13 treeEdge [v,y]","14 discoverVertex y at time 3","15 examineEdge [y,x]","16 treeEdge [y,x]","17 discoverVertex x at time 4","18 examineEdge [x,v]","19 backEdge [x,v]"]'
+                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 discoverVertex v at time 2","11 treeEdge [u,v]","12 examineEdge [v,y]","13 discoverVertex y at time 3","14 treeEdge [v,y]","15 examineEdge [y,x]","16 discoverVertex x at time 4","17 treeEdge [y,x]","18 examineEdge [x,v]","19 backEdge [x,v]"]'
             }
         });
 
@@ -314,7 +329,7 @@ testDFT({ testName: "Empty request", validConfig: false,
             expectedResults: {
                 error: '',
                 result: '{"searchStatus":"terminated","colorMap":{"u":1,"v":2,"y":2,"x":2,"w":0,"z":0},"undiscoveredMap":{"w":true,"z":true}}',
-                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 treeEdge [u,v]","11 discoverVertex v at time 2","12 examineEdge [v,y]","13 treeEdge [v,y]","14 discoverVertex y at time 3","15 examineEdge [y,x]","16 treeEdge [y,x]","17 discoverVertex x at time 4","18 examineEdge [x,v]","19 backEdge [x,v]","20 finishVertex x at time 5","21 finishVertex y at time 6","22 finishVertex v at time 7","23 forwardOrCrossEdge [u,x]"]'
+                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 discoverVertex v at time 2","11 treeEdge [u,v]","12 examineEdge [v,y]","13 discoverVertex y at time 3","14 treeEdge [v,y]","15 examineEdge [y,x]","16 discoverVertex x at time 4","17 treeEdge [y,x]","18 examineEdge [x,v]","19 backEdge [x,v]","20 finishVertex x at time 5","21 finishVertex y at time 6","22 finishVertex v at time 7","23 forwardOrCrossEdge [u,x]"]'
             }
         });
 
@@ -331,14 +346,11 @@ testDFT({ testName: "Empty request", validConfig: false,
             expectedResults: {
                 error: '',
                 result: '{"searchStatus":"terminated","colorMap":{"u":1,"v":1,"y":2,"x":2,"w":0,"z":0},"undiscoveredMap":{"w":true,"z":true}}',
-                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 treeEdge [u,v]","11 discoverVertex v at time 2","12 examineEdge [v,y]","13 treeEdge [v,y]","14 discoverVertex y at time 3","15 examineEdge [y,x]","16 treeEdge [y,x]","17 discoverVertex x at time 4","18 examineEdge [x,v]","19 backEdge [x,v]","20 finishVertex x at time 5","21 finishVertex y at time 6"]'
+                path: '["0 initializeVertex u","1 initializeVertex v","2 initializeVertex y","3 initializeVertex x","4 initializeVertex w","5 initializeVertex z","6 startVertex u","7 discoverVertex u at time 1","8 examineEdge [u,v]","9 examineEdge [u,x]","10 discoverVertex v at time 2","11 treeEdge [u,v]","12 examineEdge [v,y]","13 discoverVertex y at time 3","14 treeEdge [v,y]","15 examineEdge [y,x]","16 discoverVertex x at time 4","17 treeEdge [y,x]","18 examineEdge [x,v]","19 backEdge [x,v]","20 finishVertex x at time 5","21 finishVertex y at time 6"]'
             }
         });
         
-
-        
     });
-
 
 })();
 

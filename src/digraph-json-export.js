@@ -21,6 +21,8 @@ var DigraphDataExporter = module.exports = {};
 
 DigraphDataExporter.exportObject = function (digraph_) {
     var digraphState = {
+        name: digraph_.getGraphName(),
+        description: digraph_.getGraphDescription(),
         vlist: [],
         elist: []
     };

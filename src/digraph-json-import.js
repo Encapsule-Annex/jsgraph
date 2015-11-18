@@ -84,6 +84,32 @@ module.exports = function (digraph_, jsonOrObject_) {
             break;
         }
 
+        type = getType(jsonParse.name);
+        switch (type) {
+        case '[object Undefined]':
+            jsonParse.name = "";
+            break;
+        case '[object String]':
+            break;
+        default:
+            errors.unshift("JSON semantics error: Expected 'name' to be a string but found '" + type + "'.");
+            break;
+        }
+        digraph_.setGraphName(jsonParse.name);
+        
+        type = getType(jsonParse.description);
+        switch (type) {
+        case '[object Undefined]':
+            jsonParse.description = "";
+            break;
+        case '[object String]':
+            break;
+        default:
+            error.unshift("JSON semantics error: Expected 'description' to be a string but found '" + type + "'.");
+            break;
+        }
+        digraph_.setGraphDescription(jsonParse.description);
+            
         type = getType(jsonParse.vlist);
         switch (type) {
         case '[object Undefined]':

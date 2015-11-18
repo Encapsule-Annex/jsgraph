@@ -2,7 +2,7 @@
 //
 
 var assert = require('chai').assert;
-var normalizeBFTRequest = require('../../src/digraph-algorithm-common-request');
+var normalizeAlgorithmRequest = require('../../src/digraph-algorithm-common-request');
 
 /*
   request = {
@@ -18,17 +18,17 @@ var normalizeBFTRequest = require('../../src/digraph-algorithm-common-request');
 
 module.exports = function (testVector_) {
 
-    var testName = "BFT request normalizer unit test: " + testVector_.testName + ":";
+    var testName = "xFT request normalizer unit test: " + testVector_.testName + ":";
 
     describe(testName, function() {
         var parseResponse = null;
         before(function() {
-            var testNormalizeBFTRequest = function() {
-                parseResponse = normalizeBFTRequest(testVector_.request);
+            var testNormalizeXFTRequest = function() {
+                parseResponse = normalizeAlgorithmRequest(testVector_.request);
             };
-            assert.doesNotThrow(testNormalizeBFTRequest, "BFT REQUEST NORMALIZER SHOULD NEVER THROW!");
+            assert.doesNotThrow(testNormalizeXFTRequest, "xFT REQUEST NORMALIZER SHOULD NEVER THROW!");
         });
-        it("The BFT request normalizer should have returned a response object.", function() {
+        it("The xFT request normalizer should have returned a response object.", function() {
             assert.isDefined(parseResponse);
             assert.isNotNull(parseResponse);
             assert.isObject(parseResponse);

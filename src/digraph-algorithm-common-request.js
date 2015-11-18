@@ -11,7 +11,7 @@
 */
 
 var helperFunctions = require('./helper-functions');
-var createBreadthFirstTraverseContext = require('./digraph-algorithm-common-context');
+var TRAVERSE_CONTEXT = require('./digraph-algorithm-common-context');
 
 /*
   request = {
@@ -46,7 +46,7 @@ module.exports = function (request_) {
     var inBreakScope = false;
 
     var createTraverseContext = function() {
-        var response = createBreadthFirstTraverseContext({ digraph: nrequest.digraph });
+        var response = TRAVERSE_CONTEXT({ digraph: nrequest.digraph });
         var result = null;
         if (response.error) {
             errors.unshift(response.error);
@@ -146,7 +146,7 @@ module.exports = function (request_) {
 
         // Ensure that the starting vertex set is not empty (unless allowed).
         if (!nrequest.options.startVector.length && !nrequest.options.allowEmptyStartVector) {
-            errors.unshift("You have specified an empty starting vertex set for this traversal. This is allowed only if you set request.options.allowEmptyStartVector === true.");
+            errors.unshift("Traversal aborted because we don't know which vertex to start on. Specify a graph that has at least one root vertex, explicity specify the start vertex (or vertices) via `request.options.startVector` array, or suppress this error by setting `request.options.allowEmptyStartVector` to Boolean true.");
             break;
         }
 
