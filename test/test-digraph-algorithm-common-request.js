@@ -140,7 +140,7 @@ testTraverseRequestNormalizer({
         testName: "Empty start vertex set with no options.allowEmptyStartVector override", validConfig: false,
         request: { digraph: digraph, visitor: nullVisitor },
         expectedResults: {
-            error: 'You have specified an empty starting vertex set for this traversal. This is allowed only if you set request.options.allowEmptyStartVector === true.',
+            error: 'Traversal aborted because we don\'t know which vertex to start on. Specify a graph that has at least one root vertex, explicity specify the start vertex (or vertices) via `request.options.startVector` array, or suppress this error by setting `request.options.allowEmptyStartVector` to Boolean true.',
             json: ''
         }
     });

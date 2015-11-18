@@ -2,15 +2,48 @@
 
 ## About jsgraph
 
-_Graphs are mathematical abstractions that are useful for solving many types of problems in computer science. Consequently, these abstractions must also be represented in computer programs._ - [J. Siek](http://ecee.colorado.edu/~siek/resume.pdf)
-
-Encapsule/jsgraph is a framework for working with directed graph data models using an in-memory storage container abstraction, and a small but growing collection of powerfully-extensible graph coloring algorithms implemented using the [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern). The library is specifically designed for efficient embedding in complex Node.js / HTML 5 applications that require clean separation of concerns, and a high-degree of extensibility and control.
-
-jsgraph is based on the API design and architectural separaton of concerns for graph algorithms invented by the authors of the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_56_0/libs/graph/doc/index.html) (BGL). The port is logically close enough that the BGL documentation should be considered as an advanced resource.
-
-I encourage you to take some time and experiment with the library as it's truly powerful once you get over the initial learning curve.
-
 _"... At the other end of the spectrum is, for example, graph theory, where the basic object, a graph, can be immediately comprehended. One will not get anywhere in graph theory by sitting in an armchair and trying to understand graphs better. Neither is it particularly necessary to read much of the literature before tackling a problem: it is of course helpful to be aware of some of the most important techniques, but the interesting problems tend to be open precisely because the established techniques cannot easily be applied."_ - [W.T. Gowers](https://en.wikipedia.org/wiki/Timothy_Gowers)
+
+### Status
+
+[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
+
+Ich danke Ihnen sehr [Travis CI](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)
+
+### Summary
+
+`Encapsule/jsgraph` implements a framework for storing and processing in-memory directed graph data sets that is inspired by the research of [Jeremy Siek](http://wphomes.soic.indiana.edu/jsiek/) and his work on the [Boost C++ Graph Library](http://www.boost.org/doc/libs/1_59_0/libs/graph/doc/table_of_contents.html).
+
+The library provides and normalizes the following operations independent of graph topology and semantics:
+
+- Generic, multi-dimensional container abstraction for storing directed graphs in memory.
+  - JSON/native JavaScript data object import/export API's.
+  - Vertex and edge CRUD API's.
+  - Application-defined vertex and edge property API's.
+  - Vertex and edge enumeration API's.
+  - Root/leaf vertex set enumeration API's.
+- Generic transposition algorithm.
+- Developer-extensible breadth-first visit and search algorithm.
+- Developer-extensible depth-first visit and search algorithm.
+
+### Audience
+
+jsgraph is a framework for building next-generation frameworks on Node.js and HTML 5.
+
+- Use instead of in-memory object hierarchies linked by reference:
+  - Serializable to JSON (even when cyclic).
+  - Edges can be labeled with properties. References can't.
+  - Much simpler to debug and test.
+  - Promotes code consistency and readability.
+  - Less refactoring due to data structure udpates.
+- Implement business logic and process as generic graph algorithms:
+  - Considerably reduce lines of code/test.
+  - Make the architecture of the design manifest in code.
+  - Re-use investment on other and new data types without code modification.
+
+### Training and Support
+
+If you're considering using jsgraph in a commerical product, please get in touch with [Encapsule.io](https://encapsule.io) - we can save you time, and help you get the most out of your investment.
 
 ### Programming
 
@@ -26,7 +59,7 @@ _"... At the other end of the spectrum is, for example, graph theory, where the 
 In your project, install via npm.
 
         $ npm install jsgraph --save
-        jsgraph@0.5.xx node_modules/jsgraph
+        jsgraph@0.6.xx node_modules/jsgraph
 
 ### Sources
 
@@ -51,7 +84,7 @@ See also: [Encapsule/jsgraph on GitHub](https://github.com/Encapsule/jsgraph)
 
 ## Example
 
-The following short example constructs a `DirectedGraph` container using a v0.5 jsgraph digraph data object, and derives a simple rank assignment algorithm from jsgraph's bundled `breadthFirstTraverse` algorithm. Note that the BFT visitor interface callback functions leverage the `DirectedGraph` API to get/set the data property value of each visited vertex to its rank.
+The following short example constructs a `DirectedGraph` container using a v0.6 jsgraph digraph data object, and derives a simple rank assignment algorithm from jsgraph's bundled `breadthFirstTraverse` algorithm. Note that the BFT visitor interface callback functions leverage the `DirectedGraph` API to get/set the data property value of each visited vertex to its rank.
 ```javascript
 // Encapsule/jsgraph/examples/bft-vertex-ranking.js
 var jsgraph = require('jsgraph');
@@ -98,7 +131,7 @@ console.log("BFT traversal: '" +
 ```
 ... produces the following output with each vertex's property value set to its rank (edge hops away from a root vertex in this example).
 
-```javascript
+```JavaScript
 DirectedGraph: '{
     "vlist": [
         {
@@ -153,6 +186,11 @@ BFT traversal: '{
 
 ## Release
 
+**v0.6 is a bug fix release that's API-compatible with v0.5**
+
+- DFT algorithm bug fixes impacting order and identity of client visitor callbacks.
+- Better error handing on bad developer-supplied visitor interfaces.
+
 **v0.5 is a breaking upgrade for users of v0.4**
 
 - Stylistic changes are required to v0.4 clients to upgrade.
@@ -165,7 +203,7 @@ BFT traversal: '{
 
 ## API
 
-v0.5 jsgraph has the following public export object:
+v0.6 jsgraph has the following public export object:
 
 ```javascript
 var jsgraph = require('jsgraph');
@@ -302,16 +340,6 @@ The algorithm starts at a vertex (visit) or set of vertices (search) and proceed
 Supported visitor interface callbacks for depth-first traversal: `initializeVertex`, `startVertex`, `discoverVertex`, `examineEdge`, `treeEdge`, `backEdge`, `forwardOrCrossEdge`, `finishEdge`, and `finishVertex`.
 
 A depth-first traversal concludes when all reacable vertices have been visited, or when the client signals termination by returning Boolean **false** back to the algorithm from one of its visitor interface callback functions.
-
-## More examples
-
-The best public examples of how to use jsgraph v0.5 are embedded in the module's test suite. Take a look at the ./test directory scripts.
-
-## Support
-
-I'm happy to answer questions and help you get going with jsgraph in your project.
-
-Ping me on Twitter ([@AlpineLakes](https://twitter.com/AlpineLakes)) or file [Issues](https://github.com/Encapsule/jsgraph/issues) tagged with the 'question' label.
 
 <hr>
 
