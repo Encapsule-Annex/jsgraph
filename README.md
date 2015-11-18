@@ -131,7 +131,7 @@ console.log("BFT traversal: '" +
 ```
 ... produces the following output with each vertex's property value set to its rank (edge hops away from a root vertex in this example).
 
-```JavaScript
+```
 DirectedGraph: '{
     "vlist": [
         {
