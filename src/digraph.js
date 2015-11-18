@@ -24,6 +24,13 @@ var digraphExport = require('./digraph-json-export');
 
     var DirectedGraph = (function() {
         function DirectedGraph(jsonOrObject_) {
+
+            // Meta methods
+            this.getGraphName = __bind(this.getGraphName, this);
+            this.setGraphName = __bind(this.setGraphName, this);
+            this.getGraphDescription = __bind(this.getGraphDescription, this);
+            this.setGraphDescription = __bind(this.setGraphDescription, this);
+
             // Vertex-scope methods
             this.isVertex = __bind(this.isVertex, this);
             this.addVertex = __bind(this.addVertex, this);
@@ -62,6 +69,8 @@ var digraphExport = require('./digraph-json-export');
 
             // DirectedGraph container private runtime state.
             this._private = {
+                name: "",
+                description: "",
                 vertexMap: {},
                 rootMap: {},
                 leafMap: {},
@@ -75,6 +84,38 @@ var digraphExport = require('./digraph-json-export');
                 }
             }
         }
+
+        // META METHODS
+
+        DirectedGraph.prototype.getGraphName = function() {
+            return this._private.name;
+        };
+
+        DirectedGraph.prototype.setGraphName = function(string_) {
+            var response = { error: null, result: null };
+            if (helperFunctions.JSType(string_) === '[object String]') {
+                this._private.name = string_;
+                response.result = true;
+            } else {                
+                response.error = "Invalid graph name specified. Expected '[object String]'.";
+            }
+            return response;
+        };
+
+        DirectedGraph.prototype.getGraphDescription = function() {
+            return this._private.description;
+        };
+
+        DirectedGraph.prototype.setGraphDescription = function(string_) {
+            var response = { error: null, result: null };
+            if (helperFunctions.JSType(string_) === '[object String]') {
+                this._private.description = string_;
+                response.result = true;
+            } else {                
+                response.error = "Invalid graph name specified. Expected '[object String]'.";
+            }
+            return response;
+        };
 
         // VERTEX-SCOPE METHODS
 

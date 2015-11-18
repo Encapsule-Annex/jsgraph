@@ -51,7 +51,7 @@ describe("DirectedGraph container object tests", function() {
         });
 
         it("graph export JSON should match expected control string", function() {
-            var expectedJSON = '{"vlist":[{"u":"foo","p":{"k":"foo"}},{"u":"bar","p":{"k":"bar"}},{"u":"baz","p":{"k":"baz"}}],"elist":[{"e":{"u":"foo","v":"bar"}},{"e":{"u":"foo","v":"baz"}},{"e":{"u":"bar","v":"foo"}},{"e":{"u":"bar","v":"baz"}},{"e":{"u":"baz","v":"foo"}},{"e":{"u":"baz","v":"bar"}}]}';
+            var expectedJSON = '{"name":"","description":"","vlist":[{"u":"foo","p":{"k":"foo"}},{"u":"bar","p":{"k":"bar"}},{"u":"baz","p":{"k":"baz"}}],"elist":[{"e":{"u":"foo","v":"bar"}},{"e":{"u":"foo","v":"baz"}},{"e":{"u":"bar","v":"foo"}},{"e":{"u":"bar","v":"baz"}},{"e":{"u":"baz","v":"foo"}},{"e":{"u":"baz","v":"bar"}}]}';
             assert.equal(digraph.toJSON(), expectedJSON);
         });
 
@@ -103,11 +103,13 @@ describe("DirectedGraph container object tests", function() {
         describe("Test JSON export algorith's vertex skip facility", function() {
 
             var testGraph = null;
-            var expectedJSON = '{"vlist":[{"u":"strawberry","p":"has a property"},{"u":"not-mentioned-no-property"}],"elist":[{"e":{"u":"apple","v":"orange"}},{"e":{"u":"bannana","v":"apple"}},{"e":{"u":"pineapple","v":"orange"}},{"e":{"u":"strawberry","v":"blueberry"},"p":"link"}]}';
+            var expectedJSON = '{"name":"test","description":"test","vlist":[{"u":"strawberry","p":"has a property"},{"u":"not-mentioned-no-property"}],"elist":[{"e":{"u":"apple","v":"orange"}},{"e":{"u":"bannana","v":"apple"}},{"e":{"u":"pineapple","v":"orange"}},{"e":{"u":"strawberry","v":"blueberry"},"p":"link"}]}';
             var actualJSON = null;
             
             before(function() {
                 var digraph = new DirectedGraph({
+                    name: 'test',
+                    description: 'test',
                     vlist: [
                         { u: 'apple' },
                         { u: 'orange' },

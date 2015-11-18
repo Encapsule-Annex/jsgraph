@@ -275,6 +275,8 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 
 #### DirectedGraph container methods
 
+- `get/setGraphName()` - get/set the name of the graph
+- `get/setGraphDescription()` - set/set the description of the graph
 - `verticesCount()` - obtain the count of vertices in the container
 - `getVertices()` - retrieve an array of ID strings for all vertices in the container
 - `edgesCount()` - obtain the count of edges in the container

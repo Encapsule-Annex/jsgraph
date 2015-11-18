@@ -11,7 +11,7 @@
 */
 
 var helperFunctions = require('./helper-functions');
-var createBreadthFirstTraverseContext = require('./digraph-algorithm-common-context');
+var TRAVERSE_CONTEXT = require('./digraph-algorithm-common-context');
 
 /*
   request = {
@@ -46,7 +46,7 @@ module.exports = function (request_) {
     var inBreakScope = false;
 
     var createTraverseContext = function() {
-        var response = createBreadthFirstTraverseContext({ digraph: nrequest.digraph });
+        var response = TRAVERSE_CONTEXT({ digraph: nrequest.digraph });
         var result = null;
         if (response.error) {
             errors.unshift(response.error);
