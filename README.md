@@ -189,7 +189,9 @@ BFT traversal: '{
 **v0.6 is a bug fix release that's API-compatible with v0.5**
 
 - DFT algorithm bug fixes impacting order and identity of client visitor callbacks.
-- Better error handing on bad developer-supplied visitor interfaces.
+- Better error handling on bad developer-supplied visitor interfaces.
+- Better error handling for BFT/DFT algorithm empty start vector case.
+- You can now set `name` and `description` string properties on a `DirectedGraph`:
 
 **v0.5 is a breaking upgrade for users of v0.4**
 
