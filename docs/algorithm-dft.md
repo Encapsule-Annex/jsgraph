@@ -44,5 +44,5 @@ finishEdge  | { e: { u: string, v: string },  g: DirectedGraph } | invoked on ea
 
 <hr>
 
-Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+Copyright &copy; 2014-2016 [Christopher D. Russell](https://github.com/ChrisRus)
 
