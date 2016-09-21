@@ -49,72 +49,6 @@ If you're considering using jsgraph in a commerical product, please get in touch
 
 ### Programming
 
-#### API Overview
-
-[DirectedGraph](./docs/object-DirectedGraph.md) container class methods:
-
-- constructor
-- getGraphName
-- setGraphName
-- getGraphDescription
-- setGraphDescription
-- isVertex
-- addVertex
-- removeVertex
-- getVertexProperty
-- setVertexProperty
-- hasVertexProperty
-- clearVertexProperty
-- inDegree
-- inEdges
-- outDegree
-- outEdges
-- isEdge
-- addEdge
-- removeEdge
-- getEdgeProperty
-- setEdgeProperty
-- hasEdgeProperty
-- clearEdgeProperty
-- verticesCount
-- getVertices
-- edgesCount
-- getEdges
-- rootVerticesCount
-- getRootVertices
-- leafVerticesCount
-- getLeafVertices
-- toJSON / toObject (alias)
-- stringify
-- fromObject
-- fromJSON
-
-Included algorithms:
-
-- [Tranposition](./docs/algorithm-transpose.md) (flips the direction of edges)
-- [Breadth-first visit and search](./docs/algorithm-bft.md) w/visitor pattern callbacks:
-    - initializeVertex
-    - startVertex
-    - discoverVertex
-    - examineVertex
-    - examineEdge
-    - nonTreeEdge
-    - grayTarget
-    - blackTarget
-    - finishVertex
-- [Depth-first visit and search](./docs/algorithm-dft.md) w/visitor pattern callbacks:
-    - initializeVertex
-    - startVertex
-    - discoverVertex
-    - examineEdge
-    - treeEdge
-    - backEdge
-    - forwardOrCrossEdge
-    - finishVertex
-    - finishEdge
-
-#### API Detail
-
 - [Object Reference: DirectedGraph container](./docs/object-DirectedGraph.md)
 - [Object Reference: DirectedGraph export object](./docs/object-JSON.md)
 - [Transform Reference: jsgraph.directed.transpose](./docs/transform-transpose.md)
@@ -312,7 +246,7 @@ if (response.error) {
     console.log(response.error);
 } else {
     digraph = response.result;
-    console.log(digraph.toJSON());
+    console.log(digraph.stringify());
 }
 ```
 
@@ -362,8 +296,9 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `getRootVertices()` - retrieve an array of ID strings for all vertices that have in-degree zero
 - `leafVerticesCount()` - obtain count of vertices with out-degree zero
 - `getLeafVertices()` - retrieve an array of ID strings for all vertices that have out-degree zero
-- `toObject()` - serialize the DirectedGraph container to a JavaScript data object
-- `toJSON(replacer, space)` - serialize the DirectedGraph container to a JSON string
+- `toObject()` - serialize the DirectedGraph container to a JavaScript data object (same as toJSON) **deprecated in v0.7**
+- `toJSON()` - serialize the DirectedGraph container to a JavaScript data object (same as toObject)
+- `stringify(replacer, space)` - serialize the DirectedGraph container to a JSON string
 - `fromObject(dataObject)` - import a jsgraph-format JavaScript data object into the container (addative)
 - `fromJSON(jsonString)` - import jsgraph-format JSON string into the container (addative)
 
