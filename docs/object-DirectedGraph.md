@@ -15,15 +15,11 @@ Many very important and common data structures are simply specific cases of dire
 - Have more productive dicussions with your co-workers.
 - Accommodate changing requirements by design, not reaction.
 
-
-
-
-
-## Construction
+## Construction<a name="construction"></a>
 
 **See also: [Object reference: JSON I/O](./object-JSON.md)**
 
-jsgraph's directed graph container, `DirectedGraph`, is constructed by calling the `jsgraph.directed.create` factory function export. 
+jsgraph's directed graph container, `DirectedGraph`, is constructed by calling the `jsgraph.directed.create` factory function export.
 
 ```javascript
 var jsgraph = require('jsgraph');
@@ -31,7 +27,7 @@ var response = jsgraph.directed.create(/*optional init data*/);
 if (!response.error) {
     // container is ready for use
     var digraph = response.result;
-    console.log("digraph JSON = '" + digraph.toJSON() + "'");
+    console.log("digraph JSON = '" + digraph.stringify() + "'");
 } else {
     // container constructor failed
     console.error(response.error);
@@ -45,7 +41,7 @@ If the `DirectedGraph` container is successfully constructed, `jsgraph.directed.
 However, if you call `jsgraph.directed.create` and pass a parameter the constructor cannot parse, the response object will contain an error string as follows and the response.result property will be null.
 
         '{ error: "Some error string explaining what went wrong.", result: null }`
-        
+
 **Note:** Not all jsgraph functions and methods return error/result response objects. Many are implemented instead to return reasonable default values when bad input is received. However, in cases where an error/result response is indicated in the documentation, it is essential that you check and handle all errors reported by jsgraph as all are significant.
 
 
@@ -109,12 +105,12 @@ var edgeWriteRequest = {
     p: { notes: "some data to associate with the edge from 'Hello' to 'World'" }
 };
 ```
-        
+
 
 # DirectedGraph vertex methods
 
 
-## DirectedGraph.isVertex
+## DirectedGraph.isVertex<a name="isVertex"></a>
 
 ```javascript
 digraph.isVertex(string);
@@ -137,7 +133,7 @@ If you pass the ID of a non-existent vertex, or bad input the response will be f
 
 
 
-## DirectedGraph.addVertex
+## DirectedGraph.addVertex<a name="addVertex"></a>
 
 ```javascript
 var response = digraph.addVertex({ u: string, p: data});
@@ -171,7 +167,7 @@ The `setVertexProperty` method is a convenience alias for the `addVertex` and th
 
 
 
-## DirectedGraph.removeVertex
+## DirectedGraph.removeVertex<a name="removeVertex"></a>
 
 ```javascript
 digraph.removeVertex(string);
@@ -198,7 +194,7 @@ If you pass bad input, or the vertex doesn't exist in the container the call ret
 
 
 
-## DirectedGraph.getVertexProperty
+## DirectedGraph.getVertexProperty<a name="getVertexProperty"></a>
 
 ```javascript
 var response = digraph.getVertexProperty(string);
@@ -220,7 +216,7 @@ Returns a reference to data associated with the vertex in the container. If no a
 
 
 
-## DirectedGraph.setVertexProperty
+## DirectedGraph.setVertexProperty<a name="setVertexProperty"></a>
 
 `setVertexProperty` is an alias for method `addVertex`.
 
@@ -228,7 +224,7 @@ Returns a reference to data associated with the vertex in the container. If no a
 
 
 
-## DirectedGraph.hasVertexProperty
+## DirectedGraph.hasVertexProperty<a name="hasVertexProperty"></a>
 
 ```javascript
 var response = digraph.hasVertexProperty(string);
@@ -250,7 +246,7 @@ Returns true if the vertex has associated property data. Otherwise, false.
 
 
 
-## DirectedGraph.clearVertexProperty
+## DirectedGraph.clearVertexProperty<a name="clearVertexProperty"></a>
 
 ```javascript
 var response = digraph.clearVertexProperty(string);
@@ -273,7 +269,7 @@ Returns true to indicate that regardless of initial conditions, the vertex now h
 
 
 
-## DirectedGraph.inDegree
+## DirectedGraph.inDegree<a name="inDegree"></a>
 
 ```javascript
 var response = digraph.inDegree(string);
@@ -295,7 +291,7 @@ Integer indicating the in-degree of the specific vertex.
 
 
 
-## DirectedGraph.inEdges
+## DirectedGraph.inEdges<a name="inEdges"></a>
 
 ```javascript
 var response = digraph.inEdges(string);
@@ -325,7 +321,7 @@ response = [
 
 
 
-## DirectedGraph.outDegree
+## DirectedGraph.outDegree<a name="outDegree"></a>
 
 ```javascript
 var response = digraph.outDegree(string);
@@ -346,7 +342,7 @@ Integer indicating the out-degree of the specific vertex.
 
 
 
-## DirectedGraph.outEdges
+## DirectedGraph.outEdges<a name="outEdges"></a>
 
 ```javascript
 var response = digraph.outEdges(string);
@@ -373,7 +369,7 @@ Array of edge descriptor objects specifying the source and sink vertex ID's of e
 # DirectedGraph edge methods
 
 
-## DirectedGraph.addEdge
+## DirectedGraph.addEdge<a name="addEdge"></a>
 
 ```javascript
 var response = digraph.addEdge({ e: { u: string, v: string }, p: data });
@@ -407,11 +403,11 @@ The `setEdgeProperty` method is a convenience alias for `addEdge` and their beha
 
 
 
-## DirectedGraph.isEdge
+## DirectedGraph.isEdge<a name="isEdge"></a>
 
-```javascript   
+```javascript
     var response = digraph.isEdge({ u: string, v: string });
-```    
+```
 
 **Request**
 
@@ -429,7 +425,7 @@ Return true if the edge is part of the graph. Otherwise, false.
 
 
 
-## DirectedGraph.removeEdge
+## DirectedGraph.removeEdge<a name="removeEdge"></a>
 
 ```javascript
 var response = digraph.removeEdge({ u: string, v: string });
@@ -454,7 +450,7 @@ Removing an edge has no impact on the edges vertices or their associated propert
 
 
 
-## DirectedGraph.getEdgeProperty
+## DirectedGraph.getEdgeProperty<a name="getEdgeProperty"></a>
 
 ```javascript
 var response = digraph.getEdgePropertyObject({ u: string, v: string });
@@ -477,7 +473,7 @@ Returns a reference to the property data associated with the specified edge in t
 
 
 
-## DirectedGraph.setEdgeProperty
+## DirectedGraph.setEdgeProperty<a name="setEdgeProperty"></a>
 
 `setEdgeProperty` is an alias for `addEdge`.
 
@@ -485,7 +481,7 @@ Returns a reference to the property data associated with the specified edge in t
 
 
 
-## DirectedGraph.hasEdgeProperty
+## DirectedGraph.hasEdgeProperty<a name="hasEdgeProperty"></a>
 
 ```javascript
 var response = digraph.hasEdgeProperty({ u: string, v: string });
@@ -506,7 +502,7 @@ Returns true if the specified edge has associated property data. Otherwise false
 
 
 
-## DirectedGraph.clearEdgeProperty
+## DirectedGraph.clearEdgeProperty<a name="clearEdgeProperty"></a>
 
 ```javascript
 var response = digraph.clearEdgeProperty({ u: string, v: string });
@@ -529,9 +525,43 @@ Returns true to indicate that regardless of initial conditions there is no prope
 
 # DirectedGraph container methods
 
+## DirectedGraph.setGraphName<a name="setGraphName"></a>
 
+```javascript
+var name = digraph.getGraphName();
+```
 
-## DirectedGraph.verticesCount
+**Response**
+Returns a string.
+
+## DirectedGraph.getGraphName<a name="getGraphName"></a>
+
+```javascript
+digraph.setGraphName("Washington State Roadways");
+```
+
+**Response**
+None
+
+## DirectedGraph.setGraphDescription<a name="setGraphDescription"></a>
+
+```javascript
+var description = digraph.getGraphDescription();
+```
+
+**Response**
+Returns a string
+
+## DirectedGraph.getGraphDescription<a name="getGraphDescription"></a>
+
+```javascript
+digraph.setGraphDescription("This is a graph of all roadways in Washington State");
+```
+
+**Response**
+None
+
+## DirectedGraph.verticesCount<a name="verticesCount"></a>
 
 ```javascript
 var response = digraph.verticesCount();
@@ -546,7 +576,7 @@ Integer indicating the number of vertices in this graph.
 
 
 
-## DirectedGraph.getVertices
+## DirectedGraph.getVertices<a name="getVertices"></a>
 
 ```javascript
 vertices = digraph.getVertices();
@@ -554,14 +584,14 @@ vertices = digraph.getVertices();
 
 **Response**
 
-Returns an array of string vertex identifiers.    
+Returns an array of string vertex identifiers.
 
 
 
 
 
 
-## DirectedGraph.edgesCount
+## DirectedGraph.edgesCount<a name="edgesCount"></a>
 
 ```javascript
 var response = digraph.edgesCount();
@@ -576,7 +606,7 @@ Integer indicating the number of edges in this graph.
 
 
 
-## DirectedGraph.getEdges
+## DirectedGraph.getEdges<a name="getEdges"></a>
 
 ```javascript
 var response = digraph.getEdges();
@@ -590,7 +620,7 @@ Returns an array of edge descriptor objects with `u` and `v` properties set to t
 
 
 
-## DirectedGraph.rootVerticesCount
+## DirectedGraph.rootVerticesCount<a name="rootVerticesCount"></a>
 
 ```javascript
 var response = digraph.rootVerticesCount();
@@ -602,7 +632,7 @@ Integer count of the number of vertices with in-degree equal to zero (0).
 
 
 
-## jsgraph.DirectedGraph.getRootVertices
+## DirectedGraph.getRootVertices<a name="getRootVertices"></a>
 
 ```javascript
 var response = digraph.getRootVertices();
@@ -616,7 +646,7 @@ Returns an array of identifier strings indicating the set of root vertices in th
 
 
 
-### DirectedGraph.leafVerticesCount
+### DirectedGraph.leafVerticesCount<a name="leafVerticesCount"></a>
 
 ```javascript
 var response = digraph.leafVerticesCount();
@@ -629,7 +659,7 @@ Integer count of the number of vertices with out-degree equal to zero (0).
 
 
 
-## Directedgraph.getLeafVertices
+## Directedgraph.getLeafVertices<a name="getLeafVertices"></a>
 
 ```javascript
 var response = digraph.getLeafVertices();
@@ -641,7 +671,11 @@ Returns an array of identifier strings indicating the set of leaf vertices in th
 
 
 
-### DirectedGraph.toObject
+## DirectedGraph.toObject<a name="toObject"></a>
+
+_Method `toObject` is a deprecated alias for `toJSON` that will be removed from a future release of jsgraph.
+
+## DirectedGraph.toJSON<a name="toJSON"></a>
 
 **See also: [Object Reference: data I/O](./docs/object-JSON.md)**
 
@@ -659,24 +693,27 @@ Returns a serialized data object that contains the contents of the directed grap
 
 The object returned may be passed to the `DirectedGraph` constructor, or to method `fromObject`.
 
-### DirectedGraph.toJSON
+
+
+## DirectedGraph.stringify<a name="stringify"></a>
 
 **See also: [Object Reference: data I/O](./docs/object-JSON.md)**
 
 ```javscript
-var response = digraph.toJSON(replacer,space);
+var response = digraph.stringify(replacer,space);
 ```
 
 **Response**
 
-Returns a `DirectedGraph`'s serialized data object converted to JSON.
+Returns a a serialized DirectedGraph as a JSON-encoded string.
 
 **Remarks:**
 
-The JSON string returned may be passed to the `DirectedGraph` constructor, or to method `fromJSON`.
+Use this method when you want to directly serialize a `DirectedGraph` container instance.
 
 
-### DirectedGraph.fromObject
+
+## DirectedGraph.fromObject<a name="fromObject"></a>
 
 **See also: [Object Reference: data I/O](./docs/object-JSON.md)**
 
@@ -701,16 +738,12 @@ JavaScript object with the following properties:
 
 
 
-### DirectedGraph.fromJSON
+## DirectedGraph.fromJSON<a name="fromJSON"></a>
 
 Identical to `fromObject` except that the request is a JSON string instead of a datg object.
 
 
-
-
-
-
 <hr>
 
-Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+Copyright &copy; 2014-2016 [Christopher D. Russell](https://github.com/ChrisRus)
 

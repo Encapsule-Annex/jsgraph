@@ -12,7 +12,8 @@
 */
 
 var assert = require('chai').assert;
-var DirectedGraphContainer = require('../../src/digraph');
+var testModule = require('../module-under-test');
+var DirectedGraphContainer = testModule('arc_core_digraph');
 var createDirectedGraph = DirectedGraphContainer.createDirectedGraph;
 var DirectedGraph = DirectedGraphContainer.DirectedGraph;
 assert.isDefined(createDirectedGraph);
@@ -54,7 +55,7 @@ module.exports = function (testVector_) {
 
             it("the returned graph JSON should match expected control value.", function() {
                 assert.instanceOf(response.result, DirectedGraph);
-                assert.equal(response.result.toJSON(), testVector_.expectedResults.result);
+                assert.equal(response.result.stringify(), testVector_.expectedResults.result);
             });
 
         } else {

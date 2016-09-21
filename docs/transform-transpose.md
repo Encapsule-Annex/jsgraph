@@ -21,5 +21,5 @@ JavaScript object with the following properties:
 
 <hr>
 
-Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+Copyright &copy; 2014-2016 [Christopher D. Russell](https://github.com/ChrisRus)
 

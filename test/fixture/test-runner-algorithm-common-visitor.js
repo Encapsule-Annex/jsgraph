@@ -1,7 +1,9 @@
 // test-runner-algorithm-common-visitor.js
 
 var assert = require('chai').assert;
-var callVisitorMethod = require('../../src/digraph-algorithm-common-visit');
+
+var testModule = require('../module-under-test');
+var callVisitorMethod = testModule('arc_core_digraph_algorithm_visit');
 
 /*
   request = {

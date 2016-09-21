@@ -1,7 +1,8 @@
 // test-digraph-algorithm-common-request.js
 
-var DirectedGraph = require('../src/digraph').DirectedGraph;
-var createTraverseContext = require('../src/digraph-algorithm-common-context');
+var testModule = require('./module-under-test');
+var DirectedGraph = testModule('arc_core_digraph').DirectedGraph;
+var createTraverseContext = testModule('arc_core_digraph_algorithm_context');
 
 var assert = require('chai').assert;
 var testTraverseRequestNormalizer = require('./fixture/test-runner-algorithm-common-request');
@@ -28,7 +29,7 @@ testTraverseRequestNormalizer({
     var digraph = new DirectedGraph({
         elist: [ {e:{u:"VARMIT",v:"RAT"}}, {e:{u:"VARMIT",v:"MOUSE"}},{e:{u:"VARMIT",v:"VOLE"}}]
     });
-    
+
     testTraverseRequestNormalizer({
         testName: "Bad input: missing 'visitor'", validConfig: false,
         request: { digraph: digraph },
@@ -37,7 +38,7 @@ testTraverseRequestNormalizer({
             json: ''
         }
     });
-    
+
     testTraverseRequestNormalizer({
         testName: "Bad input: Bad options object type", validConfig: false,
         request: { digraph: digraph, visitor: nullVisitor, options: "Joe Smith" },
@@ -52,7 +53,7 @@ testTraverseRequestNormalizer({
         request: { digraph: digraph, visitor: nullVisitor },
         expectedResults: {
             error: '',
-            json: '{"digraph":"{\\"name\\":\\"\\",\\"description\\":\\"\\",\\"vlist\\":[],\\"elist\\":[{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"RAT\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"MOUSE\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"VOLE\\"}}]}","visitor":{},"options":{"startVector":["VARMIT"],"allowEmptyStartVector":false,"signalStart":true,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
+            json: '{"digraph":{"name":"","description":"","vlist":[],"elist":[{"e":{"u":"VARMIT","v":"RAT"}},{"e":{"u":"VARMIT","v":"MOUSE"}},{"e":{"u":"VARMIT","v":"VOLE"}}]},"visitor":{},"options":{"startVector":["VARMIT"],"allowEmptyStartVector":false,"signalStart":true,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
         }
     });
 
@@ -61,7 +62,7 @@ testTraverseRequestNormalizer({
         request: { digraph: digraph, visitor: nullVisitor, options: { signalStart: true }},
         expectedResults: {
             error: '',
-            json: '{"digraph":"{\\"name\\":\\"\\",\\"description\\":\\"\\",\\"vlist\\":[],\\"elist\\":[{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"RAT\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"MOUSE\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"VOLE\\"}}]}","visitor":{},"options":{"signalStart":true,"startVector":["VARMIT"],"allowEmptyStartVector":false,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
+            json: '{"digraph":{"name":"","description":"","vlist":[],"elist":[{"e":{"u":"VARMIT","v":"RAT"}},{"e":{"u":"VARMIT","v":"MOUSE"}},{"e":{"u":"VARMIT","v":"VOLE"}}]},"visitor":{},"options":{"signalStart":true,"startVector":["VARMIT"],"allowEmptyStartVector":false,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
         }
     });
 
@@ -70,7 +71,7 @@ testTraverseRequestNormalizer({
         request: { digraph: digraph, visitor: nullVisitor, options: { signalStart: false }},
         expectedResults: {
             error: '',
-            json: '{"digraph":"{\\"name\\":\\"\\",\\"description\\":\\"\\",\\"vlist\\":[],\\"elist\\":[{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"RAT\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"MOUSE\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"VOLE\\"}}]}","visitor":{},"options":{"signalStart":false,"startVector":["VARMIT"],"allowEmptyStartVector":false,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
+            json: '{"digraph":{"name":"","description":"","vlist":[],"elist":[{"e":{"u":"VARMIT","v":"RAT"}},{"e":{"u":"VARMIT","v":"MOUSE"}},{"e":{"u":"VARMIT","v":"VOLE"}}]},"visitor":{},"options":{"signalStart":false,"startVector":["VARMIT"],"allowEmptyStartVector":false,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
         }
     });
 
@@ -88,7 +89,7 @@ testTraverseRequestNormalizer({
         request: { digraph: digraph, visitor: nullVisitor, options: { startVector: "someVertexMayBeInvalid"}},
         expectedResults: {
             error: '',
-            json: '{"digraph":"{\\"name\\":\\"\\",\\"description\\":\\"\\",\\"vlist\\":[],\\"elist\\":[{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"RAT\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"MOUSE\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"VOLE\\"}}]}","visitor":{},"options":{"startVector":["someVertexMayBeInvalid"],"allowEmptyStartVector":false,"signalStart":true,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
+            json: '{"digraph":{"name":"","description":"","vlist":[],"elist":[{"e":{"u":"VARMIT","v":"RAT"}},{"e":{"u":"VARMIT","v":"MOUSE"}},{"e":{"u":"VARMIT","v":"VOLE"}}]},"visitor":{},"options":{"startVector":["someVertexMayBeInvalid"],"allowEmptyStartVector":false,"signalStart":true,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
         }
     });
 
@@ -97,11 +98,10 @@ testTraverseRequestNormalizer({
         request: { digraph: digraph, visitor: nullVisitor, options: { startVector: [ "someVertexMayBeInvalid", "apple", "orange", "RAT" ]}},
         expectedResults: {
             error: '',
-            json: '{"digraph":"{\\"name\\":\\"\\",\\"description\\":\\"\\",\\"vlist\\":[],\\"elist\\":[{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"RAT\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"MOUSE\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"VOLE\\"}}]}","visitor":{},"options":{"startVector":["someVertexMayBeInvalid","apple","orange","RAT"],"allowEmptyStartVector":false,"signalStart":true,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
+            json: '{"digraph":{"name":"","description":"","vlist":[],"elist":[{"e":{"u":"VARMIT","v":"RAT"}},{"e":{"u":"VARMIT","v":"MOUSE"}},{"e":{"u":"VARMIT","v":"VOLE"}}]},"visitor":{},"options":{"startVector":["someVertexMayBeInvalid","apple","orange","RAT"],"allowEmptyStartVector":false,"signalStart":true,"traverseContext":{"searchStatus":"pending","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}}}}'
         }
     });
 
-    
     (function() {
         var contextResponse = createTraverseContext({ digraph: digraph });
         assert.isNull(contextResponse.error);
@@ -123,7 +123,7 @@ testTraverseRequestNormalizer({
             request: { digraph: digraph, visitor: nullVisitor, options: { traverseContext: traverseContext }} ,
             expectedResults: {
                 error: '',
-                json: '{"digraph":"{\\"name\\":\\"\\",\\"description\\":\\"\\",\\"vlist\\":[],\\"elist\\":[{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"RAT\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"MOUSE\\"}},{\\"e\\":{\\"u\\":\\"VARMIT\\",\\"v\\":\\"VOLE\\"}}]}","visitor":{},"options":{"traverseContext":{"searchStatus":"TEST-VALUE","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}},"startVector":["VARMIT"],"allowEmptyStartVector":false,"signalStart":true}}'
+                json: '{"digraph":{"name":"","description":"","vlist":[],"elist":[{"e":{"u":"VARMIT","v":"RAT"}},{"e":{"u":"VARMIT","v":"MOUSE"}},{"e":{"u":"VARMIT","v":"VOLE"}}]},"visitor":{},"options":{"traverseContext":{"searchStatus":"TEST-VALUE","colorMap":{"VARMIT":0,"RAT":0,"MOUSE":0,"VOLE":0},"undiscoveredMap":{"VARMIT":true,"RAT":true,"MOUSE":true,"VOLE":true}},"startVector":["VARMIT"],"allowEmptyStartVector":false,"signalStart":true}}'
             }
         });
 
@@ -150,8 +150,8 @@ testTraverseRequestNormalizer({
         request: { digraph: digraph, visitor: nullVisitor, options: { allowEmptyStartVector: true }},
         expectedResults: {
             error: '',
-            json: '{"digraph":"{\\"name\\":\\"\\",\\"description\\":\\"\\",\\"vlist\\":[],\\"elist\\":[{\\"e\\":{\\"u\\":\\"A\\",\\"v\\":\\"B\\"}},{\\"e\\":{\\"u\\":\\"B\\",\\"v\\":\\"A\\"}}]}","visitor":{},"options":{"allowEmptyStartVector":true,"startVector":[],"signalStart":true,"traverseContext":{"searchStatus":"pending","colorMap":{"A":0,"B":0},"undiscoveredMap":{"A":true,"B":true}}}}'
+            json: '{"digraph":{"name":"","description":"","vlist":[],"elist":[{"e":{"u":"A","v":"B"}},{"e":{"u":"B","v":"A"}}]},"visitor":{},"options":{"allowEmptyStartVector":true,"startVector":[],"signalStart":true,"traverseContext":{"searchStatus":"pending","colorMap":{"A":0,"B":0},"undiscoveredMap":{"A":true,"B":true}}}}'
         }
     });
-    
+
 })();

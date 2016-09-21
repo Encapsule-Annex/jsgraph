@@ -1,16 +1,16 @@
+![Encapsule.io](https://encapsule.io/images/blue-burst-encapsule.io-logo-251x64.png "Encapsule.io")
+
 # Encapsule/jsgraph
 
-[![Join the chat at https://gitter.im/Encapsule/jsgraph](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Encapsule/jsgraph?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-## About jsgraph
+![Begin at the beginning...](./docs/begin-at-the-beginning.jpg)
 
 _"... At the other end of the spectrum is, for example, graph theory, where the basic object, a graph, can be immediately comprehended. One will not get anywhere in graph theory by sitting in an armchair and trying to understand graphs better. Neither is it particularly necessary to read much of the literature before tackling a problem: it is of course helpful to be aware of some of the most important techniques, but the interesting problems tend to be open precisely because the established techniques cannot easily be applied."_ - [W.T. Gowers](https://en.wikipedia.org/wiki/Timothy_Gowers)
 
-### Status
+[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph) [![Join the chat at https://gitter.im/Encapsule/jsgraph](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Encapsule/jsgraph?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Build Status](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)](https://travis-ci.org/Encapsule/jsgraph)
+See also: [Mathematical Graph Theory](https://en.wikipedia.org/wiki/Graph_theory)
 
-Ich danke Ihnen sehr [Travis CI](https://travis-ci.org/Encapsule/jsgraph.svg?branch=master)
+## About jsgraph
 
 ### Summary
 
@@ -30,7 +30,7 @@ The library provides and normalizes the following operations independent of grap
 
 ### Audience
 
-jsgraph is a framework for building next-generation frameworks on Node.js and HTML 5.
+jsgraph is a framework for building next-generation frameworks on Node.js and HTML 5 applications:
 
 - Use instead of in-memory object hierarchies linked by reference:
   - Serializable to JSON (even when cyclic).
@@ -61,7 +61,7 @@ If you're considering using jsgraph in a commerical product, please get in touch
 In your project, install via npm.
 
         $ npm install jsgraph --save
-        jsgraph@0.6.xx node_modules/jsgraph
+        jsgraph@0.7.xx node_modules/jsgraph
 
 ### Sources
 
@@ -86,7 +86,7 @@ See also: [Encapsule/jsgraph on GitHub](https://github.com/Encapsule/jsgraph)
 
 ## Example
 
-The following short example constructs a `DirectedGraph` container using a v0.6 jsgraph digraph data object, and derives a simple rank assignment algorithm from jsgraph's bundled `breadthFirstTraverse` algorithm. Note that the BFT visitor interface callback functions leverage the `DirectedGraph` API to get/set the data property value of each visited vertex to its rank.
+The following short example constructs a `DirectedGraph` container using a v0.7 jsgraph digraph data object, and derives a simple rank assignment algorithm from jsgraph's bundled `breadthFirstTraverse` algorithm. Note that the BFT visitor interface callback functions leverage the `DirectedGraph` API to get/set the data property value of each visited vertex to its rank.
 ```javascript
 // Encapsule/jsgraph/examples/bft-vertex-ranking.js
 var jsgraph = require('jsgraph');
@@ -127,7 +127,7 @@ if (response.error) {
     throw new Error(response.error);
 }
 console.log("DirectedGraph: '" +
-digraph.toJSON(undefined,4) + "'");
+digraph.stringify(undefined,4) + "'");
 console.log("BFT traversal: '" +
     JSON.stringify(response.result,undefined,4) + "'");
 ```
@@ -188,6 +188,15 @@ BFT traversal: '{
 
 ## Release
 
+**v0.7 is a breaking API change and documentation release**
+
+- Added new method `DirectedGraph.stringify`
+- Changed method semantics of `DirectedGraph.toJSON` to return a serializable object instead of a JSON-encoded string.
+- Alias method `DirectedGraph.toObject` to call `DirectedGraph.toJSON`. The `toObject` method is now deprecated and will be removed in a future release.
+- Updated documentation:
+    - Per above breaking changes to the `DirectedGraph` serialization API.
+    - Added additional information on set/get of `DirectedGraph` name and description properties.
+
 **v0.6 is a bug fix release that's API-compatible with v0.5**
 
 - DFT algorithm bug fixes impacting order and identity of client visitor callbacks.
@@ -237,7 +246,7 @@ if (response.error) {
     console.log(response.error);
 } else {
     digraph = response.result;
-    console.log(digraph.toJSON());
+    console.log(digraph.stringify());
 }
 ```
 
@@ -287,8 +296,9 @@ The `DirectedGraph` container object created by this process models "a graph" ge
 - `getRootVertices()` - retrieve an array of ID strings for all vertices that have in-degree zero
 - `leafVerticesCount()` - obtain count of vertices with out-degree zero
 - `getLeafVertices()` - retrieve an array of ID strings for all vertices that have out-degree zero
-- `toObject()` - serialize the DirectedGraph container to a JavaScript data object
-- `toJSON(replacer, space)` - serialize the DirectedGraph container to a JSON string
+- `toObject()` - serialize the DirectedGraph container to a JavaScript data object (same as toJSON) **deprecated in v0.7**
+- `toJSON()` - serialize the DirectedGraph container to a JavaScript data object (same as toObject)
+- `stringify(replacer, space)` - serialize the DirectedGraph container to a JSON string
 - `fromObject(dataObject)` - import a jsgraph-format JavaScript data object into the container (addative)
 - `fromJSON(jsonString)` - import jsgraph-format JSON string into the container (addative)
 
@@ -349,7 +359,7 @@ A depth-first traversal concludes when all reacable vertices have been visited, 
 
 <hr>
 
-Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+Copyright &copy; 2014-2016 [Christopher D. Russell](https://github.com/ChrisRus)
 
 
 

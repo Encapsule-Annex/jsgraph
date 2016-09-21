@@ -2,7 +2,7 @@
 
    The MIT License (MIT)
 
-   Copyright (c) 2014-2015 Christopher D. Russell
+   Copyright (c) 2014-2016 Christopher D. Russell
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,7 @@ var jsgraph = module.exports = {
         // [1] see DirectedGraph.toJSON/toObject methods.
         //
         ////
-        create: require('./src/digraph').createDirectedGraph,
+        create: require('./arc_core_digraph').createDirectedGraph,
 
         // Directed graph transposition algorithm.
         // Creates a new DirectedGraph container object that's identical
@@ -59,21 +59,21 @@ var jsgraph = module.exports = {
         // the edges are reverese in the result digraph. Note that if present,
         // vertex and edge properties in the source digraph are copied by
         // reference to the result digraph.
-        transpose: require('./src/digraph-algorithm-transpose'),
+        transpose: require('./arc_core_digraph_algorithm_transpose'),
 
         // Directed graph breadth-first traversal visitor algorithm.
-        breadthFirstTraverse: require('./src/digraph-algorithm-bft'),
+        breadthFirstTraverse: require('./arc_core_digraph_algorithm_bft'),
 
         // Directed graph depth-first traversal visitor algorithm.
-        depthFirstTraverse: require('./src/digraph-algorithm-dft'),
+        depthFirstTraverse: require('./arc_core_digraph_algorithm_dft'),
 
         // ADVANCED
 
         // Color constant hashtable (advanced).
-        colors: require('./src/digraph-algorithm-common-colors'),
+        colors: require('./arc_core_digraph_algorithm_colors'),
 
         // Directed graph traversal context factory (advanced).
-        createTraversalContext: require('./src/digraph-algorithm-common-context')
+        createTraversalContext: require('./arc_core_digraph_algorithm_context')
 
     }
 };

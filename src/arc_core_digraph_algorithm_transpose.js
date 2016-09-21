@@ -1,7 +1,5 @@
 /*
-  Encapsule/jsgraph/src/digraph-algorithm-transpose.js
-
-  Copyright (C) 2014-2015 Christopher D. Russell
+  Copyright (C) 2014-2016 Christopher D. Russell
 
   This library is published under the MIT License and is part of the
   Encapsule Project System in Cloud (SiC) open service architecture.
@@ -15,8 +13,8 @@
 // More info on directed graph transposition:
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/transpose_graph.html
 
-var helperFunctions = require('../src/helper-functions');
-var DirectedGraph = require('../src/digraph').DirectedGraph;
+var helperFunctions = require('./arc_core_graph_util');
+var DirectedGraph = require('./arc_core_digraph').DirectedGraph;
 
 /*
   request = DirectedGraph reference

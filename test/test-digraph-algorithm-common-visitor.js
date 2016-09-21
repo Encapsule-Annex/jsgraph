@@ -1,7 +1,8 @@
 // test-digraph-algorothm-common-visitor.js
 
-var DirectedGraph = require('../src/digraph').DirectedGraph;
-var createTraverseContext = require('../src/digraph-algorithm-common-context');
+var testModule = require('./module-under-test');
+var DirectedGraph = testModule('arc_core_digraph').DirectedGraph;
+var createTraverseContext = testModule('arc_core_digraph_algorithm_context');
 
 var assert = require('chai').assert;
 var testAlgorithmVisitorCallback = require('./fixture/test-runner-algorithm-common-visitor');

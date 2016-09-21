@@ -2,9 +2,9 @@
 var chai = require('chai');
 var assert = chai.assert;
 
-var jsgraph = require('../index');
-
-var DirectedGraph = require('../src/digraph');
+var testModule = require('./module-under-test');
+var jsgraph = testModule('arc_core_graph');
+var DirectedGraph = testModule('arc_core_digraph');
 
 describe("Module export tests", function() {
 

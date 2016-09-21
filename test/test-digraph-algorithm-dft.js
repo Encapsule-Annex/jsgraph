@@ -2,7 +2,8 @@
 
 
 var assert = require('chai').assert;
-var DirectedGraph = require('../src/digraph').DirectedGraph;
+var testModule = require('./module-under-test');
+var DirectedGraph = testModule('arc_core_digraph').DirectedGraph;
 var testDFT = require('./fixture/test-runner-digraph-algorithm-dft');
 
 

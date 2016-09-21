@@ -38,10 +38,8 @@ if (response.error) {
     throw new Error(response.error);
 }
 
-console.log("DirectedGraph: '" + digraph.toJSON(undefined, 4) + "'");
+console.log("DirectedGraph: '" + digraph.stringify(undefined, 4) + "'");
 console.log("BFT traversal: '" + JSON.stringify(response.result,undefined,4) + "'");
-
-    
 
 
 

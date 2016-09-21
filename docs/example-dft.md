@@ -122,5 +122,5 @@ A simple JavaScript/jsgraph implementation of Depth-first search (DFS) example f
 
 <hr>
 
-Copyright &copy; 2014-2015 [Christopher D. Russell](https://github.com/ChrisRus)
+Copyright &copy; 2014-2016 [Christopher D. Russell](https://github.com/ChrisRus)
 

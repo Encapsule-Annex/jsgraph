@@ -2,7 +2,10 @@
 
 var assert = require('chai').assert;
 var uuid = require('node-uuid');
-var DirectedGraphContainer = require('../src/digraph');
+
+var testModule = require('./module-under-test');
+
+var DirectedGraphContainer = testModule('arc_core_digraph');
 var DirectedGraph = DirectedGraphContainer.DirectedGraph;
 
 describe("DirectedGraph container object tests", function() {
@@ -38,7 +41,7 @@ describe("DirectedGraph container object tests", function() {
         var copy = new DirectedGraph();
         var vertices = ["foo", "bar", "baz"];
         var json = null;
-        
+
         before(function(){
             vertices.forEach(function(u){
                 digraph.addVertex({ u: u, p: { k: u }});
@@ -52,11 +55,11 @@ describe("DirectedGraph container object tests", function() {
 
         it("graph export JSON should match expected control string", function() {
             var expectedJSON = '{"name":"","description":"","vlist":[{"u":"foo","p":{"k":"foo"}},{"u":"bar","p":{"k":"bar"}},{"u":"baz","p":{"k":"baz"}}],"elist":[{"e":{"u":"foo","v":"bar"}},{"e":{"u":"foo","v":"baz"}},{"e":{"u":"bar","v":"foo"}},{"e":{"u":"bar","v":"baz"}},{"e":{"u":"baz","v":"foo"}},{"e":{"u":"baz","v":"bar"}}]}';
-            assert.equal(digraph.toJSON(), expectedJSON);
+            assert.equal(digraph.stringify(), expectedJSON);
         });
 
-        it("graph should export properly structured JSON string", function(){
-            json = digraph.toJSON();
+        it("graph should export structured JSON string", function(){
+            json = digraph.stringify();
             assert.isString(json);
             var parsed = JSON.parse(json);
             assert.isObject(parsed);
@@ -66,25 +69,25 @@ describe("DirectedGraph container object tests", function() {
 
         it("graph export to object and JSON should be identical", function() {
             var testObjectJSON = JSON.stringify(digraph.toObject());
-            var testJSON = digraph.toJSON();
+            var testJSON = digraph.stringify();
             assert.equal(testObjectJSON, testJSON);
         });
 
         it("graph constructed from export object should be identical to original", function() {
             var testGraph = new DirectedGraph(digraph.toObject());
-            assert.equal(testGraph.toJSON(), digraph.toJSON());
+            assert.deepEqual(testGraph.toJSON(), digraph.toJSON());
         });
 
         it("empty graph filled using fromObject should be identical to original", function() {
             var testGraph = new DirectedGraph();
             testGraph.fromObject(digraph.toObject());
-            assert.equal(testGraph.toJSON(), digraph.toJSON());
+            assert.deepEqual(testGraph.toJSON(), digraph.toJSON());
         });
 
         it("empty graph filled using fromJSON should be identical to original", function() {
             var testGraph = new DirectedGraph();
             testGraph.fromJSON(digraph.toJSON());
-            assert.equal(testGraph.toJSON(), digraph.toJSON());
+            assert.deepEqual(testGraph.toJSON(), digraph.toJSON());
         });
 
         describe("Re-create the directed graph container from the JSON.", function() {
@@ -96,7 +99,7 @@ describe("DirectedGraph container object tests", function() {
                 assert.doesNotThrow(constructCopy);
             });
             it("graph should re-create identical graph from import", function(){
-                assert.equal(copy.toJSON(), json);
+                assert.deepEqual(copy.stringify(), json);
             });
         });
 
@@ -105,7 +108,7 @@ describe("DirectedGraph container object tests", function() {
             var testGraph = null;
             var expectedJSON = '{"name":"test","description":"test","vlist":[{"u":"strawberry","p":"has a property"},{"u":"not-mentioned-no-property"}],"elist":[{"e":{"u":"apple","v":"orange"}},{"e":{"u":"bannana","v":"apple"}},{"e":{"u":"pineapple","v":"orange"}},{"e":{"u":"strawberry","v":"blueberry"},"p":"link"}]}';
             var actualJSON = null;
-            
+
             before(function() {
                 var digraph = new DirectedGraph({
                     name: 'test',
@@ -126,7 +129,7 @@ describe("DirectedGraph container object tests", function() {
                         { e: { u: 'pineapple', v: 'orange' }}
                     ]
                 });
-                actualJSON = digraph.toJSON();
+                actualJSON = digraph.stringify();
             });
 
             it("Exported JSON should match expected JSON value.", function() {
@@ -388,7 +391,7 @@ describe("DirectedGraph container object tests", function() {
             it ("vertex out-edge array should have length zero", function() {
                 assert.lengthOf(digraph.outEdges("apple"), 0);
             });
-            
+
         });
     });
 

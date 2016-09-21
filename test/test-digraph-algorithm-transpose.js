@@ -4,8 +4,10 @@ var expect = require('chai').expect;
 var should = require('chai').should;
 var uuid = require('node-uuid');
 
-var DirectedGraph = require('../src/digraph').DirectedGraph;
-var transposeDigraph = require('../src/digraph-algorithm-transpose');
+var testModule = require('./module-under-test');
+
+var DirectedGraph = testModule('arc_core_digraph').DirectedGraph;
+var transposeDigraph = testModule('arc_core_digraph_algorithm_transpose');
 
 describe("Directed graph tranposition test", function() {
 
