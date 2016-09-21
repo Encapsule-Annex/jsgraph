@@ -1,7 +1,5 @@
 /*
-  Encapsule/jsgraph/src/digraph-json-import.js
-
-  Copyright (C) 2014-2015 Christopher D. Russell
+  Copyright (C) 2014-2016 Christopher D. Russell
 
   This library is published under the MIT License and is part of the
   Encapsule Project System in Cloud (SiC) open service architecture.

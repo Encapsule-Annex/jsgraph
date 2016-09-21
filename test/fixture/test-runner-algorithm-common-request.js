@@ -2,7 +2,9 @@
 //
 
 var assert = require('chai').assert;
-var normalizeAlgorithmRequest = require('../../src/digraph-algorithm-common-request');
+
+var testModule = require('../module-under-test');
+var normalizeAlgorithmRequest = testModule('arc_core_digraph_algorithm_request');
 
 /*
   request = {

@@ -2,7 +2,9 @@
 //
 
 var assert = require('chai').assert;
-var digraphInParams = require('../../src/digraph-in-parameters');
+
+var testModule = require('../module-under-test');
+var digraphInParams = testModule('arc_core_digraph_in_params');
 
 /*
   request = {

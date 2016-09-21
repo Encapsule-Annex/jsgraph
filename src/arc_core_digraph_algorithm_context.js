@@ -1,7 +1,5 @@
 /*
-  Encapsule/jsgraph/src/digraph-algorithm-common-context.js
-
-  Copyright (C) 2014-2015 Christopher D. Russell
+  Copyright (C) 2014-2016 Christopher D. Russell
 
   This library is published under the MIT License and is part of the
   Encapsule Project System in Cloud (SiC) open service architecture.
@@ -10,8 +8,8 @@
   with in-memory data on Node.js and HTML.
 */
 
-var helperFunctions = require('./helper-functions');
-var colors = require('./digraph-algorithm-common-colors');
+var helperFunctions = require('./arc_core_graph_util');
+var colors = require('./arc_core_digraph_algorithm_colors');
 
 module.exports = function (request_) {
     var response = { error: null, result: null };

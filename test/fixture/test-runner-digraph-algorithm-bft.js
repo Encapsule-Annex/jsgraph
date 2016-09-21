@@ -2,7 +2,10 @@
 //
 
 var assert = require('chai').assert;
-var BFT = require('../../src/digraph-algorithm-bft');
+
+var testModule = require('../module-under-test');
+
+var BFT = testModule('arc_core_digraph_algorithm_bft');
 var SearchPathRecorder = require('./bfv-results-recorder');
 
 /*

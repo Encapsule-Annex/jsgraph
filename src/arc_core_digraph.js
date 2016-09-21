@@ -1,7 +1,5 @@
 /*
-  Encapsule/jsgraph/src/digraph.js
-
-  Copyright (C) 2014-2015 Christopher D. Russell
+  Copyright (C) 2014-2016 Christopher D. Russell
 
   This library is published under the MIT License and is part of the
   Encapsule Project System in Cloud (SiC) open service architecture.
@@ -14,10 +12,10 @@
 // http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
 // http://en.wikipedia.org/wiki/Directed_graph
 
-var helperFunctions = require('./helper-functions');
-var digraphParams = require('./digraph-in-parameters');
-var digraphImport = require('./digraph-json-import');
-var digraphExport = require('./digraph-json-export');
+var helperFunctions = require('./arc_core_graph_util');
+var digraphParams = require('./arc_core_digraph_in_params');
+var digraphImport = require('./arc_core_digraph_import');
+var digraphExport = require('./arc_core_digraph_export');
 
 (function() {
     var __bind = function(method, scope){ return function(){ return method.apply(scope, arguments); }; };
@@ -43,7 +41,7 @@ var digraphExport = require('./digraph-json-export');
             this.inEdges = __bind(this.inEdges, this);
             this.outDegree = __bind(this.outDegree, this);
             this.outEdges = __bind(this.outEdges, this);
-            
+
             // Edge-scope methods
             this.isEdge = __bind(this.isEdge, this);
             this.addEdge = __bind(this.addEdge, this);
@@ -52,7 +50,7 @@ var digraphExport = require('./digraph-json-export');
             this.setEdgeProperty = __bind(this.setEdgeProperty, this);
             this.hasEdgeProperty = __bind(this.hasEdgeProperty, this);
             this.clearEdgeProperty = __bind(this.clearEdgeProperty, this);
-            
+
             // Digraph-scope methods
             this.verticesCount = __bind(this.verticesCount, this);
             this.getVertices = __bind(this.getVertices, this);
@@ -62,8 +60,9 @@ var digraphExport = require('./digraph-json-export');
             this.getRootVertices = __bind(this.getRootVertices, this);
             this.leafVerticesCount = __bind(this.leafVerticesCount, this);
             this.getLeafVertices = __bind(this.getLeafVertices, this);
-            this.toObject = __bind(this.toObject, this);
             this.toJSON = __bind(this.toJSON, this);
+            this.toObject = __bind(this.toObject, this);
+            this.stringify = __bind(this.stringify, this);
             this.fromObject = __bind(this.fromObject, this);
             this.fromJSON = __bind(this.fromJSON, this);
 
@@ -96,7 +95,7 @@ var digraphExport = require('./digraph-json-export');
             if (helperFunctions.JSType(string_) === '[object String]') {
                 this._private.name = string_;
                 response.result = true;
-            } else {                
+            } else {
                 response.error = "Invalid graph name specified. Expected '[object String]'.";
             }
             return response;
@@ -111,7 +110,7 @@ var digraphExport = require('./digraph-json-export');
             if (helperFunctions.JSType(string_) === '[object String]') {
                 this._private.description = string_;
                 response.result = true;
-            } else {                
+            } else {
                 response.error = "Invalid graph name specified. Expected '[object String]'.";
             }
             return response;
@@ -127,7 +126,7 @@ var digraphExport = require('./digraph-json-export');
             var vertex = this._private.vertexMap[vertexId_];
             return (vertex !== null) && vertex && true || false;
         };
-            
+
         /*
           request = {
               u: vertex ID string
@@ -512,18 +511,22 @@ var digraphExport = require('./digraph-json-export');
             return leafVertices;
         };
 
-        DirectedGraph.prototype.toObject = function () {
+        // toJSON and toObject are identical delegations to digraphExport.exportObject.
+        DirectedGraph.prototype.toJSON = function () {
+            return digraphExport.exportObject(this);
+        };
+        DirectedGraph.prototype.toObject = function() {
             return digraphExport.exportObject(this);
         };
 
-        DirectedGraph.prototype.toJSON = function(replacer_, space_) {
+        DirectedGraph.prototype.stringify = function(replacer_, space_) {
             return digraphExport.exportJSON(this, replacer_, space_);
         };
 
         DirectedGraph.prototype.fromObject = function (object_) {
             return digraphImport(this, object_);
         };
-        
+
         DirectedGraph.prototype.fromJSON = function(json_) {
             return digraphImport(this, json_);
         };

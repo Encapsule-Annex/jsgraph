@@ -1,7 +1,5 @@
 /*
-  Encapsule/jsgraph/src/digraph-algorithm-dft.js
-
-  Copyright (C) 2014-2015 Christopher D. Russell
+  Copyright (C) 2014-2016 Christopher D. Russell
 
   This library is published under the MIT License and is part of the
   Encapsule Project System in Cloud (SiC) open service architecture.
@@ -11,9 +9,9 @@
 */
 
 var algorithmName = "DFT"; // used in error messages
-var colors = require('./digraph-algorithm-common-colors');
-var visitorCallback = require('./digraph-algorithm-common-visit');
-var normalizeRequest = require('./digraph-algorithm-common-request');
+var colors = require('./arc_core_digraph_algorithm_colors');
+var visitorCallback = require('./arc_core_digraph_algorithm_visit');
+var normalizeRequest = require('./arc_core_digraph_algorithm_request');
 
 
 module.exports = function (request_) {
