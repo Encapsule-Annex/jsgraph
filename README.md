@@ -37,7 +37,7 @@ jsgraph is a framework for building next-generation frameworks on Node.js and HT
   - Edges can be labeled with properties. References can't.
   - Much simpler to debug and test.
   - Promotes code consistency and readability.
-  - Less refactoring due to data structure udpates.
+  - Less refactoring due to data structure updates.
 - Implement business logic and process as generic graph algorithms:
   - Considerably reduce lines of code/test.
   - Make the architecture of the design manifest in code.
