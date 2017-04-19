@@ -1,7 +1,7 @@
 {
   "name": "jsgraph",
-  "version": "0.7.0",
-  "description": "Generic directed graph container, and visitor algorithms based on a port of the Boost C++ Graph Library API.",
+  "version": "0.7.1",
+  "description": "DirectedGraph container class + BFT/DFT/transpose algorithms inspired by Boost C++ Graph Library API.",
   "main": "src/arc_core_graph.js",
   "scripts": {
     "test": "mocha -R spec ./test/test-jsgraph.js"
