@@ -6,7 +6,7 @@ testCreateDirectedGraph({
     testName: "Bogus construction #1", validConfig: false,
     request: "Bull shit",
     expectedResults: {
-        error: 'DirectedGraph constructor failed: Exception occurred while parsing JSON: Unexpected token B',
+        error: 'DirectedGraph constructor failed: Exception occurred while parsing JSON: Unexpected token B in JSON at position 0',
         result: ''
     }
 });
