@@ -53,6 +53,8 @@ var jsgraph = module.exports = {
         ////
         create: require('./arc_core_digraph').createDirectedGraph,
 
+        directedGraph: require('./arc_core_digraph').DirectedGraph,
+
         // Directed graph transposition algorithm.
         // Creates a new DirectedGraph container object that's identical
         // to a caller-specified digraph except that the direction of the
